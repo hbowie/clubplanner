@@ -1,0 +1,76 @@
+module	action	modifier	object	value
+input	set		normalization	0
+input	open	xls		#PATH#../fields.xls
+filter	add	greater than	Key	
+filter	set		params	
+sort	add	Ascending	Item Class	
+sort	add	Ascending	Key	
+sort	set		params	
+template	open	file		#PATH#../templates/compare-methods.java
+template	generate			
+template	open	file		#PATH#../templates/haskey-method.java
+template	generate			
+input	set		normalization	0
+input	open	xls		#PATH#../fields.xls
+sort	add	Ascending	Item Class	
+sort	add	Ascending	No.	
+sort	add	Ascending	Field	
+sort	set		params	
+template	open	file		#PATH#../templates/setColumnValue.java
+template	generate			
+template	open	file		#PATH#../templates/getColumnValue.java
+template	generate			
+template	open	file		#PATH#../templates/getColumnName.java
+template	generate			
+template	open	file		#PATH#../templates/getCommonName.java
+template	generate			
+template	open	file		#PATH#../templates/getColumnClass.java
+template	generate			
+template	open	file		#PATH#../templates/getColumnWidth.java
+template	generate			
+template	open	file		#PATH#../templates/variable-definitions.java
+template	generate			
+template	open	file		#PATH#../templates/master-detail-definitions.java
+template	generate			
+template	open	file		#PATH#../templates/variable-methods.java
+template	generate			
+template	open	file		#PATH#../templates/taggable-implements.java
+template	generate			
+template	open	file		#PATH#../templates/taggable-methods.java
+template	generate			
+template	open	file		#PATH#../templates/master-detail-methods.java
+template	generate			
+template	open	file		#PATH#../templates/isMarkdownFormat.java
+template	generate			
+template	open	file		#PATH#../templates/find.java
+template	generate			
+template	open	file		#PATH#../templates/toString.java
+template	generate			
+template	open	file		#PATH#../templates/merge.java
+template	generate			
+template	open	file		#PATH#../templates/item-class.java
+template	generate			
+template	open	file		#PATH#../templates/master-list.java
+template	generate			
+template	open	file		#PATH#../templates/master-writer.java
+template	generate			
+template	open	file		#PATH#../templates/master-positioned.java
+template	generate			
+input	set		normalization	0
+input	open	xls		#PATH#../fields.xls
+sort	add	Ascending	Item Class	
+sort	add	Ascending	Panel No.	
+sort	add	Ascending	Panel Seq	
+sort	set		params	
+template	open	file		#PATH#../templates/item-panel-definitions.java
+template	generate			
+template	open	file		#PATH#../templates/item-panel-layout.java
+template	generate			
+template	open	file		#PATH#../templates/item-panel-display.java
+template	generate			
+template	open	file		#PATH#../templates/item-panel-mod.java
+template	generate			
+template	open	file		#PATH#../templates/item-panel-get.java
+template	generate			
+template	open	file		#PATH#../templates/item-panel.java
+template	generate			

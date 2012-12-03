@@ -26,6 +26,8 @@ public class ClubEventList
  
   private List<ClubEvent>            list = new ArrayList();
  
+  private Comparator      comparator = new ClubEventDefaultComparator();
+ 
   private int             findIndex = -1;
   private boolean         findMatch = false;
  
@@ -37,6 +39,14 @@ public class ClubEventList
    */
   public ClubEventList () {
     tagsList.registerValue("");
+  }
+ 
+  public void setComparator (Comparator comparator) {
+    this.comparator = comparator;
+  }
+ 
+  public Comparator getComparator() {
+    return comparator;
   }
  
   public TagsList getTagsList () {
@@ -175,7 +185,7 @@ public class ClubEventList
       findIndex = 0;
     }
     else
-    if (get(list.size() - 1).compareTo(newClubEvent) < 0) {
+    if (comparator.compare (get(list.size() - 1), newClubEvent) < 0) {
       // If the new URL has a key higher than the highest item in the
       // collection, simply add the new URL to the end
       // (more efficient if an input file happens to be pre-sorted).
@@ -254,7 +264,7 @@ public class ClubEventList
       int diff = high - low;
       int split = diff / 2;
       findIndex = low + split;
-      int compare = get(findIndex).compareTo(findClubEvent);
+      int compare = comparator.compare (get(findIndex), findClubEvent);
       if (compare == 0) {
         // found an exact match
         findMatch = true;

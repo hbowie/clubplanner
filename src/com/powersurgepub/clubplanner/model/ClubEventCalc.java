@@ -1,6 +1,7 @@
 package com.powersurgepub.clubplanner.model;
 
   import com.powersurgepub.psutils.*;
+  import java.io.*;
   import java.math.*;
   import org.pegdown.*;
 
@@ -9,12 +10,12 @@ package com.powersurgepub.clubplanner.model;
 
  @author Herb Bowie
  */
-public class ClubPlannerCalc {
+public class ClubEventCalc {
   
   private    StringDate         strDate = new StringDate();
   private    PegDownProcessor   pegDown;
   
-  public ClubPlannerCalc () {
+  public ClubEventCalc () {
     int pegDownOptions = 0;
     pegDownOptions = pegDownOptions + Extensions.SMARTYPANTS;
     pegDown = new PegDownProcessor(pegDownOptions);
@@ -26,6 +27,43 @@ public class ClubPlannerCalc {
   
   public StringDate getStringDate() {
     return strDate;
+  }
+  
+  /**
+   Gleans information from the club event's enclosing folders. 
+  
+   @param file The file containing the club event. 
+  
+   @return True if an operating year was found in one of the folders, 
+           false if not. 
+  */
+  public boolean setFileName (File file) {
+    FileName fileName = new FileName (file);
+    
+    // Get information from the names of the folders containing this file
+    int folderDepth = fileName.getNumberOfFolders();
+
+    // Get the status from the deepest folder
+    if (folderDepth > 0) {
+      String status = fileName.getFolder(folderDepth);
+      // If status is "Future", then adjust the year to be a future year
+      setFuture(status);
+    }
+
+    // Check higher folders to see if one of them identifies the club
+    // operating year. Note that the year may be a pair of years, to
+    // indicate an operating year starting in July and ending in June. 
+    folderDepth--;
+    boolean opYearFound = false;
+    while (folderDepth > 0 && (! opYearFound)) {
+      String folder = fileName.getFolder(folderDepth);
+      opYearFound = parseOpYear(folder);
+      folderDepth--;
+    } // end while looking for a folder identifying the club year
+    if (opYearFound) {
+      String year = getStringDate().getOpYear();
+    }
+    return opYearFound;
   }
   
   /**
@@ -73,7 +111,7 @@ public class ClubPlannerCalc {
   
   public void calcType (ClubEvent clubEvent) {
 
-    StringBuilder type = new StringBuilder (clubEvent.getType().toString());
+    StringBuilder type = new StringBuilder (clubEvent.getTypeAsString());
     int pipeIndex = type.indexOf("|");
     if (pipeIndex >= 0) {
       pipeIndex++;
@@ -199,7 +237,7 @@ public class ClubPlannerCalc {
     
     // Now get the date in a predictable year-month-date format
     if (clubEvent.hasWhen()) {
-      strDate.setFuture(clubEvent.getStatus());
+      strDate.setFuture(clubEvent.getStatusAsString());
       strDate.parse(clubEvent.getWhen());
       clubEvent.setYmd(strDate.getYMD());
     }
@@ -209,7 +247,7 @@ public class ClubPlannerCalc {
     
     // Now set a short, human readable date
     if (clubEvent.hasWhen()) {
-      strDate.setFuture(clubEvent.getStatus());
+      strDate.setFuture(clubEvent.getStatusAsString());
       strDate.parse(clubEvent.getWhen());
       clubEvent.setShortDate(strDate.getShort());
     }

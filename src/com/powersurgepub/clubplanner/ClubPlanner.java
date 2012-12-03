@@ -92,6 +92,9 @@ public class ClubPlanner
   
   private             ClubEventPanel1     clubEventPanel1;
   private             ClubEventPanel2     clubEventPanel2;
+  private             ClubEventPanel3     clubEventPanel3;
+  private             ClubEventPanel4     clubEventPanel4;
+  private             ClubEventPanel5     clubEventPanel5;
 
   /**
    Creates new form ClubPlanner
@@ -121,8 +124,14 @@ public class ClubPlanner
     
     clubEventPanel1 = new ClubEventPanel1();
     clubEventPanel2 = new ClubEventPanel2();
+    clubEventPanel3 = new ClubEventPanel3();
+    clubEventPanel4 = new ClubEventPanel4();
+    clubEventPanel5 = new ClubEventPanel5();
     itemTabs.add("Basics", clubEventPanel1);
     itemTabs.add("Description", clubEventPanel2);
+    itemTabs.add("Numbers", clubEventPanel3);
+    itemTabs.add("Links", clubEventPanel4);
+    itemTabs.add("Notes", clubEventPanel5);
     
     windowMenuManager = WindowMenuManager.getShared(windowMenu);
     
@@ -413,7 +422,7 @@ public class ClubPlanner
     File selectedFile = fileChooser.showSaveDialog (this);
     if (selectedFile != null) {
       ClubEventWriter writer = new ClubEventWriter();
-      saved = writer.save (selectedFile, clubEventList, false);
+      saved = writer.save (selectedFile, clubEventList, true, false);
       if (saved) {
         setClubEventFolder (selectedFile);
         logger.recordEvent (LogEvent.NORMAL,
@@ -491,7 +500,7 @@ public class ClubPlanner
   */
   public boolean backup(File backupFile) {
     ClubEventWriter writer = new ClubEventWriter();
-    boolean backedUp = writer.save (backupFile, clubEventList, false);
+    boolean backedUp = writer.save (backupFile, clubEventList, false, false);
     if (backedUp) {
       logger.recordEvent (LogEvent.NORMAL,
           "URLs backed up to " + backupFile.toString(),
@@ -558,7 +567,7 @@ public class ClubPlanner
       tc.setPreferredWidth (ClubEvent.getColumnWidth(i) * 9);
     }
     
-    clubEventPanel1.getTypeTextSelector().setValueList
+    clubEventPanel1.getStatusTextSelector().setValueList
         (clubEventList.getTagsList());
     tagsTree.setModel (clubEventList.getTagsModel().getModel());
     tagsTree.getSelectionModel().setSelectionMode
@@ -618,9 +627,9 @@ public class ClubPlanner
       position = new ClubEventPositioned();
       position.setIndex (clubEventList.size());
       display();
-      // tagsTextSelector.setText (selectedTags);
+      clubEventPanel1.getStatusTextSelector().setText (selectedTags);
     } else {
-      // handleRegistrationLimitation();
+      handleRegistrationLimitation();
     }
   }
   
@@ -758,22 +767,42 @@ public class ClubPlanner
     if (clubEventPanel2.modIfChanged(clubEvent)) {
       modified = true;
     } 
+    if (clubEventPanel3.modIfChanged(clubEvent)) {
+      modified = true;
+    } 
+    if (clubEventPanel4.modIfChanged(clubEvent)) {
+      modified = true;
+    } 
+    if (clubEventPanel5.modIfChanged(clubEvent)) {
+      modified = true;
+    } 
     
     if (modified) {
       // setUnsavedChanges(true);
       if (position.isNewClubEvent()) {
-        if (clubEvent.hasKey()) {
-          // addClubEvent ();
+        if (clubEvent.hasWhat() && clubEvent.getWhat().length() > 0) {
+          addClubEvent ();
         } // end if we have clubEvent worth adding
       } else {
         clubEventList.modify(position);
         ClubEventWriter writer = new ClubEventWriter();
-        writer.save(eventsFile, clubEvent, true);
+        writer.save(eventsFile, clubEvent, true, true);
         System.out.println ("Saved " + clubEvent.getWhatAsString());
       }
       clubEventList.fireTableDataChanged();
     } // end if modified
   } // end modIfChanged method
+  
+  private void addClubEvent () {
+    if (clubEventList.roomForMore()) {
+      position = clubEventList.add (position.getClubEvent());
+      if (position.hasValidIndex (clubEventList)) {
+        positionAndDisplay();
+      }
+    } else {
+      handleRegistrationLimitation();
+    }
+  }
   
   public void firstClubEvent () {
     modIfChanged();
@@ -941,7 +970,7 @@ public class ClubPlanner
 
     if (node == null) {
       // nothing selected
-      // System.out.println ("selectBranch selected component = null");
+      System.out.println ("selectBranch selected component = null");
     }
     else
     if (node == position.getTagsNode()) {
@@ -951,7 +980,7 @@ public class ClubPlanner
     }
     else
     if (node.getNodeType() == TagsNode.ITEM) {
-      // System.out.println ("selectBranch selected item = " + node.toString());
+      System.out.println ("selectBranch selected item = " + node.toString());
       modIfChanged();
       ClubEvent branch = (ClubEvent)node.getTaggable();
       int branchIndex = clubEventList.find (branch);
@@ -973,6 +1002,9 @@ public class ClubPlanner
     ClubEvent clubEvent = position.getClubEvent();
     clubEventPanel1.display(clubEvent);
     clubEventPanel2.display(clubEvent);
+    clubEventPanel3.display(clubEvent);
+    clubEventPanel4.display(clubEvent);
+    clubEventPanel5.display(clubEvent);
     statusBar.setPosition(position.getIndexForDisplay(), clubEventList.size());
     modified = false;
   }

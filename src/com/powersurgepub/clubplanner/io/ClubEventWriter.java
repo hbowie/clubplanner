@@ -15,29 +15,53 @@ public class ClubEventWriter {
  
   private     BufferedWriter      outBuffered;
  
+  public static final String FILE_EXT = ".txt";
+ 
   public ClubEventWriter() {
  
   }
  
-  public boolean save (File folder, ClubEventList clubEventList, boolean primaryLocation) {
+  /**
+   Does the given Club Event already exist on disk?
+ 
+   @param folder    The folder in which the item is to be stored.
+   @param clubEvent The Club Event to be stored.
+ 
+   @return True if a disk file with the same path already exists,
+           false if not.
+   */
+  public boolean exists (File folder, ClubEvent clubEvent) {
+    File localFolder;
+    if (clubEvent.hasFolderName()) {
+      localFolder = new File (folder, clubEvent.getFolderName());
+    } else {
+      localFolder = folder;
+    }
+    File file = new File (localFolder, clubEvent.getFileName() + FILE_EXT);
+    return file.exists();
+  }
+ 
+  public boolean save (File folder, ClubEventList clubEventList,
+      boolean primaryLocation, boolean deleteIfMoved) {
  
     boolean outOK = true;
     for (int i = 0; i < clubEventList.size() && outOK; i++) {
       ClubEvent nextClubEvent = clubEventList.get(i);
-      outOK = save (folder, nextClubEvent, primaryLocation);
+      outOK = save (folder, nextClubEvent, primaryLocation, deleteIfMoved);
     }
     return outOK;
   }
  
-  public boolean save (File folder, ClubEvent clubEvent, boolean primaryLocation) {
+  public boolean save (File folder, ClubEvent clubEvent,
+      boolean primaryLocation, boolean deleteIfMoved) {
  
     boolean outOK = true;
  
-    File statusFolder = new File (folder, clubEvent.getStatusAsString());
-    if (! statusFolder.exists()) {
-      statusFolder.mkdir();
+    File typeFolder = new File (folder, clubEvent.getTypeAsString());
+    if (! typeFolder.exists()) {
+      typeFolder.mkdir();
     }
-    File file = new File (statusFolder, clubEvent.getFileName() + ".txt");
+    File file = new File (typeFolder, clubEvent.getFileName() + FILE_EXT);
     outOK = openOutput (file);
     if (outOK) {
       String oldDiskLocation = clubEvent.getDiskLocation();
@@ -80,19 +104,19 @@ public class ClubEventWriter {
     boolean outOK = true;
     if (outOK) {
       outOK = writeFieldName
-          (ClubEvent.TYPE_FIELD_NAME);
-    }
-    if (outOK) {
-      outOK = writeFieldValue
-          (clubEvent.getTypeAsString());
-    }
-    if (outOK) {
-      outOK = writeFieldName
           (ClubEvent.WHAT_FIELD_NAME);
     }
     if (outOK) {
       outOK = writeFieldValue
           (clubEvent.getWhatAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
+          (ClubEvent.STATUS_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getStatusAsString());
     }
     if (outOK) {
       outOK = writeFieldName

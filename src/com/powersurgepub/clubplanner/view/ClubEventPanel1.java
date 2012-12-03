@@ -1,5 +1,6 @@
 package com.powersurgepub.clubplanner.view;
 
+  import com.powersurgepub.clubplanner.*;
   import com.powersurgepub.clubplanner.model.*;
   import com.powersurgepub.psdatalib.ui.*;
   import java.awt.*;
@@ -25,20 +26,23 @@ public class ClubEventPanel1
    */
  
 
-  private JLabel    fileNameLabel    = new JLabel("File Name:", JLabel.LEFT);
-  private JTextField fileNameJTextField = new JTextField();
-
-  private JLabel    whatLabel    = new JLabel("What:", JLabel.LEFT);
-  private JTextField whatJTextField = new JTextField();
-
-  private JLabel    whenLabel    = new JLabel("When:", JLabel.LEFT);
-  private JTextField whenJTextField = new JTextField();
+  private JLabel    seqLabel    = new JLabel("Seq:", JLabel.LEFT);
+  private JLabel seqJLabel = new JLabel();
 
   private JLabel    ymdLabel    = new JLabel("YMD:", JLabel.LEFT);
   private JLabel ymdJLabel = new JLabel();
 
   private JLabel    typeLabel    = new JLabel("Type:", JLabel.LEFT);
-  private TextSelector typeTextSelector = new TextSelector();
+  private PSComboBox typePSComboBox = new PSComboBox();
+
+  private JLabel    whatLabel    = new JLabel("What:", JLabel.LEFT);
+  private JTextField whatJTextField = new JTextField();
+
+  private JLabel    statusLabel    = new JLabel("Status:", JLabel.LEFT);
+  private TextSelector statusTextSelector = new TextSelector();
+
+  private JLabel    whenLabel    = new JLabel("When:", JLabel.LEFT);
+  private JTextField whenJTextField = new JTextField();
 
   private JLabel    whereLabel    = new JLabel("Where:", JLabel.LEFT);
   private JTextField whereJTextField = new JTextField();
@@ -73,33 +77,46 @@ public class ClubEventPanel1
      data file: fields.xls
    */
  
-    fileNameLabel.setLabelFor(fileNameJTextField);
+    seqLabel.setLabelFor(seqJLabel);
     gb.setColumnWeight(0.0);
-    gb.add(fileNameLabel);
-    gb.add(fileNameJTextField);
+    seqJLabel.setToolTipText("The sequence of discussion at a Board meeting.");
+    gb.add(seqLabel);
+    gb.add(seqJLabel);
+    ymdLabel.setLabelFor(ymdJLabel);
+    gb.setColumnWeight(0.0);
+    ymdJLabel.setToolTipText("A full or partial date in year, month, day sequence.");
+    gb.add(ymdLabel);
+    gb.add(ymdJLabel);
+    typeLabel.setLabelFor(typePSComboBox);
+    typePSComboBox.load (ClubPlanner.class, "type.txt");
+    gb.setColumnWeight(0.0);
+    gb.add(typeLabel);
+    typePSComboBox.setToolTipText("The category assigned to the event.");
+    gb.add(typePSComboBox);
     whatLabel.setLabelFor(whatJTextField);
     gb.setColumnWeight(0.0);
     gb.add(whatLabel);
+    whatJTextField.setToolTipText("A brief descriptive title for the event.");
     gb.add(whatJTextField);
+    statusLabel.setLabelFor(statusTextSelector);
+    gb.setColumnWeight(0.0);
+    gb.add(statusLabel);
+    statusTextSelector.setToolTipText("One or more tags indicating the status of the event.");
+    gb.add(statusTextSelector);
     whenLabel.setLabelFor(whenJTextField);
     gb.setColumnWeight(0.0);
     gb.add(whenLabel);
+    whenJTextField.setToolTipText("An indication of the date and time that the event will be held, in a format emphasizing human readability, such as Fri Aug 10 7:00 PM - 10:00.");
     gb.add(whenJTextField);
-    ymdLabel.setLabelFor(ymdJLabel);
-    gb.setColumnWeight(0.0);
-    gb.add(ymdLabel);
-    gb.add(ymdJLabel);
-    typeLabel.setLabelFor(typeTextSelector);
-    gb.setColumnWeight(0.0);
-    gb.add(typeLabel);
-    gb.add(typeTextSelector);
     whereLabel.setLabelFor(whereJTextField);
     gb.setColumnWeight(0.0);
     gb.add(whereLabel);
+    whereJTextField.setToolTipText("The location of the event, including the name of the venue and its address.");
     gb.add(whereJTextField);
     whoLabel.setLabelFor(whoJTextField);
     gb.setColumnWeight(0.0);
     gb.add(whoLabel);
+    whoJTextField.setToolTipText("Who is assigned to plan, coordinate and host the event. Can include multiple names. Can include email addresses and phone numbers.");
     gb.add(whoJTextField);
 
     gb.setWidth(2);
@@ -121,20 +138,10 @@ public class ClubEventPanel1
  
     modified = false;
  
-    if (clubEvent.hasFileName()) {
-      fileNameJTextField.setText (clubEvent.getFileName().toString());
+    if (clubEvent.hasSeq()) {
+      seqJLabel.setText (clubEvent.getSeq().toString());
     } else {
-      fileNameJTextField.setText ("");
-    }
-    if (clubEvent.hasWhat()) {
-      whatJTextField.setText (clubEvent.getWhat().toString());
-    } else {
-      whatJTextField.setText ("");
-    }
-    if (clubEvent.hasWhen()) {
-      whenJTextField.setText (clubEvent.getWhen().toString());
-    } else {
-      whenJTextField.setText ("");
+      seqJLabel.setText ("");
     }
     if (clubEvent.hasYmd()) {
       ymdJLabel.setText (clubEvent.getYmd().toString());
@@ -142,9 +149,24 @@ public class ClubEventPanel1
       ymdJLabel.setText ("");
     }
     if (clubEvent.hasType()) {
-      typeTextSelector.setText (clubEvent.getType().toString());
+      typePSComboBox.setText (clubEvent.getType().toString());
     } else {
-      typeTextSelector.setText ("");
+      typePSComboBox.setText ("");
+    }
+    if (clubEvent.hasWhat()) {
+      whatJTextField.setText (clubEvent.getWhat().toString());
+    } else {
+      whatJTextField.setText ("");
+    }
+    if (clubEvent.hasStatus()) {
+      statusTextSelector.setText (clubEvent.getStatus().toString());
+    } else {
+      statusTextSelector.setText ("");
+    }
+    if (clubEvent.hasWhen()) {
+      whenJTextField.setText (clubEvent.getWhen().toString());
+    } else {
+      whenJTextField.setText ("");
     }
     if (clubEvent.hasWhere()) {
       whereJTextField.setText (clubEvent.getWhere().toString());
@@ -169,24 +191,28 @@ public class ClubEventPanel1
  
   public boolean modIfChanged (ClubEvent clubEvent) {
  
-    if (! clubEvent.getFileNameAsString().equals (fileNameJTextField.getText())) {
-      clubEvent.setFileName(fileNameJTextField.getText());
-      modified = true;
-    }
-    if (! clubEvent.getWhatAsString().equals (whatJTextField.getText())) {
-      clubEvent.setWhat(whatJTextField.getText());
-      modified = true;
-    }
-    if (! clubEvent.getWhenAsString().equals (whenJTextField.getText())) {
-      clubEvent.setWhen(whenJTextField.getText());
+    if (! clubEvent.getSeqAsString().equals (seqJLabel.getText())) {
+      clubEvent.setSeq(seqJLabel.getText());
       modified = true;
     }
     if (! clubEvent.getYmdAsString().equals (ymdJLabel.getText())) {
       clubEvent.setYmd(ymdJLabel.getText());
       modified = true;
     }
-    if (! clubEvent.getTypeAsString().equals (typeTextSelector.getText())) {
-      clubEvent.setType(typeTextSelector.getText());
+    if (! clubEvent.getTypeAsString().equals (typePSComboBox.getText())) {
+      clubEvent.setType(typePSComboBox.getText());
+      modified = true;
+    }
+    if (! clubEvent.getWhatAsString().equals (whatJTextField.getText())) {
+      clubEvent.setWhat(whatJTextField.getText());
+      modified = true;
+    }
+    if (! clubEvent.getStatusAsString().equals (statusTextSelector.getText())) {
+      clubEvent.setStatus(statusTextSelector.getText());
+      modified = true;
+    }
+    if (! clubEvent.getWhenAsString().equals (whenJTextField.getText())) {
+      clubEvent.setWhen(whenJTextField.getText());
       modified = true;
     }
     if (! clubEvent.getWhereAsString().equals (whereJTextField.getText())) {
@@ -212,30 +238,12 @@ public class ClubEventPanel1
  
 
   /**
-    Returns the file name for this club event.
+    Returns the seq for this club event.
  
-    @return The file name for this club event.
+    @return The seq for this club event.
    */
-  public JTextField getFileNameJTextField () {
-    return fileNameJTextField;
-  }
-
-  /**
-    Returns the what for this club event.
- 
-    @return The what for this club event.
-   */
-  public JTextField getWhatJTextField () {
-    return whatJTextField;
-  }
-
-  /**
-    Returns the when for this club event.
- 
-    @return The when for this club event.
-   */
-  public JTextField getWhenJTextField () {
-    return whenJTextField;
+  public JLabel getSeqJLabel () {
+    return seqJLabel;
   }
 
   /**
@@ -252,8 +260,35 @@ public class ClubEventPanel1
  
     @return The type for this club event.
    */
-  public TextSelector getTypeTextSelector () {
-    return typeTextSelector;
+  public PSComboBox getTypePSComboBox () {
+    return typePSComboBox;
+  }
+
+  /**
+    Returns the what for this club event.
+ 
+    @return The what for this club event.
+   */
+  public JTextField getWhatJTextField () {
+    return whatJTextField;
+  }
+
+  /**
+    Returns the status for this club event.
+ 
+    @return The status for this club event.
+   */
+  public TextSelector getStatusTextSelector () {
+    return statusTextSelector;
+  }
+
+  /**
+    Returns the when for this club event.
+ 
+    @return The when for this club event.
+   */
+  public JTextField getWhenJTextField () {
+    return whenJTextField;
   }
 
   /**

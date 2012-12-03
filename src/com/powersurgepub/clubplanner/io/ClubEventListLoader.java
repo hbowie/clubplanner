@@ -87,8 +87,8 @@ public class ClubEventListLoader {
     } 
     else
     if (isInterestedIn (dirEntryFile)) {
-      ClubPlanReader reader 
-          = new ClubPlanReader (dirEntryFile, ClubPlanReader.PLANNER_TYPE);
+      ClubEventReader reader 
+          = new ClubEventReader (dirEntryFile, ClubEventReader.PLANNER_TYPE);
       try {
         reader.openForInput();
         list.add(reader.getClubEvent());

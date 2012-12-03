@@ -55,39 +55,6 @@ public class ClubEvent
  
 
   /**
-   One or more tags indicating the status of the event.
-   */
-  private String status = null;
- 
-  public static final String STATUS_FIELD_NAME = "Status";
- 
-  public static final String STATUS_COLUMN_NAME = "Status";
- 
-  public static final String STATUS_COMMON_NAME = "status";
- 
-  public static final int STATUS_COLUMN_INDEX = 1;
- 
-  public static final int STATUS_COLUMN_WIDTH = 12;
- 
-
-  /**
-   The category assigned to the event.
-   */
-  private Tags type = null;
- 
-  public static final String TYPE_FIELD_NAME = "Type";
- 
-  public static final String TYPE_COLUMN_NAME = "Type";
- 
-  public static final String TYPE_COMMON_NAME = "type";
- 
-  public static final int TYPE_COLUMN_INDEX = 2;
- 
-  public static final int TYPE_COLUMN_WIDTH = 20;
- 
-  private TagsNode tagsNode = null;
-
-  /**
    The sequence of discussion at a Board meeting.
    */
   private String seq = null;
@@ -98,7 +65,7 @@ public class ClubEvent
  
   public static final String SEQ_COMMON_NAME = "seq";
  
-  public static final int SEQ_COLUMN_INDEX = 3;
+  public static final int SEQ_COLUMN_INDEX = 1;
  
   public static final int SEQ_COLUMN_WIDTH = 4;
  
@@ -114,25 +81,25 @@ public class ClubEvent
  
   public static final String YMD_COMMON_NAME = "ymd";
  
-  public static final int YMD_COLUMN_INDEX = 4;
+  public static final int YMD_COLUMN_INDEX = 2;
  
   public static final int YMD_COLUMN_WIDTH = 10;
  
 
   /**
-   The name of the file in which the event's data is stored.
+   The category assigned to the event.
    */
-  private String fileName = null;
+  private String type = null;
  
-  public static final String FILE_NAME_FIELD_NAME = "File Name";
+  public static final String TYPE_FIELD_NAME = "Type";
  
-  public static final String FILE_NAME_COLUMN_NAME = "File Name";
+  public static final String TYPE_COLUMN_NAME = "Type";
  
-  public static final String FILE_NAME_COMMON_NAME = "filename";
+  public static final String TYPE_COMMON_NAME = "type";
  
-  public static final int FILE_NAME_COLUMN_INDEX = 5;
+  public static final int TYPE_COLUMN_INDEX = 3;
  
-  public static final int FILE_NAME_COLUMN_WIDTH = 25;
+  public static final int TYPE_COLUMN_WIDTH = 20;
  
 
   /**
@@ -146,10 +113,27 @@ public class ClubEvent
  
   public static final String WHAT_COMMON_NAME = "what";
  
-  public static final int WHAT_COLUMN_INDEX = 6;
+  public static final int WHAT_COLUMN_INDEX = 4;
  
   public static final int WHAT_COLUMN_WIDTH = 35;
  
+
+  /**
+   One or more tags indicating the status of the event.
+   */
+  private Tags status = new Tags();
+ 
+  public static final String STATUS_FIELD_NAME = "Status";
+ 
+  public static final String STATUS_COLUMN_NAME = "Status";
+ 
+  public static final String STATUS_COMMON_NAME = "status";
+ 
+  public static final int STATUS_COLUMN_INDEX = 5;
+ 
+  public static final int STATUS_COLUMN_WIDTH = 12;
+ 
+  private TagsNode tagsNode = null;
 
   /**
    An indication of the date and time that the event will be held, in a format emphasizing human readability. This need not be a complete date. It need not and generally should not contain the year, since this can be inferred from the operating year identified in the higher level folder. If an exact date is known, then this field should generally start with a three-character abbreviation for the day of the week. Three-character abbreviations for the month are also recognized and encouraged. Following are perfectly good examples of dates: Apr; Sat May 5; Thu Sun Mar 25 5:30 - 7:30 PM.
@@ -162,7 +146,7 @@ public class ClubEvent
  
   public static final String WHEN_COMMON_NAME = "when";
  
-  public static final int WHEN_COLUMN_INDEX = 7;
+  public static final int WHEN_COLUMN_INDEX = 6;
  
   public static final int WHEN_COLUMN_WIDTH = 20;
  
@@ -178,7 +162,7 @@ public class ClubEvent
  
   public static final String WHERE_COMMON_NAME = "where";
  
-  public static final int WHERE_COLUMN_INDEX = 8;
+  public static final int WHERE_COLUMN_INDEX = 7;
  
   public static final int WHERE_COLUMN_WIDTH = 30;
  
@@ -194,7 +178,7 @@ public class ClubEvent
  
   public static final String WHO_COMMON_NAME = "who";
  
-  public static final int WHO_COLUMN_INDEX = 9;
+  public static final int WHO_COLUMN_INDEX = 8;
  
   public static final int WHO_COLUMN_WIDTH = 20;
  
@@ -210,7 +194,7 @@ public class ClubEvent
  
   public static final String WHY_COMMON_NAME = "why";
  
-  public static final int WHY_COLUMN_INDEX = 10;
+  public static final int WHY_COLUMN_INDEX = 9;
  
   public static final int WHY_COLUMN_WIDTH = 20;
  
@@ -226,7 +210,7 @@ public class ClubEvent
  
   public static final String TEASER_COMMON_NAME = "teaser";
  
-  public static final int TEASER_COLUMN_INDEX = 11;
+  public static final int TEASER_COLUMN_INDEX = 10;
  
   public static final int TEASER_COLUMN_WIDTH = 40;
  
@@ -242,7 +226,7 @@ public class ClubEvent
  
   public static final String BLURB_COMMON_NAME = "blurb";
  
-  public static final int BLURB_COLUMN_INDEX = 12;
+  public static final int BLURB_COLUMN_INDEX = 11;
  
   public static final int BLURB_COLUMN_WIDTH = 40;
  
@@ -258,7 +242,7 @@ public class ClubEvent
  
   public static final String BLURB_AS_HTML_COMMON_NAME = "blurbashtml";
  
-  public static final int BLURB_AS_HTML_COLUMN_INDEX = 13;
+  public static final int BLURB_AS_HTML_COLUMN_INDEX = 12;
  
   public static final int BLURB_AS_HTML_COLUMN_WIDTH = 50;
  
@@ -274,7 +258,7 @@ public class ClubEvent
  
   public static final String COST_COMMON_NAME = "cost";
  
-  public static final int COST_COLUMN_INDEX = 14;
+  public static final int COST_COLUMN_INDEX = 13;
  
   public static final int COST_COLUMN_WIDTH = 15;
  
@@ -290,7 +274,7 @@ public class ClubEvent
  
   public static final String PURCHASE_COMMON_NAME = "purchase";
  
-  public static final int PURCHASE_COLUMN_INDEX = 15;
+  public static final int PURCHASE_COLUMN_INDEX = 14;
  
   public static final int PURCHASE_COLUMN_WIDTH = 30;
  
@@ -306,7 +290,7 @@ public class ClubEvent
  
   public static final String TICKETS_COMMON_NAME = "tickets";
  
-  public static final int TICKETS_COLUMN_INDEX = 16;
+  public static final int TICKETS_COLUMN_INDEX = 15;
  
   public static final int TICKETS_COLUMN_WIDTH = 30;
  
@@ -322,13 +306,13 @@ public class ClubEvent
  
   public static final String QUANTITY_COMMON_NAME = "quantity";
  
-  public static final int QUANTITY_COLUMN_INDEX = 17;
+  public static final int QUANTITY_COLUMN_INDEX = 16;
  
   public static final int QUANTITY_COLUMN_WIDTH = 8;
  
 
   /**
-   The amount of money we have planned to receive for the event. For this and the following dollar amount fields, multiple dollar figures may be interspersed with descriptive words. "$20 x 40" will result in a planned income of $800.00, for example.
+   The amount of money we have planned to receive for the event. For this and the following dollar amount fields, multiple dollar figures may be interspersed with descriptive words. $20 x 40 will result in a planned income of $800.00, for example.
    */
   private String plannedIncome = null;
  
@@ -338,7 +322,7 @@ public class ClubEvent
  
   public static final String PLANNED_INCOME_COMMON_NAME = "plannedincome";
  
-  public static final int PLANNED_INCOME_COLUMN_INDEX = 18;
+  public static final int PLANNED_INCOME_COLUMN_INDEX = 17;
  
   public static final int PLANNED_INCOME_COLUMN_WIDTH = 12;
  
@@ -354,7 +338,7 @@ public class ClubEvent
  
   public static final String PLANNED_EXPENSE_COMMON_NAME = "plannedexpense";
  
-  public static final int PLANNED_EXPENSE_COLUMN_INDEX = 19;
+  public static final int PLANNED_EXPENSE_COLUMN_INDEX = 18;
  
   public static final int PLANNED_EXPENSE_COLUMN_WIDTH = 12;
  
@@ -370,7 +354,7 @@ public class ClubEvent
  
   public static final String PLANNED_ATTENDANCE_COMMON_NAME = "plannedattendance";
  
-  public static final int PLANNED_ATTENDANCE_COLUMN_INDEX = 20;
+  public static final int PLANNED_ATTENDANCE_COLUMN_INDEX = 19;
  
   public static final int PLANNED_ATTENDANCE_COLUMN_WIDTH = 8;
  
@@ -386,7 +370,7 @@ public class ClubEvent
  
   public static final String ACTUAL_INCOME_COMMON_NAME = "actualincome";
  
-  public static final int ACTUAL_INCOME_COLUMN_INDEX = 21;
+  public static final int ACTUAL_INCOME_COLUMN_INDEX = 20;
  
   public static final int ACTUAL_INCOME_COLUMN_WIDTH = 12;
  
@@ -402,7 +386,7 @@ public class ClubEvent
  
   public static final String ACTUAL_EXPENSE_COMMON_NAME = "actualexpense";
  
-  public static final int ACTUAL_EXPENSE_COLUMN_INDEX = 22;
+  public static final int ACTUAL_EXPENSE_COLUMN_INDEX = 21;
  
   public static final int ACTUAL_EXPENSE_COLUMN_WIDTH = 12;
  
@@ -418,7 +402,7 @@ public class ClubEvent
  
   public static final String ACTUAL_ATTENDANCE_COMMON_NAME = "actualattendance";
  
-  public static final int ACTUAL_ATTENDANCE_COLUMN_INDEX = 23;
+  public static final int ACTUAL_ATTENDANCE_COLUMN_INDEX = 22;
  
   public static final int ACTUAL_ATTENDANCE_COLUMN_WIDTH = 8;
  
@@ -434,7 +418,7 @@ public class ClubEvent
  
   public static final String OVER_UNDER_COMMON_NAME = "overunder";
  
-  public static final int OVER_UNDER_COLUMN_INDEX = 24;
+  public static final int OVER_UNDER_COLUMN_INDEX = 23;
  
   public static final int OVER_UNDER_COLUMN_WIDTH = 8;
  
@@ -450,7 +434,7 @@ public class ClubEvent
  
   public static final String FINANCE_PROJECTION_COMMON_NAME = "financeprojection";
  
-  public static final int FINANCE_PROJECTION_COLUMN_INDEX = 25;
+  public static final int FINANCE_PROJECTION_COLUMN_INDEX = 24;
  
   public static final int FINANCE_PROJECTION_COLUMN_WIDTH = 8;
  
@@ -466,13 +450,13 @@ public class ClubEvent
  
   public static final String RECAP_COMMON_NAME = "recap";
  
-  public static final int RECAP_COLUMN_INDEX = 26;
+  public static final int RECAP_COLUMN_INDEX = 25;
  
   public static final int RECAP_COLUMN_WIDTH = 30;
  
 
   /**
-   After the event has been added to the club web site, the ID assigned to the page by the Content Management System should be entered here. This will be identified in the URL for the event as the "articleid", as in "articleid=17", meaning that an ID of "17" should be entered here.
+   After the event has been added to the club web site, the ID assigned to the page by the Content Management System should be entered here. This will be identified in the URL for the event as the articleid, as in articleid=17, meaning that an ID of 17 should be entered here.
    */
   private String id = null;
  
@@ -482,7 +466,7 @@ public class ClubEvent
  
   public static final String ID_COMMON_NAME = "id";
  
-  public static final int ID_COLUMN_INDEX = 27;
+  public static final int ID_COLUMN_INDEX = 26;
  
   public static final int ID_COLUMN_WIDTH = 4;
  
@@ -498,7 +482,7 @@ public class ClubEvent
  
   public static final String LINK_COMMON_NAME = "link";
  
-  public static final int LINK_COLUMN_INDEX = 28;
+  public static final int LINK_COLUMN_INDEX = 27;
  
   public static final int LINK_COLUMN_WIDTH = 30;
  
@@ -514,7 +498,7 @@ public class ClubEvent
  
   public static final String VENUE_COMMON_NAME = "venue";
  
-  public static final int VENUE_COLUMN_INDEX = 29;
+  public static final int VENUE_COLUMN_INDEX = 28;
  
   public static final int VENUE_COLUMN_WIDTH = 30;
  
@@ -530,7 +514,7 @@ public class ClubEvent
  
   public static final String IMAGE_COMMON_NAME = "image";
  
-  public static final int IMAGE_COLUMN_INDEX = 30;
+  public static final int IMAGE_COLUMN_INDEX = 29;
  
   public static final int IMAGE_COLUMN_WIDTH = 30;
  
@@ -546,7 +530,7 @@ public class ClubEvent
  
   public static final String NEWS_IMAGE_COMMON_NAME = "newsimage";
  
-  public static final int NEWS_IMAGE_COLUMN_INDEX = 31;
+  public static final int NEWS_IMAGE_COLUMN_INDEX = 30;
  
   public static final int NEWS_IMAGE_COLUMN_WIDTH = 30;
  
@@ -562,7 +546,7 @@ public class ClubEvent
  
   public static final String SHORT_DATE_COMMON_NAME = "shortdate";
  
-  public static final int SHORT_DATE_COLUMN_INDEX = 32;
+  public static final int SHORT_DATE_COLUMN_INDEX = 31;
  
   public static final int SHORT_DATE_COLUMN_WIDTH = 12;
  
@@ -578,7 +562,7 @@ public class ClubEvent
  
   public static final String DISCUSS_COMMON_NAME = "discuss";
  
-  public static final int DISCUSS_COLUMN_INDEX = 33;
+  public static final int DISCUSS_COLUMN_INDEX = 32;
  
   public static final int DISCUSS_COLUMN_WIDTH = 40;
  
@@ -594,7 +578,7 @@ public class ClubEvent
  
   public static final String NOTES_COMMON_NAME = "notes";
  
-  public static final int NOTES_COLUMN_INDEX = 34;
+  public static final int NOTES_COLUMN_INDEX = 33;
  
   public static final int NOTES_COLUMN_WIDTH = 40;
  
@@ -610,12 +594,12 @@ public class ClubEvent
  
   public static final String NOTES_AS_HTML_COMMON_NAME = "notesashtml";
  
-  public static final int NOTES_AS_HTML_COLUMN_INDEX = 35;
+  public static final int NOTES_AS_HTML_COLUMN_INDEX = 34;
  
   public static final int NOTES_AS_HTML_COLUMN_WIDTH = 50;
  
 
-  public static final int COLUMN_COUNT = 36;
+  public static final int COLUMN_COUNT = 35;
 
 
   /*
@@ -632,6 +616,8 @@ public class ClubEvent
   private boolean modified = false;
  
   private String  diskLocation = "";
+ 
+  private Comparator comparator = new ClubEventDefaultComparator();
 
   /**
    Static initializer.
@@ -649,6 +635,75 @@ public class ClubEvent
    */
   public ClubEvent() {
 
+  }
+ 
+  /**
+   Get the comparator to be used;
+   */
+  public Comparator getComparator() {
+    return comparator;
+  }
+ 
+  /**
+   Set the comparator to be used.
+   */
+  public void setComparator (Comparator comparator) {
+    this.comparator = comparator;
+  }
+ 
+  /**
+   Determine if this item has a key that is equal to the passed
+   item.
+
+   @param  obj2        The second object to be compared to this one.
+   @param  comparator  The comparator to be used to make the comparison.
+   @return True if the keys are equal.
+   */
+  public boolean equals (Object obj2, Comparator comparator) {
+    return (this.compareTo (obj2, comparator) == 0);
+  }
+ 
+  /**
+   Determine if this item has a key that is equal to the passed
+   item.
+
+   @param  obj2  The second object to be compared to this one.
+   @return True if the keys are equal.
+   */
+  public boolean equals (Object obj2) {
+    return (this.compareTo (obj2) == 0);
+  }
+ 
+  /**
+   Compare this ClubEvent object to another, using the key field(s) for comparison.
+ 
+   @param The second object to compare to this one.
+ 
+   @return A number less than zero if this object is less than the second,
+           a number greater than zero if this object is greater than the second,
+           or zero if the two item's keys are equal.
+   */
+  public int compareTo (Object obj2, Comparator comparator) {
+    if (comparator == null) {
+      return -1;
+    }
+    return comparator.compare (this, obj2);
+  }
+ 
+  /**
+   Compare this ClubEvent object to another, using the key field(s) for comparison.
+ 
+   @param The second object to compare to this one.
+ 
+   @return A number less than zero if this object is less than the second,
+           a number greater than zero if this object is greater than the second,
+           or zero if the two item's keys are equal.
+   */
+  public int compareTo (Object obj2) {
+    if (comparator == null) {
+      return -1;
+    }
+    return comparator.compare (this, obj2);
   }
  
   public void resetModified() {
@@ -755,6 +810,99 @@ public class ClubEvent
   /*
    Following code generated by PSTextMerge using:
  
+     template:  master-io-methods.java
+     data file: fields.xls
+   */
+ 
+  /**
+   Determine if this item has a local path.
+
+   @return True if this item has a local path.
+   */
+  public boolean hasLocalPath () {
+
+    return (hasFolderName() && hasFileName());
+  }
+
+  /**
+   Return the local path identifying the disk location of this item.
+ 
+   @return the folder name plus the file name, without any file extension.
+   */
+   public String getLocalPath() {
+     return getFolderName() + getFileName();
+   }
+  /**
+   Does the item have a valid folder name?
+ 
+   @return True if the folder name field for this item is neither null nor blank.
+   */
+  public boolean hasFolderName() {
+		if (getType() == null) {
+			return false;
+		}
+		else
+		if (getType().toString().length() == 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	/**
+	 Return the name of the folder in which this item should be stored.
+	
+	 @return The folder name to be used, followed by a slash, or an empty
+	         string, if the folder name field is blank or null.
+	 */
+	public String getFolderName() {
+		if (getType() == null) {
+			return "";
+		}
+		else
+		if (getType().toString().length() == 0) {
+			return "";
+		} else {
+			return StringUtils.makeReadableFileName (getType().toString()) + "/";
+		}
+	}
+  /**
+   Does the item have a valid file name?
+ 
+   @return True if the file name field for this item is neither null nor blank.
+   */
+  public boolean hasFileName() {
+		if (getWhat() == null) {
+			return false;
+		}
+		else
+		if (getWhat().toString().length() == 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	/**
+	 Return the file name in which this item should be stored.
+	
+	 @return The file name to be used, without a file extension.
+	 */
+	public String getFileName() {
+		if (getWhat() == null) {
+			return "";
+		}
+		else
+		if (getWhat().toString().length() == 0) {
+			return "";
+		} else {
+			return StringUtils.makeReadableFileName (getWhat().toString());
+		}
+	}
+
+  /*
+   Following code generated by PSTextMerge using:
+ 
      template:  haskey-method.java
      data file: fields.xls
    */
@@ -767,6 +915,16 @@ public class ClubEvent
   public boolean hasKey () {
 
     boolean hasKey = false;
+
+		if (getSeq() == null) {
+			// No key here
+		}
+		else
+		if (getSeq().toString() == "") {
+			// No key here
+		} else {
+			hasKey = true;
+		}
 
 		if (getWhat() == null) {
 			// No key here
@@ -797,15 +955,6 @@ public class ClubEvent
 
     boolean found = false;
     int fieldStart = -1;
-
-    if (getFileName() != null
-        && getFileName().length() > 0) {
-      fieldStart = StringUtils.indexOfIgnoreCase (findLower, findUpper,
-            getFileName(), 0);
-      if (fieldStart >= 0) {
-        found = true;
-      }
-    }
 
     if (getWhat() != null
         && getWhat().length() > 0) {
@@ -877,28 +1026,6 @@ public class ClubEvent
         setYear ((String)obj2);
       }
     }
-    obj2 = clubEvent2.getStatus();
-    if (obj2 == null) {
-      // No value available -- leave current value as-is
-    } else {
-      str2 = obj2.toString();
-      if (str2.equals ("")) {
-        // No value available -- leave current value as-is
-      } else {
-        setStatus ((String)obj2);
-      }
-    }
-    obj2 = clubEvent2.getType();
-    if (obj2 == null) {
-      // No value available -- leave current value as-is
-    } else {
-      str2 = obj2.toString();
-      if (str2.equals ("")) {
-        // No value available -- leave current value as-is
-      } else {
-        setType ((Tags)obj2);
-      }
-    }
     obj2 = clubEvent2.getSeq();
     if (obj2 == null) {
       // No value available -- leave current value as-is
@@ -921,7 +1048,7 @@ public class ClubEvent
         setYmd ((String)obj2);
       }
     }
-    obj2 = clubEvent2.getFileName();
+    obj2 = clubEvent2.getType();
     if (obj2 == null) {
       // No value available -- leave current value as-is
     } else {
@@ -929,7 +1056,7 @@ public class ClubEvent
       if (str2.equals ("")) {
         // No value available -- leave current value as-is
       } else {
-        setFileName ((String)obj2);
+        setType ((String)obj2);
       }
     }
     obj2 = clubEvent2.getWhat();
@@ -941,6 +1068,17 @@ public class ClubEvent
         // No value available -- leave current value as-is
       } else {
         setWhat ((String)obj2);
+      }
+    }
+    obj2 = clubEvent2.getStatus();
+    if (obj2 == null) {
+      // No value available -- leave current value as-is
+    } else {
+      str2 = obj2.toString();
+      if (str2.equals ("")) {
+        // No value available -- leave current value as-is
+      } else {
+        setStatus ((Tags)obj2);
       }
     }
     obj2 = clubEvent2.getWhen();
@@ -1267,62 +1405,6 @@ public class ClubEvent
   /*
    Following code generated by PSTextMerge using:
  
-     template:  compare-methods.java
-     data file: fields.xls
-   */
- 
-  /**
-   Determine if this item has a key that is equal to the passed
-   item.
-
-   @param  The second object to be compared to this one.
-   @return True if the keys are equal.
-   */
-  public boolean equals (Object obj2) {
-    return (this.compareTo (obj2) == 0);
-  }
- 
-  /**
-   Compare this ClubEvent object to another, using the key field(s) for comparison.
- 
-   @param The second object to compare to this one.
- 
-   @return A number less than zero if this object is less than the second,
-           a number greater than zero if this object is greater than the second,
-           or zero if the two item's keys are equal.
-   */
-  public int compareTo (Object obj2) {
-    int comparison = 0;
- 
-    if (obj2 == null) {
-      comparison = 1;
-    }
- 
-    if (comparison == 0) {
-      if (! obj2.getClass().getSimpleName().equals ("ClubEvent")) {
-        comparison = 1;
-      }
-    }
- 
-    ClubEvent clubEvent2 = (ClubEvent)obj2;
-    if (comparison == 0) {
-      if (this.getWhat() == null) {
-        comparison = -1;
-      }
-      else
-      if (clubEvent2.getWhat() == null) {
-        comparison = 1;
-      } else {
-        comparison = (this.getWhat().compareToIgnoreCase(clubEvent2.getWhat()));
-      }
-    }
-
-    return comparison;
-  }
-
-  /*
-   Following code generated by PSTextMerge using:
- 
      template:  setColumnValue.java
      data file: fields.xls
    */
@@ -1340,23 +1422,20 @@ public class ClubEvent
       case YEAR_COLUMN_INDEX:
           setYear (columnValue);
           break;
-      case STATUS_COLUMN_INDEX:
-          setStatus (columnValue);
-          break;
-      case TYPE_COLUMN_INDEX:
-          setType (columnValue);
-          break;
       case SEQ_COLUMN_INDEX:
           setSeq (columnValue);
           break;
       case YMD_COLUMN_INDEX:
           setYmd (columnValue);
           break;
-      case FILE_NAME_COLUMN_INDEX:
-          setFileName (columnValue);
+      case TYPE_COLUMN_INDEX:
+          setType (columnValue);
           break;
       case WHAT_COLUMN_INDEX:
           setWhat (columnValue);
+          break;
+      case STATUS_COLUMN_INDEX:
+          setStatus (columnValue);
           break;
       case WHEN_COLUMN_INDEX:
           setWhen (columnValue);
@@ -1462,18 +1541,16 @@ public class ClubEvent
     switch (columnIndex) {
       case YEAR_COLUMN_INDEX:
           return year;
-      case STATUS_COLUMN_INDEX:
-          return status;
-      case TYPE_COLUMN_INDEX:
-          return type;
       case SEQ_COLUMN_INDEX:
           return seq;
       case YMD_COLUMN_INDEX:
           return ymd;
-      case FILE_NAME_COLUMN_INDEX:
-          return fileName;
+      case TYPE_COLUMN_INDEX:
+          return type;
       case WHAT_COLUMN_INDEX:
           return what;
+      case STATUS_COLUMN_INDEX:
+          return status;
       case WHEN_COLUMN_INDEX:
           return when;
       case WHERE_COLUMN_INDEX:
@@ -1550,18 +1627,16 @@ public class ClubEvent
     switch (columnIndex) {
       case YEAR_COLUMN_INDEX:
           return YEAR_COLUMN_NAME;
-      case STATUS_COLUMN_INDEX:
-          return STATUS_COLUMN_NAME;
-      case TYPE_COLUMN_INDEX:
-          return TYPE_COLUMN_NAME;
       case SEQ_COLUMN_INDEX:
           return SEQ_COLUMN_NAME;
       case YMD_COLUMN_INDEX:
           return YMD_COLUMN_NAME;
-      case FILE_NAME_COLUMN_INDEX:
-          return FILE_NAME_COLUMN_NAME;
+      case TYPE_COLUMN_INDEX:
+          return TYPE_COLUMN_NAME;
       case WHAT_COLUMN_INDEX:
           return WHAT_COLUMN_NAME;
+      case STATUS_COLUMN_INDEX:
+          return STATUS_COLUMN_NAME;
       case WHEN_COLUMN_INDEX:
           return WHEN_COLUMN_NAME;
       case WHERE_COLUMN_INDEX:
@@ -1639,18 +1714,16 @@ public class ClubEvent
     switch (columnIndex) {
       case YEAR_COLUMN_INDEX:
           return YEAR_COMMON_NAME;
-      case STATUS_COLUMN_INDEX:
-          return STATUS_COMMON_NAME;
-      case TYPE_COLUMN_INDEX:
-          return TYPE_COMMON_NAME;
       case SEQ_COLUMN_INDEX:
           return SEQ_COMMON_NAME;
       case YMD_COLUMN_INDEX:
           return YMD_COMMON_NAME;
-      case FILE_NAME_COLUMN_INDEX:
-          return FILE_NAME_COMMON_NAME;
+      case TYPE_COLUMN_INDEX:
+          return TYPE_COMMON_NAME;
       case WHAT_COLUMN_INDEX:
           return WHAT_COMMON_NAME;
+      case STATUS_COLUMN_INDEX:
+          return STATUS_COMMON_NAME;
       case WHEN_COLUMN_INDEX:
           return WHEN_COMMON_NAME;
       case WHERE_COLUMN_INDEX:
@@ -1727,18 +1800,16 @@ public class ClubEvent
     switch (columnIndex) {
       case YEAR_COLUMN_INDEX:
           return YEAR_COLUMN_WIDTH;
-      case STATUS_COLUMN_INDEX:
-          return STATUS_COLUMN_WIDTH;
-      case TYPE_COLUMN_INDEX:
-          return TYPE_COLUMN_WIDTH;
       case SEQ_COLUMN_INDEX:
           return SEQ_COLUMN_WIDTH;
       case YMD_COLUMN_INDEX:
           return YMD_COLUMN_WIDTH;
-      case FILE_NAME_COLUMN_INDEX:
-          return FILE_NAME_COLUMN_WIDTH;
+      case TYPE_COLUMN_INDEX:
+          return TYPE_COLUMN_WIDTH;
       case WHAT_COLUMN_INDEX:
           return WHAT_COLUMN_WIDTH;
+      case STATUS_COLUMN_INDEX:
+          return STATUS_COLUMN_WIDTH;
       case WHEN_COLUMN_INDEX:
           return WHEN_COLUMN_WIDTH;
       case WHERE_COLUMN_INDEX:
@@ -1815,18 +1886,16 @@ public class ClubEvent
     switch (columnIndex) {
       case YEAR_COLUMN_INDEX:
           return String.class;
-      case STATUS_COLUMN_INDEX:
-          return String.class;
-      case TYPE_COLUMN_INDEX:
-          return Tags.class;
       case SEQ_COLUMN_INDEX:
           return String.class;
       case YMD_COLUMN_INDEX:
           return String.class;
-      case FILE_NAME_COLUMN_INDEX:
+      case TYPE_COLUMN_INDEX:
           return String.class;
       case WHAT_COLUMN_INDEX:
           return String.class;
+      case STATUS_COLUMN_INDEX:
+          return Tags.class;
       case WHEN_COLUMN_INDEX:
           return String.class;
       case WHERE_COLUMN_INDEX:
@@ -1959,98 +2028,6 @@ public class ClubEvent
   }
  
   /**
-     Sets the status for this club event.
- 
-     @param  status The status for this club event.
-   */
-  public void setStatus (String status) {
-    this.status = status;
-    setModified (true);
-  }
-
-  /**
-    Returns the status for this club event as a string.
- 
-    @return The status for this club event as a string.
-   */
-  public String getStatusAsString () {
-    if (hasStatus()) {
-      return getStatus().toString();
-    } else {
-      return "";
-    }
-  }
-
-  /**
-    Determines if the status for this club event is null.
- 
-    @return True if the status for this club event is not null.
-   */
-  public boolean hasStatus () {
-    return (status != null);
-  }
-
-  /**
-    Returns the status for this club event.
- 
-    @return The status for this club event.
-   */
-  public String getStatus () {
-    return status;
-  }
- 
-  /**
-     Sets the type for this club event.
- 
-     @param  type The type for this club event.
-   */
-  public void setType (Tags type) {
-    this.type = type;
-    setModified (true);
-  }
-
-  /**
-     Sets the type for this club event.
- 
-     @param  type The type for this club event.
-   */
-  public void setType (String type) {
-    this.type = new Tags(type);
-    setModified (true);
-  }
-
-  /**
-    Returns the type for this club event as a string.
- 
-    @return The type for this club event as a string.
-   */
-  public String getTypeAsString () {
-    if (hasType()) {
-      return getType().toString();
-    } else {
-      return "";
-    }
-  }
-
-  /**
-    Determines if the type for this club event is null.
- 
-    @return True if the type for this club event is not null.
-   */
-  public boolean hasType () {
-    return (type != null);
-  }
-
-  /**
-    Returns the type for this club event.
- 
-    @return The type for this club event.
-   */
-  public Tags getType () {
-    return type;
-  }
- 
-  /**
      Sets the seq for this club event.
  
      @param  seq The seq for this club event.
@@ -2133,44 +2110,44 @@ public class ClubEvent
   }
  
   /**
-     Sets the file name for this club event.
+     Sets the type for this club event.
  
-     @param  fileName The file name for this club event.
+     @param  type The type for this club event.
    */
-  public void setFileName (String fileName) {
-    this.fileName = fileName;
+  public void setType (String type) {
+    this.type = type;
     setModified (true);
   }
 
   /**
-    Returns the file name for this club event as a string.
+    Returns the type for this club event as a string.
  
-    @return The file name for this club event as a string.
+    @return The type for this club event as a string.
    */
-  public String getFileNameAsString () {
-    if (hasFileName()) {
-      return getFileName().toString();
+  public String getTypeAsString () {
+    if (hasType()) {
+      return getType().toString();
     } else {
       return "";
     }
   }
 
   /**
-    Determines if the file name for this club event is null.
+    Determines if the type for this club event is null.
  
-    @return True if the file name for this club event is not null.
+    @return True if the type for this club event is not null.
    */
-  public boolean hasFileName () {
-    return (fileName != null);
+  public boolean hasType () {
+    return (type != null);
   }
 
   /**
-    Returns the file name for this club event.
+    Returns the type for this club event.
  
-    @return The file name for this club event.
+    @return The type for this club event.
    */
-  public String getFileName () {
-    return fileName;
+  public String getType () {
+    return type;
   }
  
   /**
@@ -2212,6 +2189,57 @@ public class ClubEvent
    */
   public String getWhat () {
     return what;
+  }
+ 
+  /**
+     Sets the status for this club event.
+ 
+     @param  status The status for this club event.
+   */
+  public void setStatus (Tags status) {
+    this.status = status;
+    setModified (true);
+  }
+
+  /**
+     Sets the status for this club event.
+ 
+     @param  status The status for this club event.
+   */
+  public void setStatus (String status) {
+    this.status = new Tags(status);
+    setModified (true);
+  }
+
+  /**
+    Returns the status for this club event as a string.
+ 
+    @return The status for this club event as a string.
+   */
+  public String getStatusAsString () {
+    if (hasStatus()) {
+      return getStatus().toString();
+    } else {
+      return "";
+    }
+  }
+
+  /**
+    Determines if the status for this club event is null.
+ 
+    @return True if the status for this club event is not null.
+   */
+  public boolean hasStatus () {
+    return (status != null);
+  }
+
+  /**
+    Returns the status for this club event.
+ 
+    @return The status for this club event.
+   */
+  public Tags getStatus () {
+    return status;
   }
  
   /**
@@ -3481,7 +3509,7 @@ public class ClubEvent
    @return The tags assigned.
    */
   public Tags getTags () {
-    return type;
+    return status;
   }
  
   /**
@@ -3489,14 +3517,14 @@ public class ClubEvent
    first-level tag.
    */
   public void flattenTags() {
-    type.flatten();
+    status.flatten();
   }
 
   /**
    Convert the tags to all lower-case letters.
    */
   public void lowerCaseTags () {
-    type.makeLowerCase();
+    status.makeLowerCase();
   }
  
   /**

@@ -1,5 +1,6 @@
 package com.powersurgepub.clubplanner.view;
 
+  import com.powersurgepub.clubplanner.*;
   import com.powersurgepub.clubplanner.model.*;
   import com.powersurgepub.psdatalib.ui.*;
   import java.awt.*;
@@ -25,10 +26,6 @@ public class ClubEventPanel2
    */
  
 
-  private JLabel    whyLabel    = new JLabel("Why:", JLabel.LEFT);
-  private JScrollPane whyScrollPane = new javax.swing.JScrollPane();
-  private JTextArea whyJTextArea = new JTextArea();
-
   private JLabel    teaserLabel    = new JLabel("Teaser:", JLabel.LEFT);
   private JScrollPane teaserScrollPane = new javax.swing.JScrollPane();
   private JTextArea teaserJTextArea = new JTextArea();
@@ -36,6 +33,10 @@ public class ClubEventPanel2
   private JLabel    blurbLabel    = new JLabel("Blurb:", JLabel.LEFT);
   private JScrollPane blurbScrollPane = new javax.swing.JScrollPane();
   private JTextArea blurbJTextArea = new JTextArea();
+
+  private JLabel    whyLabel    = new JLabel("Why:", JLabel.LEFT);
+  private JScrollPane whyScrollPane = new javax.swing.JScrollPane();
+  private JTextArea whyJTextArea = new JTextArea();
 
   private     JLabel              bottomFiller   = new JLabel("");
 
@@ -64,15 +65,6 @@ public class ClubEventPanel2
      data file: fields.xls
    */
  
-    whyLabel.setLabelFor(whyJTextArea);
-    gb.setColumnWeight(0.0);
-    gb.add(whyLabel);
-    whyJTextArea.setColumns(20);
-    whyJTextArea.setLineWrap(true);
-    whyJTextArea.setRows(5);
-    whyJTextArea.setWrapStyleWord(true);
-    whyScrollPane.setViewportView(whyJTextArea);
-    gb.add(whyScrollPane);
     teaserLabel.setLabelFor(teaserJTextArea);
     gb.setColumnWeight(0.0);
     gb.add(teaserLabel);
@@ -80,7 +72,9 @@ public class ClubEventPanel2
     teaserJTextArea.setLineWrap(true);
     teaserJTextArea.setRows(5);
     teaserJTextArea.setWrapStyleWord(true);
+    teaserJTextArea.setToolTipText("One to three sentences describing the event, intended to pique the reader's interest and motivate him to read further.");
     teaserScrollPane.setViewportView(teaserJTextArea);
+ 
     gb.add(teaserScrollPane);
     blurbLabel.setLabelFor(blurbJTextArea);
     gb.setColumnWeight(0.0);
@@ -89,8 +83,21 @@ public class ClubEventPanel2
     blurbJTextArea.setLineWrap(true);
     blurbJTextArea.setRows(5);
     blurbJTextArea.setWrapStyleWord(true);
+    blurbJTextArea.setToolTipText("Additional information about the event. This field can contain multiple paragraphs, separated by blank lines.");
     blurbScrollPane.setViewportView(blurbJTextArea);
+ 
     gb.add(blurbScrollPane);
+    whyLabel.setLabelFor(whyJTextArea);
+    gb.setColumnWeight(0.0);
+    gb.add(whyLabel);
+    whyJTextArea.setColumns(20);
+    whyJTextArea.setLineWrap(true);
+    whyJTextArea.setRows(5);
+    whyJTextArea.setWrapStyleWord(true);
+    whyJTextArea.setToolTipText("Why does the club think that this is an event deserving of our time, attention and resources?");
+    whyScrollPane.setViewportView(whyJTextArea);
+ 
+    gb.add(whyScrollPane);
 
     gb.setWidth(2);
     gb.setFill(GridBagConstraints.BOTH);
@@ -111,11 +118,6 @@ public class ClubEventPanel2
  
     modified = false;
  
-    if (clubEvent.hasWhy()) {
-      whyJTextArea.setText (clubEvent.getWhy().toString());
-    } else {
-      whyJTextArea.setText ("");
-    }
     if (clubEvent.hasTeaser()) {
       teaserJTextArea.setText (clubEvent.getTeaser().toString());
     } else {
@@ -125,6 +127,11 @@ public class ClubEventPanel2
       blurbJTextArea.setText (clubEvent.getBlurb().toString());
     } else {
       blurbJTextArea.setText ("");
+    }
+    if (clubEvent.hasWhy()) {
+      whyJTextArea.setText (clubEvent.getWhy().toString());
+    } else {
+      whyJTextArea.setText ("");
     }
  
   }
@@ -139,16 +146,16 @@ public class ClubEventPanel2
  
   public boolean modIfChanged (ClubEvent clubEvent) {
  
-    if (! clubEvent.getWhyAsString().equals (whyJTextArea.getText())) {
-      clubEvent.setWhy(whyJTextArea.getText());
-      modified = true;
-    }
     if (! clubEvent.getTeaserAsString().equals (teaserJTextArea.getText())) {
       clubEvent.setTeaser(teaserJTextArea.getText());
       modified = true;
     }
     if (! clubEvent.getBlurbAsString().equals (blurbJTextArea.getText())) {
       clubEvent.setBlurb(blurbJTextArea.getText());
+      modified = true;
+    }
+    if (! clubEvent.getWhyAsString().equals (whyJTextArea.getText())) {
+      clubEvent.setWhy(whyJTextArea.getText());
       modified = true;
     }
 
@@ -166,15 +173,6 @@ public class ClubEventPanel2
  
 
   /**
-    Returns the why for this club event.
- 
-    @return The why for this club event.
-   */
-  public JTextArea getWhyJTextArea () {
-    return whyJTextArea;
-  }
-
-  /**
     Returns the teaser for this club event.
  
     @return The teaser for this club event.
@@ -190,6 +188,15 @@ public class ClubEventPanel2
    */
   public JTextArea getBlurbJTextArea () {
     return blurbJTextArea;
+  }
+
+  /**
+    Returns the why for this club event.
+ 
+    @return The why for this club event.
+   */
+  public JTextArea getWhyJTextArea () {
+    return whyJTextArea;
   }
 
 }

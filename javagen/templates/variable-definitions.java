@@ -19,8 +19,13 @@
   /** 
    =$description$= 
    */
+<?if "=$fieldclass$=" = "Tags" ?>
+  private =$fieldclass$= =$field&clul$= = new =$fieldclass$=();
+  
+<?else?>
   private =$fieldclass$= =$field&clul$= = null;
   
+<?endif?>
   public static final String =$field&c_uuu$=_FIELD_NAME = "=$field$=";
   
   public static final String =$field&c_uuu$=_COLUMN_NAME = "=$briefname$=";

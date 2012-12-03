@@ -33,6 +33,8 @@ public class =$itemclass$=List
   
   private List<=$itemclass$=>            list = new ArrayList();
   
+  private Comparator      comparator = new =$itemclass$=DefaultComparator();
+  
   private int             findIndex = -1;
   private boolean         findMatch = false;
   
@@ -44,6 +46,14 @@ public class =$itemclass$=List
    */
   public =$itemclass$=List () {
     tagsList.registerValue("");
+  }
+  
+  public void setComparator (Comparator comparator) {
+    this.comparator = comparator;
+  }
+  
+  public Comparator getComparator() {
+    return comparator;
   }
   
   public TagsList getTagsList () {
@@ -182,7 +192,7 @@ public class =$itemclass$=List
       findIndex = 0;
     }
     else
-    if (get(list.size() - 1).compareTo(new=$itemclass$=) < 0) {
+    if (comparator.compare (get(list.size() - 1), new=$itemclass$=) < 0) {
       // If the new URL has a key higher than the highest item in the
       // collection, simply add the new URL to the end
       // (more efficient if an input file happens to be pre-sorted).
@@ -261,7 +271,7 @@ public class =$itemclass$=List
       int diff = high - low;
       int split = diff / 2;
       findIndex = low + split;
-      int compare = get(findIndex).compareTo(find=$itemclass$=);
+      int compare = comparator.compare (get(findIndex), find=$itemclass$=);
       if (compare == 0) {
         // found an exact match
         findMatch = true;

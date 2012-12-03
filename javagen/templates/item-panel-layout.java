@@ -26,12 +26,38 @@
     =$field&clul$==$panelclass$=.setLineWrap(true);
     =$field&clul$==$panelclass$=.setRows(5);
     =$field&clul$==$panelclass$=.setWrapStyleWord(true);
+    =$field&clul$==$panelclass$=.setToolTipText("=$tooltip$=");
     =$field&clul$=ScrollPane.setViewportView(=$field&clul$==$panelclass$=);
+    
     gb.add(=$field&clul$=ScrollPane);
-<?else?>
+<?endif?>
+<?if =$panelclass$= == "JLabel" ?>
+    =$field&clul$=Label.setLabelFor(=$field&clul$==$panelclass$=);
+    gb.setColumnWeight(0.0);
+    =$field&clul$==$panelclass$=.setToolTipText("=$tooltip$=");
+    gb.add(=$field&clul$=Label);
+    gb.add(=$field&clul$==$panelclass$=);
+<?endif?>
+<?if =$panelclass$= == "JTextField" ?>
     =$field&clul$=Label.setLabelFor(=$field&clul$==$panelclass$=);
     gb.setColumnWeight(0.0);
     gb.add(=$field&clul$=Label);
+    =$field&clul$==$panelclass$=.setToolTipText("=$tooltip$=");
+    gb.add(=$field&clul$==$panelclass$=);
+<?endif?>
+<?if =$panelclass$= == "TextSelector" ?>
+    =$field&clul$=Label.setLabelFor(=$field&clul$==$panelclass$=);
+    gb.setColumnWeight(0.0);
+    gb.add(=$field&clul$=Label);
+    =$field&clul$==$panelclass$=.setToolTipText("=$tooltip$=");
+    gb.add(=$field&clul$==$panelclass$=);
+<?endif?>
+<?if =$panelclass$= == "PSComboBox" ?>
+    =$field&clul$=Label.setLabelFor(=$field&clul$==$panelclass$=);
+    =$field&clul$==$panelclass$=.load (ClubPlanner.class, "=$field&clll$=.txt");
+    gb.setColumnWeight(0.0);
+    gb.add(=$field&clul$=Label);
+    =$field&clul$==$panelclass$=.setToolTipText("=$tooltip$=");
     gb.add(=$field&clul$==$panelclass$=);
 <?endif?>
 <?endif?>

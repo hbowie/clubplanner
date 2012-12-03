@@ -78,29 +78,53 @@ public class =$itemclass$=Writer {
   
   private     BufferedWriter      outBuffered;
   
+  public static final String FILE_EXT = ".txt";
+  
   public =$itemclass$=Writer() {
     
   }
   
-  public boolean save (File folder, =$itemclass$=List =$itemclass&clul$=List, boolean primaryLocation) {
+  /**
+   Does the given =$itemclass&c uul$= already exist on disk?
+  
+   @param folder    The folder in which the item is to be stored. 
+   @param clubEvent The =$itemclass&c uul$= to be stored. 
+  
+   @return True if a disk file with the same path already exists,
+           false if not. 
+   */
+  public boolean exists (File folder, =$itemclass$= =$itemclass&clul$=) {
+    File localFolder;
+    if (=$itemclass&clul$=.hasFolderName()) {
+      localFolder = new File (folder, =$itemclass&clul$=.getFolderName());
+    } else {
+      localFolder = folder;
+    }
+    File file = new File (localFolder, =$itemclass&clul$=.getFileName() + FILE_EXT);
+    return file.exists();
+  }
+  
+  public boolean save (File folder, =$itemclass$=List =$itemclass&clul$=List, 
+      boolean primaryLocation, boolean deleteIfMoved) {
   
     boolean outOK = true;
     for (int i = 0; i < =$itemclass&clul$=List.size() && outOK; i++) {
       =$itemclass$= next=$itemclass$= = =$itemclass&clul$=List.get(i);
-      outOK = save (folder, next=$itemclass$=, primaryLocation);
+      outOK = save (folder, next=$itemclass$=, primaryLocation, deleteIfMoved);
     }
     return outOK;
   }
   
-  public boolean save (File folder, =$itemclass$= =$itemclass&clul$=, boolean primaryLocation) {
+  public boolean save (File folder, =$itemclass$= =$itemclass&clul$=, 
+      boolean primaryLocation, boolean deleteIfMoved) {
     
     boolean outOK = true;
     
-    File statusFolder = new File (folder, clubEvent.getStatusAsString());
-    if (! statusFolder.exists()) {
-      statusFolder.mkdir();
+    File typeFolder = new File (folder, clubEvent.getTypeAsString());
+    if (! typeFolder.exists()) {
+      typeFolder.mkdir();
     }
-    File file = new File (statusFolder, clubEvent.getFileName() + ".txt");
+    File file = new File (typeFolder, clubEvent.getFileName() + FILE_EXT);
     outOK = openOutput (file);
     if (outOK) {
       String oldDiskLocation = clubEvent.getDiskLocation();

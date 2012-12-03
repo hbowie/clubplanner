@@ -29,6 +29,9 @@
 <?if =$panelclass$= == "TextSelector" ?>  
   private =$panelclass$= =$field&clul$==$panelclass$= = new =$panelclass$=();
 <?endif?>
+<?if =$panelclass$= == "PSComboBox" ?>  
+  private =$panelclass$= =$field&clul$==$panelclass$= = new =$panelclass$=();
+<?endif?>
 <?if =$panelclass$= == "JTextArea" ?>  
   private JScrollPane =$field&clul$=ScrollPane = new javax.swing.JScrollPane();
   private =$panelclass$= =$field&clul$==$panelclass$= = new =$panelclass$=();

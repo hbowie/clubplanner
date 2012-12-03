@@ -38,6 +38,8 @@ public class =$itemclass$=
   private boolean modified = false;
   
   private String  diskLocation = "";
+  
+  private Comparator comparator = new =$itemclass$=DefaultComparator();
 
   /**
    Static initializer.
@@ -55,6 +57,75 @@ public class =$itemclass$=
    */
   public =$itemclass$=() {
 
+  }
+  
+  /**
+   Get the comparator to be used;
+   */
+  public Comparator getComparator() {
+    return comparator;
+  }
+  
+  /**
+   Set the comparator to be used. 
+   */
+  public void setComparator (Comparator comparator) {
+    this.comparator = comparator;
+  }
+  
+  /**
+   Determine if this item has a key that is equal to the passed
+   item.
+
+   @param  obj2        The second object to be compared to this one.
+   @param  comparator  The comparator to be used to make the comparison. 
+   @return True if the keys are equal.
+   */
+  public boolean equals (Object obj2, Comparator comparator) {
+    return (this.compareTo (obj2, comparator) == 0);
+  }
+  
+  /**
+   Determine if this item has a key that is equal to the passed
+   item.
+
+   @param  obj2  The second object to be compared to this one.
+   @return True if the keys are equal.
+   */
+  public boolean equals (Object obj2) {
+    return (this.compareTo (obj2) == 0);
+  }
+  
+  /**
+   Compare this ClubEvent object to another, using the key field(s) for comparison.
+ 
+   @param The second object to compare to this one.
+ 
+   @return A number less than zero if this object is less than the second,
+           a number greater than zero if this object is greater than the second,
+           or zero if the two item's keys are equal.
+   */
+  public int compareTo (Object obj2, Comparator comparator) {
+    if (comparator == null) {
+      return -1;
+    }
+    return comparator.compare (this, obj2);
+  }
+ 
+  /**
+   Compare this ClubEvent object to another, using the key field(s) for comparison.
+ 
+   @param The second object to compare to this one.
+ 
+   @return A number less than zero if this object is less than the second,
+           a number greater than zero if this object is greater than the second,
+           or zero if the two item's keys are equal.
+   */
+  public int compareTo (Object obj2) {
+    if (comparator == null) {
+      return -1;
+    }
+    return comparator.compare (this, obj2);
   }
   
   public void resetModified() {
@@ -157,11 +228,11 @@ public class =$itemclass$=
     return dataRec;
   }
   
+<?include "../includes/=$itemclass$=-io-methods.java"?>
 <?include "../includes/=$itemclass$=-haskey-method.java"?>
 <?include "../includes/=$itemclass$=-find.java"?>
 <?include "../includes/=$itemclass$=-toString.java"?>
 <?include "../includes/=$itemclass$=-merge.java"?>
-<?include "../includes/=$itemclass$=-compare-methods.java"?>
 <?include "../includes/=$itemclass$=-setColumnValue.java"?>  
 <?include "../includes/=$itemclass$=-getColumnValue.java"?>
 <?include "../includes/=$itemclass$=-getColumnName.java"?>

@@ -16,6 +16,8 @@ sort	add	Ascending	Item Class
 sort	add	Ascending	No.	
 sort	add	Ascending	Field	
 sort	set		params	
+template	open	file		#PATH#../templates/master-io-methods.java
+template	generate			
 template	open	file		#PATH#../templates/setColumnValue.java
 template	generate			
 template	open	file		#PATH#../templates/getColumnValue.java

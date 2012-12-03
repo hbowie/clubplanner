@@ -9,6 +9,7 @@
 <?output "../../src/com/powersurgepub/clubplanner/view/=$itemclass$=Panel=$panelno$=.java"?>
 package com.powersurgepub.clubplanner.view;
 
+  import com.powersurgepub.clubplanner.*;
   import com.powersurgepub.clubplanner.model.*;
   import com.powersurgepub.psdatalib.ui.*;
   import java.awt.*;

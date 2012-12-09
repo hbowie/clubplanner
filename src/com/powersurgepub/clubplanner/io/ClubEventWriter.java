@@ -31,29 +31,105 @@ public class ClubEventWriter {
            false if not.
    */
   public boolean exists (File folder, ClubEvent clubEvent) {
+    return getFile(folder, clubEvent).exists();
+  }
+ 
+  /**
+   Does the given Club Event already exist on disk?
+ 
+   @param folder    The folder in which the item is to be stored.
+   @param localPath The local path (folder plus file name) for the
+                    Club Event to be stored.
+ 
+   @return True if a disk file with the same path already exists,
+           false if not.
+   */
+  public boolean exists (File folder, String localPath) {
+    return getFile(folder, localPath).exists();
+  }
+ 
+  /**
+   Delete the passed event from disk.
+ 
+   @param folder    The folder in which the item is to be stored.
+   @param clubEvent The Club Event to be stored.
+ 
+   @return True if the file was deleted successfully,
+           false if not.
+   */
+  public boolean delete (File folder, ClubEvent clubEvent) {
+    return getFile(folder, clubEvent).delete();
+  }
+ 
+  /**
+   Delete the passed event from disk.
+ 
+   @param folder    The folder in which the item is to be stored.
+   @param localPath The local path (folder plus file name) for the
+                    Club Event to be stored.
+ 
+   @return True if the file was deleted successfully,
+           false if not.
+   */
+  public boolean delete (File folder, String localPath) {
+    return getFile(folder, localPath).delete();
+  }
+ 
+  /**
+   Return a standard File object representing the item's stored location on disk.
+ 
+   @param folder    The folder in which the item is to be stored.
+   @param clubEvent The Club Event to be stored.
+ 
+   @return The File pointing to the intended disk location for the given event.
+   */
+  public File getFile (File folder, ClubEvent clubEvent) {
     File localFolder;
     if (clubEvent.hasFolderName()) {
       localFolder = new File (folder, clubEvent.getFolderName());
     } else {
       localFolder = folder;
     }
-    File file = new File (localFolder, clubEvent.getFileName() + FILE_EXT);
-    return file.exists();
+    return new File (localFolder, clubEvent.getFileName() + FILE_EXT);
+  }
+ 
+  /**
+   Return a standard File object representing the item's stored location on disk.
+ 
+   @param folder    The folder in which the item is to be stored.
+   @param localPath The local path (folder plus file name) for the
+                    Club Event to be stored.
+ 
+   @return The File pointing to the intended disk location for the given item.
+   */
+  public File getFile (File folder, String localPath) {
+    StringBuilder completePath = new StringBuilder();
+    try {
+      completePath = new StringBuilder (folder.getCanonicalPath());
+    } catch (Exception e) {
+      completePath = new StringBuilder (folder.getAbsolutePath());
+    }
+    completePath.append('/');
+    completePath.append(localPath);
+    completePath.append(FILE_EXT);
+    System.out.println ("writer getFile from local path returning "
+      + completePath.toString());
+    return new File (completePath.toString());
   }
  
   public boolean save (File folder, ClubEventList clubEventList,
-      boolean primaryLocation, boolean deleteIfMoved) {
+      boolean primaryLocation) {
  
     boolean outOK = true;
     for (int i = 0; i < clubEventList.size() && outOK; i++) {
       ClubEvent nextClubEvent = clubEventList.get(i);
-      outOK = save (folder, nextClubEvent, primaryLocation, deleteIfMoved);
+      outOK = save (folder, nextClubEvent, primaryLocation);
     }
     return outOK;
   }
  
   public boolean save (File folder, ClubEvent clubEvent,
-      boolean primaryLocation, boolean deleteIfMoved) {
+      boolean primaryLocation) {
  
     boolean outOK = true;
  
@@ -104,6 +180,14 @@ public class ClubEventWriter {
     boolean outOK = true;
     if (outOK) {
       outOK = writeFieldName
+          (ClubEvent.WHEN_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getWhenAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
           (ClubEvent.WHAT_FIELD_NAME);
     }
     if (outOK) {
@@ -117,14 +201,6 @@ public class ClubEventWriter {
     if (outOK) {
       outOK = writeFieldValue
           (clubEvent.getStatusAsString());
-    }
-    if (outOK) {
-      outOK = writeFieldName
-          (ClubEvent.WHEN_FIELD_NAME);
-    }
-    if (outOK) {
-      outOK = writeFieldValue
-          (clubEvent.getWhenAsString());
     }
     if (outOK) {
       outOK = writeFieldName
@@ -208,22 +284,6 @@ public class ClubEventWriter {
     }
     if (outOK) {
       outOK = writeFieldName
-          (ClubEvent.PLANNED_EXPENSE_FIELD_NAME);
-    }
-    if (outOK) {
-      outOK = writeFieldValue
-          (clubEvent.getPlannedExpenseAsString());
-    }
-    if (outOK) {
-      outOK = writeFieldName
-          (ClubEvent.PLANNED_ATTENDANCE_FIELD_NAME);
-    }
-    if (outOK) {
-      outOK = writeFieldValue
-          (clubEvent.getPlannedAttendanceAsString());
-    }
-    if (outOK) {
-      outOK = writeFieldName
           (ClubEvent.ACTUAL_INCOME_FIELD_NAME);
     }
     if (outOK) {
@@ -232,11 +292,27 @@ public class ClubEventWriter {
     }
     if (outOK) {
       outOK = writeFieldName
+          (ClubEvent.PLANNED_EXPENSE_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getPlannedExpenseAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
           (ClubEvent.ACTUAL_EXPENSE_FIELD_NAME);
     }
     if (outOK) {
       outOK = writeFieldValue
           (clubEvent.getActualExpenseAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
+          (ClubEvent.PLANNED_ATTENDANCE_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getPlannedAttendanceAsString());
     }
     if (outOK) {
       outOK = writeFieldName

@@ -50,6 +50,8 @@ template	open	file		#PATH#../templates/toString.java
 template	generate			
 template	open	file		#PATH#../templates/merge.java
 template	generate			
+template	open	file		#PATH#../templates/duplicate.java
+template	generate			
 template	open	file		#PATH#../templates/item-class.java
 template	generate			
 template	open	file		#PATH#../templates/master-list.java

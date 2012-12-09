@@ -25,16 +25,6 @@ package com.powersurgepub.clubplanner.io;
      extends File
          implements  
              DataSource {
-   
-  private ResourceList statusResource 
-      = new ResourceList (ClubPlanner.class, "status");
-   
-  private ArrayList statusList = new ArrayList();
-  
-  private ResourceList typeResource
-      = new ResourceList (ClubPlanner.class, "type");
-  
-  private ArrayList typeList = new ArrayList();
   
   /** 
      The number of levels of directories and sub-directories to be read. 
@@ -64,12 +54,6 @@ package com.powersurgepub.clubplanner.io;
   /** The record definition to be used by this record. */
   private    RecordDefinition recDef = null;
   
-  private    String           status = "";
-  private    String           type = "";
-  private    boolean          statusFromFolder = false;
-  private    boolean          typeFromFolder = false;
-  private    String           year = "";
-  
   /** Pointer to a particular record within the array. */
   private    int              recordNumber;
   
@@ -94,7 +78,7 @@ package com.powersurgepub.clubplanner.io;
   /** The number of directories in the top directory to be read. */
   private		 int							directoryNumberOfFolders;
   
-  private    ClubEventCalc  clubPlannerCalc = new ClubEventCalc();
+  private    ClubEventCalc    clubEventCalc = null;
   
   private    StringBuilder    headerWord;
   
@@ -190,12 +174,28 @@ package com.powersurgepub.clubplanner.io;
       }
     }
     
-    statusResource.load(statusList);
-    typeResource.load(typeList);
-    
     fileId = "ClubPlannerDataSource";
     logData = new LogData ("", fileId, 0);
     logEvent = new LogEvent (0, "");
+  }
+  
+  /**
+   Set the club event calculator to use. 
+  
+   @param clubEventCalc The club event calculator to use. 
+  */
+  public void setClubEventCalc (ClubEventCalc clubEventCalc) {
+    this.clubEventCalc = clubEventCalc;
+  }
+  
+  /**
+   Ensure that we have a club event calculator. If one hasn't been passed, 
+   then let's create a new one. 
+  */
+  private void ensureClubEventCalc() {
+    if (clubEventCalc == null) {
+      this.clubEventCalc = new ClubEventCalc();
+    }
   }
     
   /**
@@ -239,61 +239,24 @@ package com.powersurgepub.clubplanner.io;
     fieldNumber = -1;
 
     reader = new FileLineReader (this);
-    inPathFileName = new FileName (this);
+    ensureClubEventCalc();
+    clubEventCalc.setFileName(this);
     reader.open();
-
-    clubPlannerCalc = new ClubEventCalc();
-
-    // Get information from the names of the folders containing this file
-    int folderDepth = inPathFileName.getNumberOfFolders();
-
-    // Get the type or status from the deepest folder
-    typeFromFolder = false;
-    type = "";
-    statusFromFolder = false;
-    status = "";
-    if (folderDepth > 0) {
-      String typeOrStatus = inPathFileName.getFolder(folderDepth);
-      if (typeList.indexOf(typeOrStatus) >= 0) {
-        type = typeOrStatus;
-        typeFromFolder = true;
-      }
-      else
-      if (statusList.indexOf(typeOrStatus) >= 0) {
-        status = typeOrStatus;
-        clubPlannerCalc.setFuture(status);
-        statusFromFolder = true;
-      }
-    }
-
-    // Check higher folders to see if one of them identifies the club
-    // operating year. Note that the year may be a pair of years, to
-    // indicate an operating year starting in July and ending in June. 
-    if (typeFromFolder || statusFromFolder) {
-      folderDepth--;
-    }
-    boolean opYearFound = false;
-    while (folderDepth > 0 && (! opYearFound)) {
-      String folder = inPathFileName.getFolder(folderDepth);
-      opYearFound = clubPlannerCalc.parseOpYear(folder);
-      folderDepth--;
-    } // end while looking for a folder identifying the club year
-    if (opYearFound) {
-      year = clubPlannerCalc.getStringDate().getOpYear();
-    }
 
     // Now gather field values from the input file
     blockComment = false;
     
     clubEvent = new ClubEvent();
     eventNote = new EventNote();
-    clubEvent.setYear(year);
-    // clubEvent.setFileName(inPathFileName.getBase());
-    if (statusFromFolder) {
-      clubEvent.setStatus(status);
+    if (clubEventCalc.ifOpYearFromFolder()) {
+      clubEvent.setYear(clubEventCalc.getOpYearFromFolder());
     }
-    if (typeFromFolder) {
-      clubEvent.setType(type);
+    // clubEvent.setFileName(inPathFileName.getBase());
+    if (clubEventCalc.ifStatusFromFolder()) {
+      clubEvent.setStatus(clubEventCalc.getStatusFromFolder());
+    }
+    if (clubEventCalc.ifTypeFromFolder()) {
+      clubEvent.setType(clubEventCalc.getTypeFromFolder());
     }
     clubEvent.resetModified();
     clubEvent.setDiskLocation(this);
@@ -306,7 +269,7 @@ package com.powersurgepub.clubplanner.io;
     } // end while reader has more lines
     setLastNoteFieldValue();
     setLastEventFieldValue();
-    clubPlannerCalc.calcAll(clubEvent);
+    clubEventCalc.calcAll(clubEvent);
     noteIndex = 0;
     
   } // end of openForInput method
@@ -521,7 +484,7 @@ package com.powersurgepub.clubplanner.io;
         && eventNote != null
         && noteFieldValue.length() > 0) {
       eventNote.setNote(noteFieldValue.toString());
-      clubPlannerCalc.calcAll(eventNote);
+      clubEventCalc.calcAll(eventNote);
       clubEvent.addEventNote(eventNote);
       noteFieldValue = new StringBuilder();
     }
@@ -644,8 +607,8 @@ package com.powersurgepub.clubplanner.io;
           break;
         case NOTES_FOR:
           eventNote.setNoteFor(headerElement.toString());
-          clubPlannerCalc.getStringDate().parse(headerElement.toString());
-          eventNote.setNoteForYmd (clubPlannerCalc.getStringDate().getYMD());
+          clubEventCalc.getStringDate().parse(headerElement.toString());
+          eventNote.setNoteForYmd (clubEventCalc.getStringDate().getYMD());
           break;
         case NOTES_VIA:
           eventNote.setNoteVia(headerElement.toString());

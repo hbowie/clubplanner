@@ -41,7 +41,7 @@ public class ClubEventPanel5
    */
   public ClubEventPanel5() {
  
-    gb.startLayout (this, 2, 99);
+    gb.startLayout (this, 4, 99);
     gb.setByRows(true);
 		gb.setDefaultColumnWeight (0.5);
 		gb.setDefaultRowWeight (0.0);
@@ -59,6 +59,7 @@ public class ClubEventPanel5
  
     notesLabel.setLabelFor(notesJTextArea);
     gb.setColumnWeight(0.0);
+    gb.setWidth(1);
     gb.add(notesLabel);
     notesJTextArea.setColumns(20);
     notesJTextArea.setLineWrap(true);
@@ -66,7 +67,7 @@ public class ClubEventPanel5
     notesJTextArea.setWrapStyleWord(true);
     notesJTextArea.setToolTipText("One or more blocks of text with information about the event. Each note should be preceded by a line like the following: -- AAUM on Feb 21 via email.");
     notesScrollPane.setViewportView(notesJTextArea);
- 
+    gb.setWidth(3);
     gb.add(notesScrollPane);
 
     gb.setWidth(2);

@@ -39,7 +39,7 @@ public class =$itemclass$=Panel=$panelno$=
    */
   public =$itemclass$=Panel=$panelno$=() {
   
-    gb.startLayout (this, 2, 99);
+    gb.startLayout (this, 4, 99);
     gb.setByRows(true);
 		gb.setDefaultColumnWeight (0.5);
 		gb.setDefaultRowWeight (0.0);

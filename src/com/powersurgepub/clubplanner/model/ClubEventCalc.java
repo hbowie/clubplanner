@@ -1,24 +1,46 @@
 package com.powersurgepub.clubplanner.model;
 
+  import com.powersurgepub.clubplanner.*;
   import com.powersurgepub.psutils.*;
   import java.io.*;
   import java.math.*;
+  import java.util.*;
   import org.pegdown.*;
 
 /**
- Performs various calculations and transformations on club planner data. 
+ Performs various calculations and transformations on club event data. 
 
  @author Herb Bowie
  */
 public class ClubEventCalc {
   
+  private ResourceList statusResource 
+      = new ResourceList (ClubPlanner.class, "status");
+   
+  private ArrayList statusList = new ArrayList();
+  
+  private ResourceList typeResource
+      = new ResourceList (ClubPlanner.class, "type");
+  
+  private ArrayList typeList = new ArrayList();
+  
   private    StringDate         strDate = new StringDate();
   private    PegDownProcessor   pegDown;
+  
+  private    String             status = "";
+  private    String             type = "";
+  private    boolean            statusFromFolder = false;
+  private    boolean            typeFromFolder = false;
+  private    String             opYearFolder = "";
+  private    String             year = "";
+  private    boolean            opYearFound = false;
   
   public ClubEventCalc () {
     int pegDownOptions = 0;
     pegDownOptions = pegDownOptions + Extensions.SMARTYPANTS;
     pegDown = new PegDownProcessor(pegDownOptions);
+    statusResource.load(statusList);
+    typeResource.load(typeList);
   }
   
   public void setStringDate (StringDate strDate) {
@@ -38,32 +60,113 @@ public class ClubEventCalc {
            false if not. 
   */
   public boolean setFileName (File file) {
-    FileName fileName = new FileName (file);
+    
+    FileName inPathFileName = new FileName (file);
     
     // Get information from the names of the folders containing this file
-    int folderDepth = fileName.getNumberOfFolders();
+    int folderDepth = inPathFileName.getNumberOfFolders();
 
-    // Get the status from the deepest folder
+    // Get the type or status from the deepest folder
+    typeFromFolder = false;
+    type = "";
+    statusFromFolder = false;
+    status = "";
     if (folderDepth > 0) {
-      String status = fileName.getFolder(folderDepth);
-      // If status is "Future", then adjust the year to be a future year
-      setFuture(status);
+      String typeOrStatus = inPathFileName.getFolder(folderDepth);
+      if (typeList.indexOf(typeOrStatus) >= 0) {
+        type = typeOrStatus;
+        typeFromFolder = true;
+      }
+      else
+      if (statusList.indexOf(typeOrStatus) >= 0) {
+        status = typeOrStatus;
+        setFuture(status);
+        statusFromFolder = true;
+      }
     }
 
     // Check higher folders to see if one of them identifies the club
     // operating year. Note that the year may be a pair of years, to
     // indicate an operating year starting in July and ending in June. 
-    folderDepth--;
-    boolean opYearFound = false;
+    opYearFolder = "";
+    if (typeFromFolder || statusFromFolder) {
+      folderDepth--;
+    }
+    opYearFound = false;
     while (folderDepth > 0 && (! opYearFound)) {
-      String folder = fileName.getFolder(folderDepth);
+      String folder = inPathFileName.getFolder(folderDepth);
       opYearFound = parseOpYear(folder);
+      if (opYearFound) {
+        opYearFolder = folder;
+      }
       folderDepth--;
     } // end while looking for a folder identifying the club year
     if (opYearFound) {
-      String year = getStringDate().getOpYear();
+      year = getStringDate().getOpYear();
     }
+    
     return opYearFound;
+  }
+  
+  public boolean ifStatusFromFolder() {
+    return statusFromFolder;
+  }
+  
+  /**
+   If the status was found in the file path, then return it.
+  
+   @return Status as found in file location, or null, if no status was found. 
+   */
+  public String getStatusFromFolder() {
+    if (statusFromFolder) {
+      return status;
+    } else {
+      return null;
+    }
+  }
+  
+  public boolean ifTypeFromFolder() {
+    return typeFromFolder;
+  }
+  /**
+   If the type was found in the file path, then return it. 
+  
+   @return Type as found in file location, or null, if no type was found. 
+  */
+  public String getTypeFromFolder() {
+    if (typeFromFolder) {
+      return type;
+    } else {
+      return null;
+    }
+  }
+  
+  public boolean ifOpYearFromFolder() {
+    return opYearFound;
+  }
+  
+  /**
+   Return the folder name containing the Operating Year. 
+  
+   @return Blanks if the operating year was not found, otherwise the name of 
+           the folder in which the operating year was found. 
+  */
+  public String getOpYearFolder() {
+    return opYearFolder;
+  }
+  
+  /**
+   If the operating year was found in the file path, then return it. 
+  
+   @return The Operating Year as found in the file path, or null, if no 
+           year was found. 
+  */
+  public String getOpYearFromFolder() {
+    if (opYearFound) {
+      return year;
+    } else {
+      return null;
+    }
   }
   
   /**

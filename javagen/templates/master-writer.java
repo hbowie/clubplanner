@@ -88,35 +88,109 @@ public class =$itemclass$=Writer {
    Does the given =$itemclass&c uul$= already exist on disk?
   
    @param folder    The folder in which the item is to be stored. 
-   @param clubEvent The =$itemclass&c uul$= to be stored. 
+   @param =$itemclass&clul$= The =$itemclass&c uul$= to be stored. 
   
    @return True if a disk file with the same path already exists,
            false if not. 
    */
   public boolean exists (File folder, =$itemclass$= =$itemclass&clul$=) {
+    return getFile(folder, =$itemclass&clul$=).exists();
+  }
+  
+  /**
+   Does the given =$itemclass&c uul$= already exist on disk?
+  
+   @param folder    The folder in which the item is to be stored. 
+   @param localPath The local path (folder plus file name) for the 
+                    =$itemclass&c uul$= to be stored. 
+  
+   @return True if a disk file with the same path already exists,
+           false if not. 
+   */
+  public boolean exists (File folder, String localPath) {
+    return getFile(folder, localPath).exists();
+  }
+  
+  /**
+   Delete the passed event from disk. 
+  
+   @param folder    The folder in which the item is to be stored. 
+   @param =$itemclass&clul$= The =$itemclass&c uul$= to be stored. 
+  
+   @return True if the file was deleted successfully,
+           false if not. 
+   */
+  public boolean delete (File folder, =$itemclass$= =$itemclass&clul$=) {
+    return getFile(folder, =$itemclass&clul$=).delete();
+  }
+  
+  /**
+   Delete the passed event from disk. 
+  
+   @param folder    The folder in which the item is to be stored. 
+   @param localPath The local path (folder plus file name) for the 
+                    =$itemclass&c uul$= to be stored. 
+  
+   @return True if the file was deleted successfully,
+           false if not. 
+   */
+  public boolean delete (File folder, String localPath) {
+    return getFile(folder, localPath).delete();
+  }
+  
+  /**
+   Return a standard File object representing the item's stored location on disk. 
+  
+   @param folder    The folder in which the item is to be stored. 
+   @param =$itemclass&clul$= The =$itemclass&c uul$= to be stored. 
+  
+   @return The File pointing to the intended disk location for the given event. 
+   */
+  public File getFile (File folder, =$itemclass$= =$itemclass&clul$=) {
     File localFolder;
     if (=$itemclass&clul$=.hasFolderName()) {
       localFolder = new File (folder, =$itemclass&clul$=.getFolderName());
     } else {
       localFolder = folder;
     }
-    File file = new File (localFolder, =$itemclass&clul$=.getFileName() + FILE_EXT);
-    return file.exists();
+    return new File (localFolder, =$itemclass&clul$=.getFileName() + FILE_EXT);
+  }
+  
+  /**
+   Return a standard File object representing the item's stored location on disk. 
+  
+   @param folder    The folder in which the item is to be stored. 
+   @param localPath The local path (folder plus file name) for the 
+                    =$itemclass&c uul$= to be stored. 
+  
+   @return The File pointing to the intended disk location for the given item. 
+   */
+  public File getFile (File folder, String localPath) {
+    StringBuilder completePath = new StringBuilder();
+    try {
+      completePath = new StringBuilder (folder.getCanonicalPath());
+    } catch (Exception e) {
+      completePath = new StringBuilder (folder.getAbsolutePath());
+    }
+    completePath.append('/');
+    completePath.append(localPath);
+    completePath.append(FILE_EXT);
+    return new File (completePath.toString());
   }
   
   public boolean save (File folder, =$itemclass$=List =$itemclass&clul$=List, 
-      boolean primaryLocation, boolean deleteIfMoved) {
+      boolean primaryLocation) {
   
     boolean outOK = true;
     for (int i = 0; i < =$itemclass&clul$=List.size() && outOK; i++) {
       =$itemclass$= next=$itemclass$= = =$itemclass&clul$=List.get(i);
-      outOK = save (folder, next=$itemclass$=, primaryLocation, deleteIfMoved);
+      outOK = save (folder, next=$itemclass$=, primaryLocation);
     }
     return outOK;
   }
   
   public boolean save (File folder, =$itemclass$= =$itemclass&clul$=, 
-      boolean primaryLocation, boolean deleteIfMoved) {
+      boolean primaryLocation) {
     
     boolean outOK = true;
     

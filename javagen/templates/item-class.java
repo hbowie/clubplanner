@@ -228,6 +228,7 @@ public class =$itemclass$=
     return dataRec;
   }
   
+<?include "../includes/=$itemclass$=-duplicate.java"?>
 <?include "../includes/=$itemclass$=-io-methods.java"?>
 <?include "../includes/=$itemclass$=-haskey-method.java"?>
 <?include "../includes/=$itemclass$=-find.java"?>

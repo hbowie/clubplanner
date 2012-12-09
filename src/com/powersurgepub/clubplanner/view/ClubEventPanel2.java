@@ -49,7 +49,7 @@ public class ClubEventPanel2
    */
   public ClubEventPanel2() {
  
-    gb.startLayout (this, 2, 99);
+    gb.startLayout (this, 4, 99);
     gb.setByRows(true);
 		gb.setDefaultColumnWeight (0.5);
 		gb.setDefaultRowWeight (0.0);
@@ -67,6 +67,7 @@ public class ClubEventPanel2
  
     teaserLabel.setLabelFor(teaserJTextArea);
     gb.setColumnWeight(0.0);
+    gb.setWidth(1);
     gb.add(teaserLabel);
     teaserJTextArea.setColumns(20);
     teaserJTextArea.setLineWrap(true);
@@ -74,10 +75,11 @@ public class ClubEventPanel2
     teaserJTextArea.setWrapStyleWord(true);
     teaserJTextArea.setToolTipText("One to three sentences describing the event, intended to pique the reader's interest and motivate him to read further.");
     teaserScrollPane.setViewportView(teaserJTextArea);
- 
+    gb.setWidth(3);
     gb.add(teaserScrollPane);
     blurbLabel.setLabelFor(blurbJTextArea);
     gb.setColumnWeight(0.0);
+    gb.setWidth(1);
     gb.add(blurbLabel);
     blurbJTextArea.setColumns(20);
     blurbJTextArea.setLineWrap(true);
@@ -85,10 +87,11 @@ public class ClubEventPanel2
     blurbJTextArea.setWrapStyleWord(true);
     blurbJTextArea.setToolTipText("Additional information about the event. This field can contain multiple paragraphs, separated by blank lines.");
     blurbScrollPane.setViewportView(blurbJTextArea);
- 
+    gb.setWidth(3);
     gb.add(blurbScrollPane);
     whyLabel.setLabelFor(whyJTextArea);
     gb.setColumnWeight(0.0);
+    gb.setWidth(1);
     gb.add(whyLabel);
     whyJTextArea.setColumns(20);
     whyJTextArea.setLineWrap(true);
@@ -96,7 +99,7 @@ public class ClubEventPanel2
     whyJTextArea.setWrapStyleWord(true);
     whyJTextArea.setToolTipText("Why does the club think that this is an event deserving of our time, attention and resources?");
     whyScrollPane.setViewportView(whyJTextArea);
- 
+    gb.setWidth(3);
     gb.add(whyScrollPane);
 
     gb.setWidth(2);

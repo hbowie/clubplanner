@@ -25,15 +25,37 @@ public class ClubEventListLoader {
   private		 ArrayList<String>       dirEntries;
   private		 int							       entryNumber = 0;
   
+  private    ClubEventCalc           clubEventCalc = null;
+  
   public ClubEventListLoader(File folder) {
     this.folder = folder;
   }
+  
+  /**
+   Set the club event calculator to use. 
+  
+   @param clubEventCalc The club event calculator to use. 
+  */
+  public void setClubEventCalc (ClubEventCalc clubEventCalc) {
+    this.clubEventCalc = clubEventCalc;
+  }
+  
+  /**
+   Ensure that we have a club event calculator. If one hasn't been passed, 
+   then let's create a new one. 
+  */
+  private void ensureClubEventCalc() {
+    if (clubEventCalc == null) {
+      this.clubEventCalc = new ClubEventCalc();
+    }
+  } 
   
   public boolean load (ClubEventList list) {
     
     boolean ok = true;
     eventsLoaded = 0;
     this.list = list;
+    ensureClubEventCalc();
     dirList = new ArrayList();
     dirList.add (new DirToExplode (1, folder.getAbsolutePath()));
     dirNumber = 0;
@@ -89,6 +111,7 @@ public class ClubEventListLoader {
     if (isInterestedIn (dirEntryFile)) {
       ClubEventReader reader 
           = new ClubEventReader (dirEntryFile, ClubEventReader.PLANNER_TYPE);
+      reader.setClubEventCalc(clubEventCalc);
       try {
         reader.openForInput();
         list.add(reader.getClubEvent());

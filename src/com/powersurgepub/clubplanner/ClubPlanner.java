@@ -76,10 +76,12 @@ public class ClubPlanner
   
   private             ClubEventList       clubEventList = new ClubEventList();
   private             ClubEventPositioned position = new ClubEventPositioned();
+  private             String              localPath = "";
   
   private             XFileChooser        fileChooser = new XFileChooser();
   
   private             File                eventsFile = null;
+  private             ClubEventWriter     writer = new ClubEventWriter();
   private             File                currentDirectory;
   private             FileSpec            fileSpec = null;
   private             boolean             currentFileModified = false;
@@ -87,6 +89,8 @@ public class ClubPlanner
   
   private             String              lastTextFound = "";
   private             ClubEvent           foundClubEvent = null;
+  
+  private             ClubEventCalc       clubEventCalc = new ClubEventCalc();
   
   private             StatusBar           statusBar = new StatusBar();
   
@@ -109,6 +113,7 @@ public class ClubPlanner
     
     initComponents();
     getContentPane().add(statusBar, java.awt.BorderLayout.SOUTH);
+    trouble.setParent(this);
     
     // Get App Folder
     appFolder = home.getAppFolder();
@@ -396,6 +401,7 @@ public class ClubPlanner
     
     initCollection();
     ClubEventListLoader loader = new ClubEventListLoader(fileToOpen);
+    loader.setClubEventCalc(clubEventCalc);
     loader.load(clubEventList);
     setClubEventFolder (fileToOpen);
     /*
@@ -409,31 +415,76 @@ public class ClubPlanner
     positionAndDisplay();
   }
   
+  public boolean saveAll() {
+    
+    boolean saveOK = modIfChanged();
+    
+    int numberSaved = 0;
+    int numberDeleted = 0;
+    
+    for (int i = 0; i < clubEventList.size() && saveOK; i++) {
+      ClubEvent nextClubEvent = clubEventList.get(i);
+      writer = new ClubEventWriter();
+      String oldDiskLocation = nextClubEvent.getDiskLocation();
+      saveOK = writer.save(eventsFile, nextClubEvent, true);
+      if (saveOK) {
+        numberSaved++;
+        String newDiskLocation = nextClubEvent.getDiskLocation();
+        if (! newDiskLocation.equals(oldDiskLocation)) {
+          File oldDiskFile = new File (oldDiskLocation);
+          oldDiskFile.delete();
+          numberDeleted++;
+        }
+      } else {
+        trouble.report(this, "Trouble saving the item to disk", "I/O Error");
+        saveOK = false;
+      }
+    }
+    
+    String saveResult;
+    if (saveOK) {
+      saveResult = "succeeded";
+    } else {
+      saveResult = "failed";
+    }
+      logger.recordEvent(LogEvent.NORMAL, 
+          "Save All command succeeded, resulting in " 
+            + String.valueOf(numberSaved)
+            + " saves and "
+            + String.valueOf(numberDeleted)
+            + " deletes", false);
+
+    
+    return saveOK;
+  }
+  
   /**
    Prompt the user to save to a different location. 
   
    @return True if save as was successful.
   */
   public boolean saveAs() {
-    modIfChanged();
+    boolean modOK = modIfChanged();
     boolean saved = false;
-    fileChooser.setDialogTitle ("Save As");
-    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    File selectedFile = fileChooser.showSaveDialog (this);
-    if (selectedFile != null) {
-      ClubEventWriter writer = new ClubEventWriter();
-      saved = writer.save (selectedFile, clubEventList, true, false);
-      if (saved) {
-        setClubEventFolder (selectedFile);
-        logger.recordEvent (LogEvent.NORMAL,
-          "Club Events saved to " + selectedFile.toString(),
-            false);
-      } else {
-        logger.recordEvent (LogEvent.MEDIUM,
-          "Problem saving Club Events to " + selectedFile.toString(),
-            false);
+    if (modOK) {
+      fileChooser.setDialogTitle ("Save As");
+      fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      File selectedFile = fileChooser.showSaveDialog (this);
+      if (selectedFile != null) {
+        writer = new ClubEventWriter();
+        saved = writer.save (selectedFile, clubEventList, true);
+        if (saved) {
+          setClubEventFolder (selectedFile);
+          logger.recordEvent (LogEvent.NORMAL,
+            "Club Events saved to " + selectedFile.toString(),
+              false);
+        } else {
+          logger.recordEvent (LogEvent.MEDIUM,
+            "Problem saving Club Events to " + selectedFile.toString(),
+              false);
+        }
+        FileSpec fileSpec = recentFiles.get(0);
       }
-      FileSpec fileSpec = recentFiles.get(0);
     }
     return saved;
   }
@@ -444,39 +495,41 @@ public class ClubPlanner
    @return True if backup was successful.
   */
   public boolean promptForBackup() {
-    modIfChanged();
+    boolean modOK = modIfChanged();
     boolean backedUp = false;
-    fileChooser.setDialogTitle ("Make Backup of Club Planner Events folder");
-    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    FileName eventsFileName = new FileName (home.getUserHome());
-    if (goodEventsFile()) {
-      eventsFileName = new FileName (eventsFile);
-    }
-    File backupFolder = getBackupFolder();
-    fileChooser.setCurrentDirectory (backupFolder);
-    if (goodEventsFile()) {
-      String presumptiveBackupFolderStr = 
-          backupFolder.toString() + 
-          xos.getPathSeparator() + 
-          filePrefs.getBackupFileName(eventsFile, eventsFileName.getExt());
-      System.out.println ("Presumed Backup Folder = " + presumptiveBackupFolderStr);
-      fileChooser.setSelectedFile
-          (new File(presumptiveBackupFolderStr));
-    }
-    File selectedFile = fileChooser.showSaveDialog (this);
-    if(selectedFile != null) {
-      File backupFile = selectedFile;
-      backedUp = backup (backupFile);
-      FileSpec fileSpec = recentFiles.get(0);
-      fileSpec.setBackupFolder(backupFile);
-      if (backedUp) {
-        JOptionPane.showMessageDialog(this,
-            "Backup completed successfully",
-            "Backup Results",
-            JOptionPane.INFORMATION_MESSAGE,
-            Home.getShared().getIcon());
-      } 
-    }
+    if (modOK) {
+      fileChooser.setDialogTitle ("Make Backup of Club Planner Events folder");
+      fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      FileName eventsFileName = new FileName (home.getUserHome());
+      if (goodEventsFile()) {
+        eventsFileName = new FileName (eventsFile);
+      }
+      File backupFolder = getBackupFolder();
+      fileChooser.setCurrentDirectory (backupFolder);
+      if (goodEventsFile()) {
+        String presumptiveBackupFolderStr = 
+            backupFolder.toString() + 
+            xos.getPathSeparator() + 
+            filePrefs.getBackupFileName(eventsFile, eventsFileName.getExt());
+        System.out.println ("Presumed Backup Folder = " + presumptiveBackupFolderStr);
+        fileChooser.setSelectedFile
+            (new File(presumptiveBackupFolderStr));
+      }
+      File selectedFile = fileChooser.showSaveDialog (this);
+      if(selectedFile != null) {
+        File backupFile = selectedFile;
+        backedUp = backup (backupFile);
+        FileSpec fileSpec = recentFiles.get(0);
+        fileSpec.setBackupFolder(backupFile);
+        if (backedUp) {
+          JOptionPane.showMessageDialog(this,
+              "Backup completed successfully",
+              "Backup Results",
+              JOptionPane.INFORMATION_MESSAGE,
+              Home.getShared().getIcon());
+        } // end if backed up successfully
+      } // end if the user selected a backup location
+    } // end if modIfChanged had no problems
 
     return backedUp;
   }
@@ -494,20 +547,39 @@ public class ClubPlanner
   /**
    Backup the data store to the indicated location. 
   
-   @param backupFile The backup file to be used. 
+   @param backupFile The folder in which the backup should be placed.  
   
    @return 
   */
-  public boolean backup(File backupFile) {
-    ClubEventWriter writer = new ClubEventWriter();
-    boolean backedUp = writer.save (backupFile, clubEventList, false, false);
+  public boolean backup(File folderForBackups) {
+    boolean backedUp = false;
+    StringBuilder backupPath = new StringBuilder();
+    try {
+      backupPath.append(folderForBackups.getCanonicalPath());
+    } catch (IOException e) {
+      backupPath.append(folderForBackups.getAbsolutePath());
+    }
+    backupPath.append(xos.getPathSeparator());
+    System.out.println ("ClubPlanner.backup");
+    System.out.println ("  backup path = " + backupPath.toString());
+    if (clubEventCalc.ifOpYearFromFolder()) {
+      backupPath.append(clubEventCalc.getOpYearFolder());
+      backupPath.append(" ");
+    }
+    backupPath.append("backup ");
+    backupPath.append(filePrefs.getBackupDate());
+    System.out.println ("  backup path = " + backupPath.toString());
+    File backupFolder = new File (backupPath.toString());
+    backupFolder.mkdir();
+    ClubEventWriter backupWriter = new ClubEventWriter();
+    backedUp = backupWriter.save (backupFolder, clubEventList, false);
     if (backedUp) {
       logger.recordEvent (LogEvent.NORMAL,
-          "URLs backed up to " + backupFile.toString(),
+          "URLs backed up to " + backupFolder.toString(),
             false);
     } else {
       logger.recordEvent (LogEvent.MEDIUM,
-          "Problem backing up URLs to " + backupFile.toString(),
+          "Problem backing up URLs to " + backupFolder.toString(),
             false);
     }
     return backedUp;
@@ -520,11 +592,14 @@ public class ClubPlanner
            based on his past choices, or on the application defaults.
   */
   private File getBackupFolder() {
+    System.out.println ("ClubPlanner getBackupFolder");
     File backupFolder = home.getUserHome();
     if (goodEventsFile()) {    
       FileSpec fileSpec = recentFiles.get(0);
       String backupFolderStr = fileSpec.getBackupFolder();
+      System.out.println ("  fileSpec backup folder = " + backupFolderStr);
       File defaultBackupFolder = new File (fileSpec.getFolder(), "backups");
+      System.out.println ("  default backup folder  = " + defaultBackupFolder);
       if (backupFolderStr == null
           || backupFolderStr.length() < 2) {
         backupFolder = defaultBackupFolder;
@@ -542,8 +617,9 @@ public class ClubPlanner
   }
   
   private void closeFile() {
+
+    boolean modOK = modIfChanged();
     /*
-    modIfChanged();
     checkForUnsavedChanges();
     publishWindow.closeSource();
     */
@@ -621,52 +697,90 @@ public class ClubPlanner
       selectedTags = tags.getTagsAsString();
     } 
 
-    modIfChanged();
+    boolean modOK = modIfChanged();
 
-    if (clubEventList.roomForMore()) {
-      position = new ClubEventPositioned();
-      position.setIndex (clubEventList.size());
-      display();
-      clubEventPanel1.getStatusTextSelector().setText (selectedTags);
-    } else {
-      handleRegistrationLimitation();
+    if (modOK) {
+      if (clubEventList.roomForMore()) {
+        position = new ClubEventPositioned();
+        position.setIndex (clubEventList.size());
+        localPath = "";
+        display();
+        clubEventPanel1.getStatusTextSelector().setText (selectedTags);
+      } else {
+        handleRegistrationLimitation();
+      }
     }
   }
   
-  private void removeClubEvent () {
-    /*
-    if (position.isNewClubEvent()) {
-      System.out.println ("New ClubEvent -- ignoring delete command");
-    } else {
-      boolean okToDelete = true;
-      if (CommonPrefs.getShared().confirmDeletes()) {
-        int userOption = JOptionPane.showConfirmDialog(this, "Really delete this ClubEvent?",
-            "Delete Confirmation",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE);
-        okToDelete = (userOption == JOptionPane.YES_OPTION);
+  /**
+   Duplicate the currently displayed event.
+   */
+  public void duplicateClubEvent() {
+
+    boolean modOK = modIfChanged();
+
+    if (modOK) {
+      if (clubEventList.roomForMore()) {
+        ClubEvent clubEvent = position.getClubEvent();
+        ClubEvent newClubEvent = clubEvent.duplicate();
+        position = new ClubEventPositioned();
+        position.setIndex (clubEventList.size());
+        position.setClubEvent(newClubEvent);
+        localPath = "";
+        display();
+      } else {
+        handleRegistrationLimitation();
       }
-      if (okToDelete) {
-        position.setNavigatorToList
-            (collectionTabbedPane.getSelectedIndex() == 0);
+    }
+  }
+  
+  /**
+   Remove the currently displayed event from the list. 
+  */
+  private void removeClubEvent () {
+    boolean okToDelete = true;
+    if (CommonPrefs.getShared().confirmDeletes()) {
+      int userOption = JOptionPane.showConfirmDialog(this, 
+          "Really delete this Event?",
+          "Delete Confirmation",
+          JOptionPane.YES_NO_OPTION,
+          JOptionPane.QUESTION_MESSAGE);
+      okToDelete = (userOption == JOptionPane.YES_OPTION);
+    }
+    if (okToDelete) {
+      if (position.isNewClubEvent()) {
+        position = new ClubEventPositioned();
+        position.setIndex (clubEventList.size());
+        display();        
+      } else {
+        noFindInProgress();
+        boolean deleted = writer.delete(eventsFile, localPath);
+        if (! deleted) {
+          Trouble.getShared().report(this, 
+              "Event could not be deleted", 
+              "Delete Failure", 
+              JOptionPane.ERROR_MESSAGE);
+        }
         position = clubEventList.remove (position);
-        setUnsavedChanges (true);
         positionAndDisplay();
-      } // end if user confirmed delete
-    } // end if new ClubEvent not yet saved
-    */
+        currentFileModified = true;
+      } // end if new ClubEvent not yet saved
+    }
+    
   } // end method removeClubEvent
   
 	private void replaceTags() {
-		modIfChanged();
-		TagsChangeScreen replaceScreen = new TagsChangeScreen
-				(this, true, clubEventList.getTagsList(), this);
-		replaceScreen.setLocation (
-				this.getX() + WindowMenuManager.CHILD_WINDOW_X_OFFSET,
-				this.getY() + WindowMenuManager.CHILD_WINDOW_Y_OFFSET);
-		replaceScreen.setVisible (true);
-		// setUnsavedChanges (true);
-		// catScreen.show();
+		boolean modOK = modIfChanged();
+    if (modOK) {
+      TagsChangeScreen replaceScreen = new TagsChangeScreen
+          (this, true, clubEventList.getTagsList(), this);
+      replaceScreen.setLocation (
+          this.getX() + WindowMenuManager.CHILD_WINDOW_X_OFFSET,
+          this.getY() + WindowMenuManager.CHILD_WINDOW_Y_OFFSET);
+      replaceScreen.setVisible (true);
+      // setUnsavedChanges (true);
+      // catScreen.show();
+    }
 	}
 
 	/**
@@ -676,49 +790,55 @@ public class ClubPlanner
 	 */
 	public void changeAllTags (String from, String to) {
 
-		modIfChanged();
-		ClubEventPositioned workPositioned = new ClubEventPositioned ();
-		int mods = 0;
-		for (int workIndex = 0; workIndex < clubEventList.size(); workIndex++) {
-			workPositioned.setClubEvent (clubEventList.get (workIndex));
-			workPositioned.setIndex (workIndex);
-			String before = workPositioned.getClubEvent().getTags().toString();
-			workPositioned.getClubEvent().getTags().replace (from, to);
-			if (! before.equals (workPositioned.getClubEvent().getTags().toString())) {
-				mods++;
-				clubEventList.modify(workPositioned);
-			}
-		}
+		boolean modOK = modIfChanged();
+    if (modOK) {
+      ClubEventPositioned workPositioned = new ClubEventPositioned ();
+      int mods = 0;
+      for (int workIndex = 0; workIndex < clubEventList.size(); workIndex++) {
+        workPositioned.setClubEvent (clubEventList.get (workIndex));
+        workPositioned.setIndex (workIndex);
+        String before = workPositioned.getClubEvent().getTags().toString();
+        workPositioned.getClubEvent().getTags().replace (from, to);
+        if (! before.equals (workPositioned.getClubEvent().getTags().toString())) {
+          mods++;
+          clubEventList.modify(workPositioned);
+        }
+      }
 
-		JOptionPane.showMessageDialog(this,
-			String.valueOf (mods)
-					+ " tags changed",
-			"Tags Replacement Results",
-			JOptionPane.INFORMATION_MESSAGE);
-		display();
+      JOptionPane.showMessageDialog(this,
+        String.valueOf (mods)
+            + " tags changed",
+        "Tags Replacement Results",
+        JOptionPane.INFORMATION_MESSAGE);
+      display();
+    }
 	}
 
 	private void flattenTags() {
-		modIfChanged();
-		ClubEventPositioned workPositioned = new ClubEventPositioned();
-		for (int workIndex = 0; workIndex < clubEventList.size(); workIndex++) {
-			workPositioned.setClubEvent (clubEventList.get (workIndex));
-			workPositioned.getClubEvent().flattenTags();
-			clubEventList.modify(workPositioned);
-		}
-		findButton.setText(FIND);
-		display();
+		boolean modOK = modIfChanged();
+    if (modOK) {
+      ClubEventPositioned workPositioned = new ClubEventPositioned();
+      for (int workIndex = 0; workIndex < clubEventList.size(); workIndex++) {
+        workPositioned.setClubEvent (clubEventList.get (workIndex));
+        workPositioned.getClubEvent().flattenTags();
+        clubEventList.modify(workPositioned);
+      }
+      findButton.setText(FIND);
+      display();
+    }
 	}
 
 	private void lowerCaseTags() {
-		modIfChanged();
-		ClubEventPositioned workPositioned = new ClubEventPositioned();
-		for (int workIndex = 0; workIndex < clubEventList.size(); workIndex++) {
-			workPositioned.setClubEvent (clubEventList.get (workIndex));
-			workPositioned.getClubEvent().lowerCaseTags();
-			clubEventList.modify(workPositioned);
-		}
-		findButton.setText(FIND);
+		boolean modOK = modIfChanged();
+    if (modOK) {
+      ClubEventPositioned workPositioned = new ClubEventPositioned();
+      for (int workIndex = 0; workIndex < clubEventList.size(); workIndex++) {
+        workPositioned.setClubEvent (clubEventList.get (workIndex));
+        workPositioned.getClubEvent().lowerCaseTags();
+        clubEventList.modify(workPositioned);
+      }
+      findButton.setText(FIND);
+    }
 	}
 
 	public int replaceTags (String find, String replace) {
@@ -757,8 +877,13 @@ public class ClubPlanner
   /**
    Check to see if the user has changed anything and take appropriate
    actions if so.
+  
+   @return True if it's ok to proceed, false if the user's changes could
+           not be saved. 
    */
-  public void modIfChanged () {
+  public boolean modIfChanged () {
+    
+    boolean modOK = true;
 
     ClubEvent clubEvent = position.getClubEvent();
     if (clubEventPanel1.modIfChanged(clubEvent)) {
@@ -778,25 +903,59 @@ public class ClubPlanner
     } 
     
     if (modified) {
-      // setUnsavedChanges(true);
+      currentFileModified = true;
+      String newLocalPath = clubEvent.getLocalPath();
+      if ((! clubEvent.hasWhat()) || clubEvent.getWhat().length() == 0) {
+        trouble.report (this, 
+            "The What field has been left blank", 
+            "Missing Key Field");
+        modOK = false;
+      } 
+      else 
+      if ((! newLocalPath.equals(localPath))
+          && writer.exists(eventsFile, newLocalPath)) {
+        trouble.report (this, 
+            "An event already exists with the same What field",
+            "Duplicate Found");
+        modOK = false;
+      }
+      else
       if (position.isNewClubEvent()) {
-        if (clubEvent.hasWhat() && clubEvent.getWhat().length() > 0) {
-          addClubEvent ();
-        } // end if we have clubEvent worth adding
+        clubEventCalc.calcAll(clubEvent);
+        addClubEvent (clubEvent);
       } else {
+        clubEventCalc.calcAll(clubEvent);
         clubEventList.modify(position);
-        ClubEventWriter writer = new ClubEventWriter();
-        writer.save(eventsFile, clubEvent, true, true);
-        System.out.println ("Saved " + clubEvent.getWhatAsString());
+        writer = new ClubEventWriter();
+        String oldDiskLocation = clubEvent.getDiskLocation();
+        boolean saved = writer.save(eventsFile, clubEvent, true);
+        if (saved) {
+          // System.out.println ("Saved " + clubEvent.getWhatAsString());
+          String newDiskLocation = clubEvent.getDiskLocation();
+          if (! newDiskLocation.equals(oldDiskLocation)) {
+            File oldDiskFile = new File (oldDiskLocation);
+            oldDiskFile.delete();
+          }
+        } else {
+          trouble.report(this, "Trouble saving the item to disk", "I/O Error");
+          modOK = false;
+        }
       }
       clubEventList.fireTableDataChanged();
     } // end if modified
+    
+    return modOK;
+    
   } // end modIfChanged method
   
-  private void addClubEvent () {
+  /**
+   Add a new club event.
+  */
+  private void addClubEvent (ClubEvent clubEvent) {
     if (clubEventList.roomForMore()) {
       position = clubEventList.add (position.getClubEvent());
       if (position.hasValidIndex (clubEventList)) {
+        writer.save(eventsFile, clubEvent, true);
         positionAndDisplay();
       }
     } else {
@@ -805,35 +964,43 @@ public class ClubPlanner
   }
   
   public void firstClubEvent () {
-    modIfChanged();
-    noFindInProgress();
-    // position.setNavigatorToList (collectionTabbedPane.getSelectedIndex() == 0);
-    position = clubEventList.first (position);
-    positionAndDisplay();
+    boolean modOK = modIfChanged();
+    if (modOK) {
+      noFindInProgress();
+      // position.setNavigatorToList (collectionTabbedPane.getSelectedIndex() == 0);
+      position = clubEventList.first (position);
+      positionAndDisplay();
+    }
   }
 
   public void priorClubEvent () {
-    modIfChanged();
-    noFindInProgress();
-    // position.setNavigatorToList (collectionTabbedPane.getSelectedIndex() == 0);
-    position = clubEventList.prior (position);
-    positionAndDisplay();
+    boolean modOK = modIfChanged();
+    if (modOK) {
+      noFindInProgress();
+      // position.setNavigatorToList (collectionTabbedPane.getSelectedIndex() == 0);
+      position = clubEventList.prior (position);
+      positionAndDisplay();
+    }
   }
 
   public void nextClubEvent() {
-    modIfChanged();
-    noFindInProgress();
-    // position.setNavigatorToList (collectionTabbedPane.getSelectedIndex() == 0);
-    position = clubEventList.next (position);
-    positionAndDisplay();
+    boolean modOK = modIfChanged();
+    if (modOK) {
+      noFindInProgress();
+      // position.setNavigatorToList (collectionTabbedPane.getSelectedIndex() == 0);
+      position = clubEventList.next (position);
+      positionAndDisplay();
+    }
   }
 
   public void lastClubEvent() {
-    modIfChanged();
-    noFindInProgress();
-    // position.setNavigatorToList (collectionTabbedPane.getSelectedIndex() == 0);
-    position = clubEventList.last (position);
-    positionAndDisplay();
+    boolean modOK = modIfChanged();
+    if (modOK) {
+      noFindInProgress();
+      // position.setNavigatorToList (collectionTabbedPane.getSelectedIndex() == 0);
+      position = clubEventList.last (position);
+      positionAndDisplay();
+    }
   }
   
   /**
@@ -875,46 +1042,48 @@ public class ClubPlanner
       String findString, 
       boolean showDialogAtEnd) {
         
-    modIfChanged();
+    boolean modOK = modIfChanged();
     boolean found = false;
 
-    String notFoundMessage;
-    if (findString != null && findString.length() > 0) {
-      if (findButtonText.equals (FIND)) {
-        notFoundMessage = "No Club Events Found";
-        position.setIndex (-1);
-      } else {
-        notFoundMessage = "No further Club Events Found";
-      }
-      position.incrementIndex (1);
-      String findLower = findString.toLowerCase();
-      String findUpper = findString.toUpperCase();
-      while (position.hasValidIndex(clubEventList) && (! found)) {
-        ClubEvent clubEventCheck = clubEventList.get (position.getIndex());
-        found = clubEventCheck.find (findLower, findUpper);
-        if (found) {
-          foundClubEvent = clubEventCheck;
+    if (modOK) {
+      String notFoundMessage;
+      if (findString != null && findString.length() > 0) {
+        if (findButtonText.equals (FIND)) {
+          notFoundMessage = "No Club Events Found";
+          position.setIndex (-1);
         } else {
-          position.incrementIndex (1);
+          notFoundMessage = "No further Club Events Found";
         }
-      } // while still looking for next match
-      if (found) {
-        findInProgress();
-        lastTextFound = findString;
-        position = clubEventList.positionUsingListIndex (position.getIndex());
-        positionAndDisplay();
-        statusBar.setStatus("Matching Club Event found");
-      } else {
-        JOptionPane.showMessageDialog(this,
-            notFoundMessage,
-            "OK",
-            JOptionPane.WARNING_MESSAGE);
-        noFindInProgress();
-        lastTextFound = "";
-        statusBar.setStatus(notFoundMessage);
-        foundClubEvent = null;
-      }
-    } // end if we've got a find string
+        position.incrementIndex (1);
+        String findLower = findString.toLowerCase();
+        String findUpper = findString.toUpperCase();
+        while (position.hasValidIndex(clubEventList) && (! found)) {
+          ClubEvent clubEventCheck = clubEventList.get (position.getIndex());
+          found = clubEventCheck.find (findLower, findUpper);
+          if (found) {
+            foundClubEvent = clubEventCheck;
+          } else {
+            position.incrementIndex (1);
+          }
+        } // while still looking for next match
+        if (found) {
+          findInProgress();
+          lastTextFound = findString;
+          position = clubEventList.positionUsingListIndex (position.getIndex());
+          positionAndDisplay();
+          statusBar.setStatus("Matching Club Event found");
+        } else {
+          JOptionPane.showMessageDialog(this,
+              notFoundMessage,
+              "OK",
+              JOptionPane.WARNING_MESSAGE);
+          noFindInProgress();
+          lastTextFound = "";
+          statusBar.setStatus(notFoundMessage);
+          foundClubEvent = null;
+        }
+      } // end if we've got a find string
+    }
     return found;
   } // end method findURL
   
@@ -955,9 +1124,11 @@ public class ClubPlanner
   private void selectTableRow () {
     int selectedRow = itemTable.getSelectedRow();
     if (selectedRow >= 0 && selectedRow < clubEventList.size()) {
-      modIfChanged();
-      position = clubEventList.positionUsingListIndex (selectedRow);
-      positionAndDisplay();
+      boolean modOK = modIfChanged();
+      if (modOK) {
+        position = clubEventList.positionUsingListIndex (selectedRow);
+        positionAndDisplay();
+      }
     }
   }
   
@@ -981,15 +1152,17 @@ public class ClubPlanner
     else
     if (node.getNodeType() == TagsNode.ITEM) {
       System.out.println ("selectBranch selected item = " + node.toString());
-      modIfChanged();
-      ClubEvent branch = (ClubEvent)node.getTaggable();
-      int branchIndex = clubEventList.find (branch);
-      if (branchIndex >= 0) {
-        position = clubEventList.positionUsingListIndex (branchIndex);
-        position.setTagsNode (node);
-        positionAndDisplay();
-      } else {
-        System.out.println ("Selected a branch from the tree that couldn't be found in the list");
+      boolean modOK = modIfChanged();
+      if (modOK) {
+        ClubEvent branch = (ClubEvent)node.getTaggable();
+        int branchIndex = clubEventList.find (branch);
+        if (branchIndex >= 0) {
+          position = clubEventList.positionUsingListIndex (branchIndex);
+          position.setTagsNode (node);
+          positionAndDisplay();
+        } else {
+          System.out.println ("Selected a branch from the tree that couldn't be found in the list");
+        }
       }
     }
     else {
@@ -998,8 +1171,9 @@ public class ClubPlanner
     }
   }
   
-  public void display () {
+  private void display() {
     ClubEvent clubEvent = position.getClubEvent();
+    localPath = clubEvent.getLocalPath();
     clubEventPanel1.display(clubEvent);
     clubEventPanel2.display(clubEvent);
     clubEventPanel3.display(clubEvent);
@@ -1042,9 +1216,18 @@ public class ClubPlanner
     fileOpenMenuItem = new javax.swing.JMenuItem();
     fileOpenRecentMenu = new javax.swing.JMenu();
     jSeparator1 = new javax.swing.JPopupMenu.Separator();
+    fileSaveMenuItem = new javax.swing.JMenuItem();
+    fileSaveAllMenuItem = new javax.swing.JMenuItem();
     fileSaveAsMenuItem = new javax.swing.JMenuItem();
     jSeparator2 = new javax.swing.JPopupMenu.Separator();
     fileBackupMenuItem = new javax.swing.JMenuItem();
+    eventMenu = new javax.swing.JMenu();
+    eventNextMenuItem = new javax.swing.JMenuItem();
+    eventPriorMenuItem = new javax.swing.JMenuItem();
+    jSeparator3 = new javax.swing.JPopupMenu.Separator();
+    eventNewMenuItem = new javax.swing.JMenuItem();
+    eventDeleteMenuItem = new javax.swing.JMenuItem();
+    eventDupeMenuItem = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JMenu();
     windowMenu = new javax.swing.JMenu();
     helpMenu = new javax.swing.JMenu();
@@ -1271,100 +1454,173 @@ public class ClubPlanner
     fileMenu.add(fileOpenRecentMenu);
     fileMenu.add(jSeparator1);
 
-    fileSaveAsMenuItem.setText("Save As...");
-    fileSaveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        fileSaveAsMenuItemActionPerformed(evt);
-      }
-    });
-    fileMenu.add(fileSaveAsMenuItem);
-    fileMenu.add(jSeparator2);
-
-    fileBackupMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-    fileBackupMenuItem.setText("Backup...");
-    fileBackupMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        fileBackupMenuItemActionPerformed(evt);
-      }
-    });
-    fileMenu.add(fileBackupMenuItem);
-
-    mainMenuBar.add(fileMenu);
-
-    editMenu.setText("Edit");
-    mainMenuBar.add(editMenu);
-
-    windowMenu.setText("Window");
-    mainMenuBar.add(windowMenu);
-
-    helpMenu.setText("Help");
-
-    helpPurchaseMenuItem.setText("Purchase License");
-    helpPurchaseMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        helpPurchaseMenuItemActionPerformed(evt);
-      }
-    });
-    helpMenu.add(helpPurchaseMenuItem);
-
-    registerMenuItem.setText("Product Registration...");
-    registerMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        registerMenuItemActionPerformed(evt);
-      }
-    });
-    helpMenu.add(registerMenuItem);
-    helpMenu.add(jSeparator9);
-
-    helpHistoryMenuItem.setText("Program History");
-    helpHistoryMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        helpHistoryMenuItemActionPerformed(evt);
-      }
-    });
-    helpMenu.add(helpHistoryMenuItem);
-
-    userGuideMenuItem.setText("User Guide");
-    userGuideMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        userGuideMenuItemActionPerformed(evt);
-      }
-    });
-    helpMenu.add(userGuideMenuItem);
-    helpMenu.add(jSeparator7);
-
-    helpSoftwareUpdatesMenuItem.setText("Check for Updates...");
-    helpSoftwareUpdatesMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        helpSoftwareUpdatesMenuItemActionPerformed(evt);
-      }
-    });
-    helpMenu.add(helpSoftwareUpdatesMenuItem);
-
-    webMenuItem.setText("URL Union Home Page");
-    webMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        webMenuItemActionPerformed(evt);
-      }
-    });
-    helpMenu.add(webMenuItem);
-
-    submitFeedbackMenuItem.setText("Submit Feedback");
-    submitFeedbackMenuItem.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        submitFeedbackMenuItemActionPerformed(evt);
-      }
-    });
-    helpMenu.add(submitFeedbackMenuItem);
-    helpMenu.add(jSeparator8);
-
-    helpReduceWindowSizeMenuItem.setText("Reduce Window Size");
-    helpReduceWindowSizeMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_W,
+    fileSaveMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_S,
       Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-  helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  fileSaveMenuItem.setText("Save");
+  fileSaveMenuItem.setToolTipText("Save current item");
+  fileSaveMenuItem.addActionListener(new java.awt.event.ActionListener() {
     public void actionPerformed(java.awt.event.ActionEvent evt) {
-      helpReduceWindowSizeMenuItemActionPerformed(evt);
+      fileSaveMenuItemActionPerformed(evt);
     }
+  });
+  fileMenu.add(fileSaveMenuItem);
+
+  fileSaveAllMenuItem.setText("Save All");
+  fileSaveAllMenuItem.setToolTipText("Save all items in the list back to disk. ");
+  fileSaveAllMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      fileSaveAllMenuItemActionPerformed(evt);
+    }
+  });
+  fileMenu.add(fileSaveAllMenuItem);
+
+  fileSaveAsMenuItem.setText("Save As...");
+  fileSaveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      fileSaveAsMenuItemActionPerformed(evt);
+    }
+  });
+  fileMenu.add(fileSaveAsMenuItem);
+  fileMenu.add(jSeparator2);
+
+  fileBackupMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+  fileBackupMenuItem.setText("Backup...");
+  fileBackupMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      fileBackupMenuItemActionPerformed(evt);
+    }
+  });
+  fileMenu.add(fileBackupMenuItem);
+
+  mainMenuBar.add(fileMenu);
+
+  eventMenu.setText("Event");
+
+  eventNextMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_CLOSE_BRACKET,
+    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+eventNextMenuItem.setText("Next");
+eventNextMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  public void actionPerformed(java.awt.event.ActionEvent evt) {
+    eventNextMenuItemActionPerformed(evt);
+  }
+  });
+  eventMenu.add(eventNextMenuItem);
+
+  eventPriorMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_OPEN_BRACKET,
+    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+eventPriorMenuItem.setText("Prior");
+eventPriorMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  public void actionPerformed(java.awt.event.ActionEvent evt) {
+    eventPriorMenuItemActionPerformed(evt);
+  }
+  });
+  eventMenu.add(eventPriorMenuItem);
+  eventMenu.add(jSeparator3);
+
+  eventNewMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_N,
+    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+eventNewMenuItem.setText("New");
+eventNewMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  public void actionPerformed(java.awt.event.ActionEvent evt) {
+    eventNewMenuItemActionPerformed(evt);
+  }
+  });
+  eventMenu.add(eventNewMenuItem);
+
+  eventDeleteMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_D,
+    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+eventDeleteMenuItem.setText("Delete");
+eventDeleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  public void actionPerformed(java.awt.event.ActionEvent evt) {
+    eventDeleteMenuItemActionPerformed(evt);
+  }
+  });
+  eventMenu.add(eventDeleteMenuItem);
+
+  eventDupeMenuItem.setText("Duplicate");
+  eventDupeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      eventDupeMenuItemActionPerformed(evt);
+    }
+  });
+  eventMenu.add(eventDupeMenuItem);
+
+  mainMenuBar.add(eventMenu);
+
+  editMenu.setText("Edit");
+  mainMenuBar.add(editMenu);
+
+  windowMenu.setText("Window");
+  mainMenuBar.add(windowMenu);
+
+  helpMenu.setText("Help");
+
+  helpPurchaseMenuItem.setText("Purchase License");
+  helpPurchaseMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      helpPurchaseMenuItemActionPerformed(evt);
+    }
+  });
+  helpMenu.add(helpPurchaseMenuItem);
+
+  registerMenuItem.setText("Product Registration...");
+  registerMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      registerMenuItemActionPerformed(evt);
+    }
+  });
+  helpMenu.add(registerMenuItem);
+  helpMenu.add(jSeparator9);
+
+  helpHistoryMenuItem.setText("Program History");
+  helpHistoryMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      helpHistoryMenuItemActionPerformed(evt);
+    }
+  });
+  helpMenu.add(helpHistoryMenuItem);
+
+  userGuideMenuItem.setText("User Guide");
+  userGuideMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      userGuideMenuItemActionPerformed(evt);
+    }
+  });
+  helpMenu.add(userGuideMenuItem);
+  helpMenu.add(jSeparator7);
+
+  helpSoftwareUpdatesMenuItem.setText("Check for Updates...");
+  helpSoftwareUpdatesMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      helpSoftwareUpdatesMenuItemActionPerformed(evt);
+    }
+  });
+  helpMenu.add(helpSoftwareUpdatesMenuItem);
+
+  webMenuItem.setText("URL Union Home Page");
+  webMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      webMenuItemActionPerformed(evt);
+    }
+  });
+  helpMenu.add(webMenuItem);
+
+  submitFeedbackMenuItem.setText("Submit Feedback");
+  submitFeedbackMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      submitFeedbackMenuItemActionPerformed(evt);
+    }
+  });
+  helpMenu.add(submitFeedbackMenuItem);
+  helpMenu.add(jSeparator8);
+
+  helpReduceWindowSizeMenuItem.setText("Reduce Window Size");
+  helpReduceWindowSizeMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_W,
+    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  public void actionPerformed(java.awt.event.ActionEvent evt) {
+    helpReduceWindowSizeMenuItemActionPerformed(evt);
+  }
   });
   helpMenu.add(helpReduceWindowSizeMenuItem);
 
@@ -1380,8 +1636,10 @@ public class ClubPlanner
   }//GEN-LAST:event_fileOpenMenuItemActionPerformed
 
   private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-    modIfChanged();
-    positionAndDisplay();
+    boolean modOK = modIfChanged();
+    if (modOK) {
+      positionAndDisplay();
+    }
   }//GEN-LAST:event_okButtonActionPerformed
 
   private void newButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newButtonActionPerformed
@@ -1496,6 +1754,35 @@ public class ClubPlanner
     saveAs();
   }//GEN-LAST:event_fileSaveAsMenuItemActionPerformed
 
+  private void eventDeleteMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eventDeleteMenuItemActionPerformed
+    removeClubEvent();
+  }//GEN-LAST:event_eventDeleteMenuItemActionPerformed
+
+  private void eventPriorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eventPriorMenuItemActionPerformed
+    priorClubEvent();
+  }//GEN-LAST:event_eventPriorMenuItemActionPerformed
+
+  private void eventNextMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eventNextMenuItemActionPerformed
+    nextClubEvent();
+  }//GEN-LAST:event_eventNextMenuItemActionPerformed
+
+  private void eventNewMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eventNewMenuItemActionPerformed
+    newClubEvent();
+  }//GEN-LAST:event_eventNewMenuItemActionPerformed
+
+  private void eventDupeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eventDupeMenuItemActionPerformed
+    duplicateClubEvent();
+  }//GEN-LAST:event_eventDupeMenuItemActionPerformed
+
+  private void fileSaveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileSaveMenuItemActionPerformed
+    modified = true;
+    modIfChanged();
+  }//GEN-LAST:event_fileSaveMenuItemActionPerformed
+
+  private void fileSaveAllMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileSaveAllMenuItemActionPerformed
+    saveAll();
+  }//GEN-LAST:event_fileSaveAllMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -1541,11 +1828,19 @@ public class ClubPlanner
   private javax.swing.JTabbedPane collectionTabs;
   private javax.swing.JButton deleteButton;
   private javax.swing.JMenu editMenu;
+  private javax.swing.JMenuItem eventDeleteMenuItem;
+  private javax.swing.JMenuItem eventDupeMenuItem;
+  private javax.swing.JMenu eventMenu;
+  private javax.swing.JMenuItem eventNewMenuItem;
+  private javax.swing.JMenuItem eventNextMenuItem;
+  private javax.swing.JMenuItem eventPriorMenuItem;
   private javax.swing.JMenuItem fileBackupMenuItem;
   private javax.swing.JMenu fileMenu;
   private javax.swing.JMenuItem fileOpenMenuItem;
   private javax.swing.JMenu fileOpenRecentMenu;
+  private javax.swing.JMenuItem fileSaveAllMenuItem;
   private javax.swing.JMenuItem fileSaveAsMenuItem;
+  private javax.swing.JMenuItem fileSaveMenuItem;
   private javax.swing.JButton findButton;
   private javax.swing.JTextField findText;
   private javax.swing.JButton firstButton;
@@ -1559,6 +1854,7 @@ public class ClubPlanner
   private javax.swing.JTabbedPane itemTabs;
   private javax.swing.JPopupMenu.Separator jSeparator1;
   private javax.swing.JPopupMenu.Separator jSeparator2;
+  private javax.swing.JPopupMenu.Separator jSeparator3;
   private javax.swing.JSeparator jSeparator7;
   private javax.swing.JSeparator jSeparator8;
   private javax.swing.JPopupMenu.Separator jSeparator9;

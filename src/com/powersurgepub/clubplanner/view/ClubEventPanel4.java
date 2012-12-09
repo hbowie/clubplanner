@@ -55,7 +55,7 @@ public class ClubEventPanel4
    */
   public ClubEventPanel4() {
  
-    gb.startLayout (this, 2, 99);
+    gb.startLayout (this, 4, 99);
     gb.setByRows(true);
 		gb.setDefaultColumnWeight (0.5);
 		gb.setDefaultRowWeight (0.0);
@@ -73,33 +73,45 @@ public class ClubEventPanel4
  
     idLabel.setLabelFor(idJTextField);
     gb.setColumnWeight(0.0);
+    gb.setWidth(1);
     gb.add(idLabel);
     idJTextField.setToolTipText("After the event has been added to the club web site, the ID assigned to the page by the Content Management System should be entered here.");
+    gb.setWidth(3);
     gb.add(idJTextField);
     linkLabel.setLabelFor(linkJTextField);
     gb.setColumnWeight(0.0);
+    gb.setWidth(1);
     gb.add(linkLabel);
     linkJTextField.setToolTipText("A URL pointing to a Web page with more information about the event.");
+    gb.setWidth(3);
     gb.add(linkJTextField);
     venueLabel.setLabelFor(venueJTextField);
     gb.setColumnWeight(0.0);
+    gb.setWidth(1);
     gb.add(venueLabel);
     venueJTextField.setToolTipText("A URL pointing to a Web page with more information about the venue for the event.");
+    gb.setWidth(3);
     gb.add(venueJTextField);
     imageLabel.setLabelFor(imageJTextField);
     gb.setColumnWeight(0.0);
+    gb.setWidth(1);
     gb.add(imageLabel);
     imageJTextField.setToolTipText("A URL pointing to an image that can be used to help advertise the event.");
+    gb.setWidth(3);
     gb.add(imageJTextField);
     newsImageLabel.setLabelFor(newsImageJTextField);
     gb.setColumnWeight(0.0);
+    gb.setWidth(1);
     gb.add(newsImageLabel);
     newsImageJTextField.setToolTipText("A URL pointing to an image suitable for use in our newsletter.");
+    gb.setWidth(3);
     gb.add(newsImageJTextField);
     discussLabel.setLabelFor(discussJTextField);
     gb.setColumnWeight(0.0);
+    gb.setWidth(1);
     gb.add(discussLabel);
     discussJTextField.setToolTipText("Identification of any issues to be discussed at an upcoming board meeting.");
+    gb.setWidth(3);
     gb.add(discussJTextField);
 
     gb.setWidth(2);

@@ -55,6 +55,22 @@ public class ClubEvent
  
 
   /**
+   The category assigned to the event.
+   */
+  private String type = null;
+ 
+  public static final String TYPE_FIELD_NAME = "Type";
+ 
+  public static final String TYPE_COLUMN_NAME = "Type";
+ 
+  public static final String TYPE_COMMON_NAME = "type";
+ 
+  public static final int TYPE_COLUMN_INDEX = 1;
+ 
+  public static final int TYPE_COLUMN_WIDTH = 20;
+ 
+
+  /**
    The sequence of discussion at a Board meeting.
    */
   private String seq = null;
@@ -65,9 +81,25 @@ public class ClubEvent
  
   public static final String SEQ_COMMON_NAME = "seq";
  
-  public static final int SEQ_COLUMN_INDEX = 1;
+  public static final int SEQ_COLUMN_INDEX = 2;
  
   public static final int SEQ_COLUMN_WIDTH = 4;
+ 
+
+  /**
+   An indication of the date and time that the event will be held, in a format emphasizing human readability. This need not be a complete date. It need not and generally should not contain the year, since this can be inferred from the operating year identified in the higher level folder. If an exact date is known, then this field should generally start with a three-character abbreviation for the day of the week. Three-character abbreviations for the month are also recognized and encouraged. Following are perfectly good examples of dates: Apr; Sat May 5; Thu Sun Mar 25 5:30 - 7:30 PM.
+   */
+  private String when = null;
+ 
+  public static final String WHEN_FIELD_NAME = "When";
+ 
+  public static final String WHEN_COLUMN_NAME = "When";
+ 
+  public static final String WHEN_COMMON_NAME = "when";
+ 
+  public static final int WHEN_COLUMN_INDEX = 3;
+ 
+  public static final int WHEN_COLUMN_WIDTH = 20;
  
 
   /**
@@ -81,25 +113,9 @@ public class ClubEvent
  
   public static final String YMD_COMMON_NAME = "ymd";
  
-  public static final int YMD_COLUMN_INDEX = 2;
+  public static final int YMD_COLUMN_INDEX = 4;
  
   public static final int YMD_COLUMN_WIDTH = 10;
- 
-
-  /**
-   The category assigned to the event.
-   */
-  private String type = null;
- 
-  public static final String TYPE_FIELD_NAME = "Type";
- 
-  public static final String TYPE_COLUMN_NAME = "Type";
- 
-  public static final String TYPE_COMMON_NAME = "type";
- 
-  public static final int TYPE_COLUMN_INDEX = 3;
- 
-  public static final int TYPE_COLUMN_WIDTH = 20;
  
 
   /**
@@ -113,7 +129,7 @@ public class ClubEvent
  
   public static final String WHAT_COMMON_NAME = "what";
  
-  public static final int WHAT_COLUMN_INDEX = 4;
+  public static final int WHAT_COLUMN_INDEX = 5;
  
   public static final int WHAT_COLUMN_WIDTH = 35;
  
@@ -129,27 +145,11 @@ public class ClubEvent
  
   public static final String STATUS_COMMON_NAME = "status";
  
-  public static final int STATUS_COLUMN_INDEX = 5;
+  public static final int STATUS_COLUMN_INDEX = 6;
  
   public static final int STATUS_COLUMN_WIDTH = 12;
  
   private TagsNode tagsNode = null;
-
-  /**
-   An indication of the date and time that the event will be held, in a format emphasizing human readability. This need not be a complete date. It need not and generally should not contain the year, since this can be inferred from the operating year identified in the higher level folder. If an exact date is known, then this field should generally start with a three-character abbreviation for the day of the week. Three-character abbreviations for the month are also recognized and encouraged. Following are perfectly good examples of dates: Apr; Sat May 5; Thu Sun Mar 25 5:30 - 7:30 PM.
-   */
-  private String when = null;
- 
-  public static final String WHEN_FIELD_NAME = "When";
- 
-  public static final String WHEN_COLUMN_NAME = "When";
- 
-  public static final String WHEN_COMMON_NAME = "when";
- 
-  public static final int WHEN_COLUMN_INDEX = 6;
- 
-  public static final int WHEN_COLUMN_WIDTH = 20;
- 
 
   /**
    The location of the event, including the name of the venue and its address.
@@ -328,38 +328,6 @@ public class ClubEvent
  
 
   /**
-   The amount of money we have planned/budgeted to be spent on the event.
-   */
-  private String plannedExpense = null;
- 
-  public static final String PLANNED_EXPENSE_FIELD_NAME = "Planned Expense";
- 
-  public static final String PLANNED_EXPENSE_COLUMN_NAME = "Pln Exp";
- 
-  public static final String PLANNED_EXPENSE_COMMON_NAME = "plannedexpense";
- 
-  public static final int PLANNED_EXPENSE_COLUMN_INDEX = 18;
- 
-  public static final int PLANNED_EXPENSE_COLUMN_WIDTH = 12;
- 
-
-  /**
-   The number of attendees built into our planning assumptions.
-   */
-  private String plannedAttendance = null;
- 
-  public static final String PLANNED_ATTENDANCE_FIELD_NAME = "Planned Attendance";
- 
-  public static final String PLANNED_ATTENDANCE_COLUMN_NAME = "Pln Attend";
- 
-  public static final String PLANNED_ATTENDANCE_COMMON_NAME = "plannedattendance";
- 
-  public static final int PLANNED_ATTENDANCE_COLUMN_INDEX = 19;
- 
-  public static final int PLANNED_ATTENDANCE_COLUMN_WIDTH = 8;
- 
-
-  /**
    Our actual income for the event.
    */
   private String actualIncome = null;
@@ -370,9 +338,25 @@ public class ClubEvent
  
   public static final String ACTUAL_INCOME_COMMON_NAME = "actualincome";
  
-  public static final int ACTUAL_INCOME_COLUMN_INDEX = 20;
+  public static final int ACTUAL_INCOME_COLUMN_INDEX = 18;
  
   public static final int ACTUAL_INCOME_COLUMN_WIDTH = 12;
+ 
+
+  /**
+   The amount of money we have planned/budgeted to be spent on the event.
+   */
+  private String plannedExpense = null;
+ 
+  public static final String PLANNED_EXPENSE_FIELD_NAME = "Planned Expense";
+ 
+  public static final String PLANNED_EXPENSE_COLUMN_NAME = "Pln Exp";
+ 
+  public static final String PLANNED_EXPENSE_COMMON_NAME = "plannedexpense";
+ 
+  public static final int PLANNED_EXPENSE_COLUMN_INDEX = 19;
+ 
+  public static final int PLANNED_EXPENSE_COLUMN_WIDTH = 12;
  
 
   /**
@@ -386,9 +370,25 @@ public class ClubEvent
  
   public static final String ACTUAL_EXPENSE_COMMON_NAME = "actualexpense";
  
-  public static final int ACTUAL_EXPENSE_COLUMN_INDEX = 21;
+  public static final int ACTUAL_EXPENSE_COLUMN_INDEX = 20;
  
   public static final int ACTUAL_EXPENSE_COLUMN_WIDTH = 12;
+ 
+
+  /**
+   The number of attendees built into our planning assumptions.
+   */
+  private String plannedAttendance = null;
+ 
+  public static final String PLANNED_ATTENDANCE_FIELD_NAME = "Planned Attendance";
+ 
+  public static final String PLANNED_ATTENDANCE_COLUMN_NAME = "Pln Attend";
+ 
+  public static final String PLANNED_ATTENDANCE_COMMON_NAME = "plannedattendance";
+ 
+  public static final int PLANNED_ATTENDANCE_COLUMN_INDEX = 21;
+ 
+  public static final int PLANNED_ATTENDANCE_COLUMN_WIDTH = 8;
  
 
   /**
@@ -810,6 +810,77 @@ public class ClubEvent
   /*
    Following code generated by PSTextMerge using:
  
+     template:  duplicate.java
+     data file: fields.xls
+   */
+ 
+  /**
+     Duplicates this item, making a deep copy.
+   */
+  public ClubEvent duplicate () {
+    ClubEvent newClubEvent = new ClubEvent();
+		String yearStr = new String(getYearAsString());
+		setYear(yearStr);
+		String typeStr = new String(getTypeAsString());
+		setType(typeStr);
+		String whenStr = new String(getWhenAsString());
+		setWhen(whenStr);
+		String whatStr = new String(getWhatAsString());
+		setWhat(whatStr);
+		String statusStr = new String(getStatusAsString());
+		setStatus(statusStr);
+		String whereStr = new String(getWhereAsString());
+		setWhere(whereStr);
+		String whoStr = new String(getWhoAsString());
+		setWho(whoStr);
+		String whyStr = new String(getWhyAsString());
+		setWhy(whyStr);
+		String teaserStr = new String(getTeaserAsString());
+		setTeaser(teaserStr);
+		String blurbStr = new String(getBlurbAsString());
+		setBlurb(blurbStr);
+		String costStr = new String(getCostAsString());
+		setCost(costStr);
+		String purchaseStr = new String(getPurchaseAsString());
+		setPurchase(purchaseStr);
+		String ticketsStr = new String(getTicketsAsString());
+		setTickets(ticketsStr);
+		String quantityStr = new String(getQuantityAsString());
+		setQuantity(quantityStr);
+		String plannedIncomeStr = new String(getPlannedIncomeAsString());
+		setPlannedIncome(plannedIncomeStr);
+		String actualIncomeStr = new String(getActualIncomeAsString());
+		setActualIncome(actualIncomeStr);
+		String plannedExpenseStr = new String(getPlannedExpenseAsString());
+		setPlannedExpense(plannedExpenseStr);
+		String actualExpenseStr = new String(getActualExpenseAsString());
+		setActualExpense(actualExpenseStr);
+		String plannedAttendanceStr = new String(getPlannedAttendanceAsString());
+		setPlannedAttendance(plannedAttendanceStr);
+		String actualAttendanceStr = new String(getActualAttendanceAsString());
+		setActualAttendance(actualAttendanceStr);
+		String recapStr = new String(getRecapAsString());
+		setRecap(recapStr);
+		String idStr = new String(getIdAsString());
+		setId(idStr);
+		String linkStr = new String(getLinkAsString());
+		setLink(linkStr);
+		String venueStr = new String(getVenueAsString());
+		setVenue(venueStr);
+		String imageStr = new String(getImageAsString());
+		setImage(imageStr);
+		String newsImageStr = new String(getNewsImageAsString());
+		setNewsImage(newsImageStr);
+		String discussStr = new String(getDiscussAsString());
+		setDiscuss(discussStr);
+		String notesStr = new String(getNotesAsString());
+		setNotes(notesStr);
+		return newClubEvent;
+  }
+
+  /*
+   Following code generated by PSTextMerge using:
+ 
      template:  master-io-methods.java
      data file: fields.xls
    */
@@ -1026,6 +1097,17 @@ public class ClubEvent
         setYear ((String)obj2);
       }
     }
+    obj2 = clubEvent2.getType();
+    if (obj2 == null) {
+      // No value available -- leave current value as-is
+    } else {
+      str2 = obj2.toString();
+      if (str2.equals ("")) {
+        // No value available -- leave current value as-is
+      } else {
+        setType ((String)obj2);
+      }
+    }
     obj2 = clubEvent2.getSeq();
     if (obj2 == null) {
       // No value available -- leave current value as-is
@@ -1037,6 +1119,17 @@ public class ClubEvent
         setSeq ((String)obj2);
       }
     }
+    obj2 = clubEvent2.getWhen();
+    if (obj2 == null) {
+      // No value available -- leave current value as-is
+    } else {
+      str2 = obj2.toString();
+      if (str2.equals ("")) {
+        // No value available -- leave current value as-is
+      } else {
+        setWhen ((String)obj2);
+      }
+    }
     obj2 = clubEvent2.getYmd();
     if (obj2 == null) {
       // No value available -- leave current value as-is
@@ -1046,17 +1139,6 @@ public class ClubEvent
         // No value available -- leave current value as-is
       } else {
         setYmd ((String)obj2);
-      }
-    }
-    obj2 = clubEvent2.getType();
-    if (obj2 == null) {
-      // No value available -- leave current value as-is
-    } else {
-      str2 = obj2.toString();
-      if (str2.equals ("")) {
-        // No value available -- leave current value as-is
-      } else {
-        setType ((String)obj2);
       }
     }
     obj2 = clubEvent2.getWhat();
@@ -1079,17 +1161,6 @@ public class ClubEvent
         // No value available -- leave current value as-is
       } else {
         setStatus ((Tags)obj2);
-      }
-    }
-    obj2 = clubEvent2.getWhen();
-    if (obj2 == null) {
-      // No value available -- leave current value as-is
-    } else {
-      str2 = obj2.toString();
-      if (str2.equals ("")) {
-        // No value available -- leave current value as-is
-      } else {
-        setWhen ((String)obj2);
       }
     }
     obj2 = clubEvent2.getWhere();
@@ -1213,28 +1284,6 @@ public class ClubEvent
         setPlannedIncome ((String)obj2);
       }
     }
-    obj2 = clubEvent2.getPlannedExpense();
-    if (obj2 == null) {
-      // No value available -- leave current value as-is
-    } else {
-      str2 = obj2.toString();
-      if (str2.equals ("")) {
-        // No value available -- leave current value as-is
-      } else {
-        setPlannedExpense ((String)obj2);
-      }
-    }
-    obj2 = clubEvent2.getPlannedAttendance();
-    if (obj2 == null) {
-      // No value available -- leave current value as-is
-    } else {
-      str2 = obj2.toString();
-      if (str2.equals ("")) {
-        // No value available -- leave current value as-is
-      } else {
-        setPlannedAttendance ((String)obj2);
-      }
-    }
     obj2 = clubEvent2.getActualIncome();
     if (obj2 == null) {
       // No value available -- leave current value as-is
@@ -1246,6 +1295,17 @@ public class ClubEvent
         setActualIncome ((String)obj2);
       }
     }
+    obj2 = clubEvent2.getPlannedExpense();
+    if (obj2 == null) {
+      // No value available -- leave current value as-is
+    } else {
+      str2 = obj2.toString();
+      if (str2.equals ("")) {
+        // No value available -- leave current value as-is
+      } else {
+        setPlannedExpense ((String)obj2);
+      }
+    }
     obj2 = clubEvent2.getActualExpense();
     if (obj2 == null) {
       // No value available -- leave current value as-is
@@ -1255,6 +1315,17 @@ public class ClubEvent
         // No value available -- leave current value as-is
       } else {
         setActualExpense ((String)obj2);
+      }
+    }
+    obj2 = clubEvent2.getPlannedAttendance();
+    if (obj2 == null) {
+      // No value available -- leave current value as-is
+    } else {
+      str2 = obj2.toString();
+      if (str2.equals ("")) {
+        // No value available -- leave current value as-is
+      } else {
+        setPlannedAttendance ((String)obj2);
       }
     }
     obj2 = clubEvent2.getActualAttendance();
@@ -1422,23 +1493,23 @@ public class ClubEvent
       case YEAR_COLUMN_INDEX:
           setYear (columnValue);
           break;
+      case TYPE_COLUMN_INDEX:
+          setType (columnValue);
+          break;
       case SEQ_COLUMN_INDEX:
           setSeq (columnValue);
           break;
+      case WHEN_COLUMN_INDEX:
+          setWhen (columnValue);
+          break;
       case YMD_COLUMN_INDEX:
           setYmd (columnValue);
-          break;
-      case TYPE_COLUMN_INDEX:
-          setType (columnValue);
           break;
       case WHAT_COLUMN_INDEX:
           setWhat (columnValue);
           break;
       case STATUS_COLUMN_INDEX:
           setStatus (columnValue);
-          break;
-      case WHEN_COLUMN_INDEX:
-          setWhen (columnValue);
           break;
       case WHERE_COLUMN_INDEX:
           setWhere (columnValue);
@@ -1473,17 +1544,17 @@ public class ClubEvent
       case PLANNED_INCOME_COLUMN_INDEX:
           setPlannedIncome (columnValue);
           break;
-      case PLANNED_EXPENSE_COLUMN_INDEX:
-          setPlannedExpense (columnValue);
-          break;
-      case PLANNED_ATTENDANCE_COLUMN_INDEX:
-          setPlannedAttendance (columnValue);
-          break;
       case ACTUAL_INCOME_COLUMN_INDEX:
           setActualIncome (columnValue);
           break;
+      case PLANNED_EXPENSE_COLUMN_INDEX:
+          setPlannedExpense (columnValue);
+          break;
       case ACTUAL_EXPENSE_COLUMN_INDEX:
           setActualExpense (columnValue);
+          break;
+      case PLANNED_ATTENDANCE_COLUMN_INDEX:
+          setPlannedAttendance (columnValue);
           break;
       case ACTUAL_ATTENDANCE_COLUMN_INDEX:
           setActualAttendance (columnValue);
@@ -1541,18 +1612,18 @@ public class ClubEvent
     switch (columnIndex) {
       case YEAR_COLUMN_INDEX:
           return year;
-      case SEQ_COLUMN_INDEX:
-          return seq;
-      case YMD_COLUMN_INDEX:
-          return ymd;
       case TYPE_COLUMN_INDEX:
           return type;
+      case SEQ_COLUMN_INDEX:
+          return seq;
+      case WHEN_COLUMN_INDEX:
+          return when;
+      case YMD_COLUMN_INDEX:
+          return ymd;
       case WHAT_COLUMN_INDEX:
           return what;
       case STATUS_COLUMN_INDEX:
           return status;
-      case WHEN_COLUMN_INDEX:
-          return when;
       case WHERE_COLUMN_INDEX:
           return where;
       case WHO_COLUMN_INDEX:
@@ -1575,14 +1646,14 @@ public class ClubEvent
           return quantity;
       case PLANNED_INCOME_COLUMN_INDEX:
           return plannedIncome;
-      case PLANNED_EXPENSE_COLUMN_INDEX:
-          return plannedExpense;
-      case PLANNED_ATTENDANCE_COLUMN_INDEX:
-          return plannedAttendance;
       case ACTUAL_INCOME_COLUMN_INDEX:
           return actualIncome;
+      case PLANNED_EXPENSE_COLUMN_INDEX:
+          return plannedExpense;
       case ACTUAL_EXPENSE_COLUMN_INDEX:
           return actualExpense;
+      case PLANNED_ATTENDANCE_COLUMN_INDEX:
+          return plannedAttendance;
       case ACTUAL_ATTENDANCE_COLUMN_INDEX:
           return actualAttendance;
       case OVER_UNDER_COLUMN_INDEX:
@@ -1627,18 +1698,18 @@ public class ClubEvent
     switch (columnIndex) {
       case YEAR_COLUMN_INDEX:
           return YEAR_COLUMN_NAME;
-      case SEQ_COLUMN_INDEX:
-          return SEQ_COLUMN_NAME;
-      case YMD_COLUMN_INDEX:
-          return YMD_COLUMN_NAME;
       case TYPE_COLUMN_INDEX:
           return TYPE_COLUMN_NAME;
+      case SEQ_COLUMN_INDEX:
+          return SEQ_COLUMN_NAME;
+      case WHEN_COLUMN_INDEX:
+          return WHEN_COLUMN_NAME;
+      case YMD_COLUMN_INDEX:
+          return YMD_COLUMN_NAME;
       case WHAT_COLUMN_INDEX:
           return WHAT_COLUMN_NAME;
       case STATUS_COLUMN_INDEX:
           return STATUS_COLUMN_NAME;
-      case WHEN_COLUMN_INDEX:
-          return WHEN_COLUMN_NAME;
       case WHERE_COLUMN_INDEX:
           return WHERE_COLUMN_NAME;
       case WHO_COLUMN_INDEX:
@@ -1661,14 +1732,14 @@ public class ClubEvent
           return QUANTITY_COLUMN_NAME;
       case PLANNED_INCOME_COLUMN_INDEX:
           return PLANNED_INCOME_COLUMN_NAME;
-      case PLANNED_EXPENSE_COLUMN_INDEX:
-          return PLANNED_EXPENSE_COLUMN_NAME;
-      case PLANNED_ATTENDANCE_COLUMN_INDEX:
-          return PLANNED_ATTENDANCE_COLUMN_NAME;
       case ACTUAL_INCOME_COLUMN_INDEX:
           return ACTUAL_INCOME_COLUMN_NAME;
+      case PLANNED_EXPENSE_COLUMN_INDEX:
+          return PLANNED_EXPENSE_COLUMN_NAME;
       case ACTUAL_EXPENSE_COLUMN_INDEX:
           return ACTUAL_EXPENSE_COLUMN_NAME;
+      case PLANNED_ATTENDANCE_COLUMN_INDEX:
+          return PLANNED_ATTENDANCE_COLUMN_NAME;
       case ACTUAL_ATTENDANCE_COLUMN_INDEX:
           return ACTUAL_ATTENDANCE_COLUMN_NAME;
       case OVER_UNDER_COLUMN_INDEX:
@@ -1714,18 +1785,18 @@ public class ClubEvent
     switch (columnIndex) {
       case YEAR_COLUMN_INDEX:
           return YEAR_COMMON_NAME;
-      case SEQ_COLUMN_INDEX:
-          return SEQ_COMMON_NAME;
-      case YMD_COLUMN_INDEX:
-          return YMD_COMMON_NAME;
       case TYPE_COLUMN_INDEX:
           return TYPE_COMMON_NAME;
+      case SEQ_COLUMN_INDEX:
+          return SEQ_COMMON_NAME;
+      case WHEN_COLUMN_INDEX:
+          return WHEN_COMMON_NAME;
+      case YMD_COLUMN_INDEX:
+          return YMD_COMMON_NAME;
       case WHAT_COLUMN_INDEX:
           return WHAT_COMMON_NAME;
       case STATUS_COLUMN_INDEX:
           return STATUS_COMMON_NAME;
-      case WHEN_COLUMN_INDEX:
-          return WHEN_COMMON_NAME;
       case WHERE_COLUMN_INDEX:
           return WHERE_COMMON_NAME;
       case WHO_COLUMN_INDEX:
@@ -1748,14 +1819,14 @@ public class ClubEvent
           return QUANTITY_COMMON_NAME;
       case PLANNED_INCOME_COLUMN_INDEX:
           return PLANNED_INCOME_COMMON_NAME;
-      case PLANNED_EXPENSE_COLUMN_INDEX:
-          return PLANNED_EXPENSE_COMMON_NAME;
-      case PLANNED_ATTENDANCE_COLUMN_INDEX:
-          return PLANNED_ATTENDANCE_COMMON_NAME;
       case ACTUAL_INCOME_COLUMN_INDEX:
           return ACTUAL_INCOME_COMMON_NAME;
+      case PLANNED_EXPENSE_COLUMN_INDEX:
+          return PLANNED_EXPENSE_COMMON_NAME;
       case ACTUAL_EXPENSE_COLUMN_INDEX:
           return ACTUAL_EXPENSE_COMMON_NAME;
+      case PLANNED_ATTENDANCE_COLUMN_INDEX:
+          return PLANNED_ATTENDANCE_COMMON_NAME;
       case ACTUAL_ATTENDANCE_COLUMN_INDEX:
           return ACTUAL_ATTENDANCE_COMMON_NAME;
       case OVER_UNDER_COLUMN_INDEX:
@@ -1800,18 +1871,18 @@ public class ClubEvent
     switch (columnIndex) {
       case YEAR_COLUMN_INDEX:
           return YEAR_COLUMN_WIDTH;
-      case SEQ_COLUMN_INDEX:
-          return SEQ_COLUMN_WIDTH;
-      case YMD_COLUMN_INDEX:
-          return YMD_COLUMN_WIDTH;
       case TYPE_COLUMN_INDEX:
           return TYPE_COLUMN_WIDTH;
+      case SEQ_COLUMN_INDEX:
+          return SEQ_COLUMN_WIDTH;
+      case WHEN_COLUMN_INDEX:
+          return WHEN_COLUMN_WIDTH;
+      case YMD_COLUMN_INDEX:
+          return YMD_COLUMN_WIDTH;
       case WHAT_COLUMN_INDEX:
           return WHAT_COLUMN_WIDTH;
       case STATUS_COLUMN_INDEX:
           return STATUS_COLUMN_WIDTH;
-      case WHEN_COLUMN_INDEX:
-          return WHEN_COLUMN_WIDTH;
       case WHERE_COLUMN_INDEX:
           return WHERE_COLUMN_WIDTH;
       case WHO_COLUMN_INDEX:
@@ -1834,14 +1905,14 @@ public class ClubEvent
           return QUANTITY_COLUMN_WIDTH;
       case PLANNED_INCOME_COLUMN_INDEX:
           return PLANNED_INCOME_COLUMN_WIDTH;
-      case PLANNED_EXPENSE_COLUMN_INDEX:
-          return PLANNED_EXPENSE_COLUMN_WIDTH;
-      case PLANNED_ATTENDANCE_COLUMN_INDEX:
-          return PLANNED_ATTENDANCE_COLUMN_WIDTH;
       case ACTUAL_INCOME_COLUMN_INDEX:
           return ACTUAL_INCOME_COLUMN_WIDTH;
+      case PLANNED_EXPENSE_COLUMN_INDEX:
+          return PLANNED_EXPENSE_COLUMN_WIDTH;
       case ACTUAL_EXPENSE_COLUMN_INDEX:
           return ACTUAL_EXPENSE_COLUMN_WIDTH;
+      case PLANNED_ATTENDANCE_COLUMN_INDEX:
+          return PLANNED_ATTENDANCE_COLUMN_WIDTH;
       case ACTUAL_ATTENDANCE_COLUMN_INDEX:
           return ACTUAL_ATTENDANCE_COLUMN_WIDTH;
       case OVER_UNDER_COLUMN_INDEX:
@@ -1886,18 +1957,18 @@ public class ClubEvent
     switch (columnIndex) {
       case YEAR_COLUMN_INDEX:
           return String.class;
+      case TYPE_COLUMN_INDEX:
+          return String.class;
       case SEQ_COLUMN_INDEX:
           return String.class;
-      case YMD_COLUMN_INDEX:
+      case WHEN_COLUMN_INDEX:
           return String.class;
-      case TYPE_COLUMN_INDEX:
+      case YMD_COLUMN_INDEX:
           return String.class;
       case WHAT_COLUMN_INDEX:
           return String.class;
       case STATUS_COLUMN_INDEX:
           return Tags.class;
-      case WHEN_COLUMN_INDEX:
-          return String.class;
       case WHERE_COLUMN_INDEX:
           return String.class;
       case WHO_COLUMN_INDEX:
@@ -1920,13 +1991,13 @@ public class ClubEvent
           return String.class;
       case PLANNED_INCOME_COLUMN_INDEX:
           return String.class;
-      case PLANNED_EXPENSE_COLUMN_INDEX:
-          return String.class;
-      case PLANNED_ATTENDANCE_COLUMN_INDEX:
-          return String.class;
       case ACTUAL_INCOME_COLUMN_INDEX:
           return String.class;
+      case PLANNED_EXPENSE_COLUMN_INDEX:
+          return String.class;
       case ACTUAL_EXPENSE_COLUMN_INDEX:
+          return String.class;
+      case PLANNED_ATTENDANCE_COLUMN_INDEX:
           return String.class;
       case ACTUAL_ATTENDANCE_COLUMN_INDEX:
           return String.class;
@@ -2028,6 +2099,47 @@ public class ClubEvent
   }
  
   /**
+     Sets the type for this club event.
+ 
+     @param  type The type for this club event.
+   */
+  public void setType (String type) {
+    this.type = type;
+    setModified (true);
+  }
+
+  /**
+    Returns the type for this club event as a string.
+ 
+    @return The type for this club event as a string.
+   */
+  public String getTypeAsString () {
+    if (hasType()) {
+      return getType().toString();
+    } else {
+      return "";
+    }
+  }
+
+  /**
+    Determines if the type for this club event is null.
+ 
+    @return True if the type for this club event is not null.
+   */
+  public boolean hasType () {
+    return (type != null);
+  }
+
+  /**
+    Returns the type for this club event.
+ 
+    @return The type for this club event.
+   */
+  public String getType () {
+    return type;
+  }
+ 
+  /**
      Sets the seq for this club event.
  
      @param  seq The seq for this club event.
@@ -2069,6 +2181,47 @@ public class ClubEvent
   }
  
   /**
+     Sets the when for this club event.
+ 
+     @param  when The when for this club event.
+   */
+  public void setWhen (String when) {
+    this.when = when;
+    setModified (true);
+  }
+
+  /**
+    Returns the when for this club event as a string.
+ 
+    @return The when for this club event as a string.
+   */
+  public String getWhenAsString () {
+    if (hasWhen()) {
+      return getWhen().toString();
+    } else {
+      return "";
+    }
+  }
+
+  /**
+    Determines if the when for this club event is null.
+ 
+    @return True if the when for this club event is not null.
+   */
+  public boolean hasWhen () {
+    return (when != null);
+  }
+
+  /**
+    Returns the when for this club event.
+ 
+    @return The when for this club event.
+   */
+  public String getWhen () {
+    return when;
+  }
+ 
+  /**
      Sets the ymd for this club event.
  
      @param  ymd The ymd for this club event.
@@ -2107,47 +2260,6 @@ public class ClubEvent
    */
   public String getYmd () {
     return ymd;
-  }
- 
-  /**
-     Sets the type for this club event.
- 
-     @param  type The type for this club event.
-   */
-  public void setType (String type) {
-    this.type = type;
-    setModified (true);
-  }
-
-  /**
-    Returns the type for this club event as a string.
- 
-    @return The type for this club event as a string.
-   */
-  public String getTypeAsString () {
-    if (hasType()) {
-      return getType().toString();
-    } else {
-      return "";
-    }
-  }
-
-  /**
-    Determines if the type for this club event is null.
- 
-    @return True if the type for this club event is not null.
-   */
-  public boolean hasType () {
-    return (type != null);
-  }
-
-  /**
-    Returns the type for this club event.
- 
-    @return The type for this club event.
-   */
-  public String getType () {
-    return type;
   }
  
   /**
@@ -2240,47 +2352,6 @@ public class ClubEvent
    */
   public Tags getStatus () {
     return status;
-  }
- 
-  /**
-     Sets the when for this club event.
- 
-     @param  when The when for this club event.
-   */
-  public void setWhen (String when) {
-    this.when = when;
-    setModified (true);
-  }
-
-  /**
-    Returns the when for this club event as a string.
- 
-    @return The when for this club event as a string.
-   */
-  public String getWhenAsString () {
-    if (hasWhen()) {
-      return getWhen().toString();
-    } else {
-      return "";
-    }
-  }
-
-  /**
-    Determines if the when for this club event is null.
- 
-    @return True if the when for this club event is not null.
-   */
-  public boolean hasWhen () {
-    return (when != null);
-  }
-
-  /**
-    Returns the when for this club event.
- 
-    @return The when for this club event.
-   */
-  public String getWhen () {
-    return when;
   }
  
   /**
@@ -2743,96 +2814,6 @@ public class ClubEvent
   }
  
   /**
-     Sets the planned expense for this club event.
- 
-     @param  plannedExpense The planned expense for this club event.
-   */
-  public void setPlannedExpense (String plannedExpense) {
-    this.plannedExpense = plannedExpense;
-    setModified (true);
-  }
-
-  /**
-    Returns the planned expense for this club event as a string.
- 
-    @return The planned expense for this club event as a string.
-   */
-  public String getPlannedExpenseAsString () {
-    if (hasPlannedExpense()) {
-      return getPlannedExpense().toString();
-    } else {
-      return "";
-    }
-  }
-
-  /**
-    Determines if the planned expense for this club event is null.
- 
-    @return True if the planned expense for this club event is not null.
-   */
-  public boolean hasPlannedExpense () {
-    return (plannedExpense != null);
-  }
-
-  /**
-    Returns the planned expense for this club event.
- 
-    @return The planned expense for this club event.
-   */
-  public String getPlannedExpense () {
-    return plannedExpense;
-  }
-  /**
-    Returns the planned expense as a BigDecimal object.
- 
-    @return The planned expense for this club event as a BigDecimal.
-   */
-  public BigDecimal getPlannedExpenseAsBigDecimal () {
-    return StringUtils.calc(plannedExpense);
-  }
- 
-  /**
-     Sets the planned attendance for this club event.
- 
-     @param  plannedAttendance The planned attendance for this club event.
-   */
-  public void setPlannedAttendance (String plannedAttendance) {
-    this.plannedAttendance = plannedAttendance;
-    setModified (true);
-  }
-
-  /**
-    Returns the planned attendance for this club event as a string.
- 
-    @return The planned attendance for this club event as a string.
-   */
-  public String getPlannedAttendanceAsString () {
-    if (hasPlannedAttendance()) {
-      return getPlannedAttendance().toString();
-    } else {
-      return "";
-    }
-  }
-
-  /**
-    Determines if the planned attendance for this club event is null.
- 
-    @return True if the planned attendance for this club event is not null.
-   */
-  public boolean hasPlannedAttendance () {
-    return (plannedAttendance != null);
-  }
-
-  /**
-    Returns the planned attendance for this club event.
- 
-    @return The planned attendance for this club event.
-   */
-  public String getPlannedAttendance () {
-    return plannedAttendance;
-  }
- 
-  /**
      Sets the actual income for this club event.
  
      @param  actualIncome The actual income for this club event.
@@ -2882,6 +2863,55 @@ public class ClubEvent
   }
  
   /**
+     Sets the planned expense for this club event.
+ 
+     @param  plannedExpense The planned expense for this club event.
+   */
+  public void setPlannedExpense (String plannedExpense) {
+    this.plannedExpense = plannedExpense;
+    setModified (true);
+  }
+
+  /**
+    Returns the planned expense for this club event as a string.
+ 
+    @return The planned expense for this club event as a string.
+   */
+  public String getPlannedExpenseAsString () {
+    if (hasPlannedExpense()) {
+      return getPlannedExpense().toString();
+    } else {
+      return "";
+    }
+  }
+
+  /**
+    Determines if the planned expense for this club event is null.
+ 
+    @return True if the planned expense for this club event is not null.
+   */
+  public boolean hasPlannedExpense () {
+    return (plannedExpense != null);
+  }
+
+  /**
+    Returns the planned expense for this club event.
+ 
+    @return The planned expense for this club event.
+   */
+  public String getPlannedExpense () {
+    return plannedExpense;
+  }
+  /**
+    Returns the planned expense as a BigDecimal object.
+ 
+    @return The planned expense for this club event as a BigDecimal.
+   */
+  public BigDecimal getPlannedExpenseAsBigDecimal () {
+    return StringUtils.calc(plannedExpense);
+  }
+ 
+  /**
      Sets the actual expense for this club event.
  
      @param  actualExpense The actual expense for this club event.
@@ -2928,6 +2958,47 @@ public class ClubEvent
    */
   public BigDecimal getActualExpenseAsBigDecimal () {
     return StringUtils.calc(actualExpense);
+  }
+ 
+  /**
+     Sets the planned attendance for this club event.
+ 
+     @param  plannedAttendance The planned attendance for this club event.
+   */
+  public void setPlannedAttendance (String plannedAttendance) {
+    this.plannedAttendance = plannedAttendance;
+    setModified (true);
+  }
+
+  /**
+    Returns the planned attendance for this club event as a string.
+ 
+    @return The planned attendance for this club event as a string.
+   */
+  public String getPlannedAttendanceAsString () {
+    if (hasPlannedAttendance()) {
+      return getPlannedAttendance().toString();
+    } else {
+      return "";
+    }
+  }
+
+  /**
+    Determines if the planned attendance for this club event is null.
+ 
+    @return True if the planned attendance for this club event is not null.
+   */
+  public boolean hasPlannedAttendance () {
+    return (plannedAttendance != null);
+  }
+
+  /**
+    Returns the planned attendance for this club event.
+ 
+    @return The planned attendance for this club event.
+   */
+  public String getPlannedAttendance () {
+    return plannedAttendance;
   }
  
   /**

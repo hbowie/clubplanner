@@ -723,9 +723,11 @@ public class ClubPlanner
       if (clubEventList.roomForMore()) {
         ClubEvent clubEvent = position.getClubEvent();
         ClubEvent newClubEvent = clubEvent.duplicate();
+        System.out.println ("ClubPlanner.duplicate " + newClubEvent.getWhat());
         position = new ClubEventPositioned();
         position.setIndex (clubEventList.size());
         position.setClubEvent(newClubEvent);
+        position.setNewClubEvent(true);
         localPath = "";
         display();
       } else {
@@ -1141,7 +1143,7 @@ public class ClubPlanner
 
     if (node == null) {
       // nothing selected
-      System.out.println ("selectBranch selected component = null");
+      // System.out.println ("selectBranch selected component = null");
     }
     else
     if (node == position.getTagsNode()) {
@@ -1151,7 +1153,7 @@ public class ClubPlanner
     }
     else
     if (node.getNodeType() == TagsNode.ITEM) {
-      System.out.println ("selectBranch selected item = " + node.toString());
+      // System.out.println ("selectBranch selected item = " + node.toString());
       boolean modOK = modIfChanged();
       if (modOK) {
         ClubEvent branch = (ClubEvent)node.getTaggable();

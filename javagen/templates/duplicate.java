@@ -23,6 +23,6 @@
 <?if =$calc$= == "Calc" ?>
 <?else?>
 		String =$field&clul$=Str = new String(get=$field&cuul$=AsString());
-		set=$field&cuul$=(=$field&clul$=Str);
+		new=$itemclass$=.set=$field&cuul$=(=$field&clul$=Str);
 <?endif?>
 <?loop?>

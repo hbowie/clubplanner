@@ -112,8 +112,6 @@ public class ClubEventWriter {
     completePath.append('/');
     completePath.append(localPath);
     completePath.append(FILE_EXT);
-    System.out.println ("writer getFile from local path returning "
-      + completePath.toString());
     return new File (completePath.toString());
   }
  

@@ -342,13 +342,13 @@ public class EventNote
   public EventNote duplicate () {
     EventNote newEventNote = new EventNote();
 		String noteForStr = new String(getNoteForAsString());
-		setNoteFor(noteForStr);
+		newEventNote.setNoteFor(noteForStr);
 		String noteFromStr = new String(getNoteFromAsString());
-		setNoteFrom(noteFromStr);
+		newEventNote.setNoteFrom(noteFromStr);
 		String noteViaStr = new String(getNoteViaAsString());
-		setNoteVia(noteViaStr);
+		newEventNote.setNoteVia(noteViaStr);
 		String noteStr = new String(getNoteAsString());
-		setNote(noteStr);
+		newEventNote.setNote(noteStr);
 		return newEventNote;
   }
 

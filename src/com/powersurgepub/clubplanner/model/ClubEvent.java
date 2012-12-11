@@ -87,6 +87,23 @@ public class ClubEvent
  
 
   /**
+   One or more tags indicating the status of the event.
+   */
+  private Tags status = new Tags();
+ 
+  public static final String STATUS_FIELD_NAME = "Status";
+ 
+  public static final String STATUS_COLUMN_NAME = "Status";
+ 
+  public static final String STATUS_COMMON_NAME = "status";
+ 
+  public static final int STATUS_COLUMN_INDEX = 3;
+ 
+  public static final int STATUS_COLUMN_WIDTH = 12;
+ 
+  private TagsNode tagsNode = null;
+
+  /**
    An indication of the date and time that the event will be held, in a format emphasizing human readability. This need not be a complete date. It need not and generally should not contain the year, since this can be inferred from the operating year identified in the higher level folder. If an exact date is known, then this field should generally start with a three-character abbreviation for the day of the week. Three-character abbreviations for the month are also recognized and encouraged. Following are perfectly good examples of dates: Apr; Sat May 5; Thu Sun Mar 25 5:30 - 7:30 PM.
    */
   private String when = null;
@@ -97,7 +114,7 @@ public class ClubEvent
  
   public static final String WHEN_COMMON_NAME = "when";
  
-  public static final int WHEN_COLUMN_INDEX = 3;
+  public static final int WHEN_COLUMN_INDEX = 4;
  
   public static final int WHEN_COLUMN_WIDTH = 20;
  
@@ -113,7 +130,7 @@ public class ClubEvent
  
   public static final String YMD_COMMON_NAME = "ymd";
  
-  public static final int YMD_COLUMN_INDEX = 4;
+  public static final int YMD_COLUMN_INDEX = 5;
  
   public static final int YMD_COLUMN_WIDTH = 10;
  
@@ -129,27 +146,10 @@ public class ClubEvent
  
   public static final String WHAT_COMMON_NAME = "what";
  
-  public static final int WHAT_COLUMN_INDEX = 5;
+  public static final int WHAT_COLUMN_INDEX = 6;
  
   public static final int WHAT_COLUMN_WIDTH = 35;
  
-
-  /**
-   One or more tags indicating the status of the event.
-   */
-  private Tags status = new Tags();
- 
-  public static final String STATUS_FIELD_NAME = "Status";
- 
-  public static final String STATUS_COLUMN_NAME = "Status";
- 
-  public static final String STATUS_COMMON_NAME = "status";
- 
-  public static final int STATUS_COLUMN_INDEX = 6;
- 
-  public static final int STATUS_COLUMN_WIDTH = 12;
- 
-  private TagsNode tagsNode = null;
 
   /**
    The location of the event, including the name of the venue and its address.
@@ -823,12 +823,12 @@ public class ClubEvent
 		newClubEvent.setYear(yearStr);
 		String typeStr = new String(getTypeAsString());
 		newClubEvent.setType(typeStr);
+		String statusStr = new String(getStatusAsString());
+		newClubEvent.setStatus(statusStr);
 		String whenStr = new String(getWhenAsString());
 		newClubEvent.setWhen(whenStr);
 		String whatStr = new String(getWhatAsString());
 		newClubEvent.setWhat(whatStr);
-		String statusStr = new String(getStatusAsString());
-		newClubEvent.setStatus(statusStr);
 		String whereStr = new String(getWhereAsString());
 		newClubEvent.setWhere(whereStr);
 		String whoStr = new String(getWhoAsString());
@@ -1119,6 +1119,17 @@ public class ClubEvent
         setSeq ((String)obj2);
       }
     }
+    obj2 = clubEvent2.getStatus();
+    if (obj2 == null) {
+      // No value available -- leave current value as-is
+    } else {
+      str2 = obj2.toString();
+      if (str2.equals ("")) {
+        // No value available -- leave current value as-is
+      } else {
+        setStatus ((Tags)obj2);
+      }
+    }
     obj2 = clubEvent2.getWhen();
     if (obj2 == null) {
       // No value available -- leave current value as-is
@@ -1150,17 +1161,6 @@ public class ClubEvent
         // No value available -- leave current value as-is
       } else {
         setWhat ((String)obj2);
-      }
-    }
-    obj2 = clubEvent2.getStatus();
-    if (obj2 == null) {
-      // No value available -- leave current value as-is
-    } else {
-      str2 = obj2.toString();
-      if (str2.equals ("")) {
-        // No value available -- leave current value as-is
-      } else {
-        setStatus ((Tags)obj2);
       }
     }
     obj2 = clubEvent2.getWhere();
@@ -1499,6 +1499,9 @@ public class ClubEvent
       case SEQ_COLUMN_INDEX:
           setSeq (columnValue);
           break;
+      case STATUS_COLUMN_INDEX:
+          setStatus (columnValue);
+          break;
       case WHEN_COLUMN_INDEX:
           setWhen (columnValue);
           break;
@@ -1507,9 +1510,6 @@ public class ClubEvent
           break;
       case WHAT_COLUMN_INDEX:
           setWhat (columnValue);
-          break;
-      case STATUS_COLUMN_INDEX:
-          setStatus (columnValue);
           break;
       case WHERE_COLUMN_INDEX:
           setWhere (columnValue);
@@ -1616,14 +1616,14 @@ public class ClubEvent
           return type;
       case SEQ_COLUMN_INDEX:
           return seq;
+      case STATUS_COLUMN_INDEX:
+          return status;
       case WHEN_COLUMN_INDEX:
           return when;
       case YMD_COLUMN_INDEX:
           return ymd;
       case WHAT_COLUMN_INDEX:
           return what;
-      case STATUS_COLUMN_INDEX:
-          return status;
       case WHERE_COLUMN_INDEX:
           return where;
       case WHO_COLUMN_INDEX:
@@ -1702,14 +1702,14 @@ public class ClubEvent
           return TYPE_COLUMN_NAME;
       case SEQ_COLUMN_INDEX:
           return SEQ_COLUMN_NAME;
+      case STATUS_COLUMN_INDEX:
+          return STATUS_COLUMN_NAME;
       case WHEN_COLUMN_INDEX:
           return WHEN_COLUMN_NAME;
       case YMD_COLUMN_INDEX:
           return YMD_COLUMN_NAME;
       case WHAT_COLUMN_INDEX:
           return WHAT_COLUMN_NAME;
-      case STATUS_COLUMN_INDEX:
-          return STATUS_COLUMN_NAME;
       case WHERE_COLUMN_INDEX:
           return WHERE_COLUMN_NAME;
       case WHO_COLUMN_INDEX:
@@ -1789,14 +1789,14 @@ public class ClubEvent
           return TYPE_COMMON_NAME;
       case SEQ_COLUMN_INDEX:
           return SEQ_COMMON_NAME;
+      case STATUS_COLUMN_INDEX:
+          return STATUS_COMMON_NAME;
       case WHEN_COLUMN_INDEX:
           return WHEN_COMMON_NAME;
       case YMD_COLUMN_INDEX:
           return YMD_COMMON_NAME;
       case WHAT_COLUMN_INDEX:
           return WHAT_COMMON_NAME;
-      case STATUS_COLUMN_INDEX:
-          return STATUS_COMMON_NAME;
       case WHERE_COLUMN_INDEX:
           return WHERE_COMMON_NAME;
       case WHO_COLUMN_INDEX:
@@ -1875,14 +1875,14 @@ public class ClubEvent
           return TYPE_COLUMN_WIDTH;
       case SEQ_COLUMN_INDEX:
           return SEQ_COLUMN_WIDTH;
+      case STATUS_COLUMN_INDEX:
+          return STATUS_COLUMN_WIDTH;
       case WHEN_COLUMN_INDEX:
           return WHEN_COLUMN_WIDTH;
       case YMD_COLUMN_INDEX:
           return YMD_COLUMN_WIDTH;
       case WHAT_COLUMN_INDEX:
           return WHAT_COLUMN_WIDTH;
-      case STATUS_COLUMN_INDEX:
-          return STATUS_COLUMN_WIDTH;
       case WHERE_COLUMN_INDEX:
           return WHERE_COLUMN_WIDTH;
       case WHO_COLUMN_INDEX:
@@ -1961,14 +1961,14 @@ public class ClubEvent
           return String.class;
       case SEQ_COLUMN_INDEX:
           return String.class;
+      case STATUS_COLUMN_INDEX:
+          return Tags.class;
       case WHEN_COLUMN_INDEX:
           return String.class;
       case YMD_COLUMN_INDEX:
           return String.class;
       case WHAT_COLUMN_INDEX:
           return String.class;
-      case STATUS_COLUMN_INDEX:
-          return Tags.class;
       case WHERE_COLUMN_INDEX:
           return String.class;
       case WHO_COLUMN_INDEX:
@@ -2181,6 +2181,57 @@ public class ClubEvent
   }
  
   /**
+     Sets the status for this club event.
+ 
+     @param  status The status for this club event.
+   */
+  public void setStatus (Tags status) {
+    this.status = status;
+    setModified (true);
+  }
+
+  /**
+     Sets the status for this club event.
+ 
+     @param  status The status for this club event.
+   */
+  public void setStatus (String status) {
+    this.status = new Tags(status);
+    setModified (true);
+  }
+
+  /**
+    Returns the status for this club event as a string.
+ 
+    @return The status for this club event as a string.
+   */
+  public String getStatusAsString () {
+    if (hasStatus()) {
+      return getStatus().toString();
+    } else {
+      return "";
+    }
+  }
+
+  /**
+    Determines if the status for this club event is null.
+ 
+    @return True if the status for this club event is not null.
+   */
+  public boolean hasStatus () {
+    return (status != null);
+  }
+
+  /**
+    Returns the status for this club event.
+ 
+    @return The status for this club event.
+   */
+  public Tags getStatus () {
+    return status;
+  }
+ 
+  /**
      Sets the when for this club event.
  
      @param  when The when for this club event.
@@ -2301,57 +2352,6 @@ public class ClubEvent
    */
   public String getWhat () {
     return what;
-  }
- 
-  /**
-     Sets the status for this club event.
- 
-     @param  status The status for this club event.
-   */
-  public void setStatus (Tags status) {
-    this.status = status;
-    setModified (true);
-  }
-
-  /**
-     Sets the status for this club event.
- 
-     @param  status The status for this club event.
-   */
-  public void setStatus (String status) {
-    this.status = new Tags(status);
-    setModified (true);
-  }
-
-  /**
-    Returns the status for this club event as a string.
- 
-    @return The status for this club event as a string.
-   */
-  public String getStatusAsString () {
-    if (hasStatus()) {
-      return getStatus().toString();
-    } else {
-      return "";
-    }
-  }
-
-  /**
-    Determines if the status for this club event is null.
- 
-    @return True if the status for this club event is not null.
-   */
-  public boolean hasStatus () {
-    return (status != null);
-  }
-
-  /**
-    Returns the status for this club event.
- 
-    @return The status for this club event.
-   */
-  public Tags getStatus () {
-    return status;
   }
  
   /**

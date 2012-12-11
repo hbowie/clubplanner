@@ -55,7 +55,7 @@ public class ClubEventPanel2
 		gb.setDefaultRowWeight (0.0);
 		gb.setAllInsets (4);
     gb.setFill(GridBagConstraints.HORIZONTAL);
-    gb.setAnchor(GridBagConstraints.WEST);
+    gb.setAnchor(GridBagConstraints.NORTHWEST);
 
 
   /*
@@ -65,47 +65,62 @@ public class ClubEventPanel2
      data file: fields.xls
    */
  
+
+		// Panel Layout for Teaser
     teaserLabel.setLabelFor(teaserJTextArea);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(teaserLabel);
     teaserJTextArea.setColumns(20);
     teaserJTextArea.setLineWrap(true);
-    teaserJTextArea.setRows(5);
+    teaserJTextArea.setRows(4);
     teaserJTextArea.setWrapStyleWord(true);
     teaserJTextArea.setToolTipText("One to three sentences describing the event, intended to pique the reader's interest and motivate him to read further.");
     teaserScrollPane.setViewportView(teaserJTextArea);
     gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.setRowWeight(0.25);
     gb.add(teaserScrollPane);
+
+		// Panel Layout for Blurb
     blurbLabel.setLabelFor(blurbJTextArea);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(blurbLabel);
     blurbJTextArea.setColumns(20);
     blurbJTextArea.setLineWrap(true);
-    blurbJTextArea.setRows(5);
+    blurbJTextArea.setRows(8);
     blurbJTextArea.setWrapStyleWord(true);
     blurbJTextArea.setToolTipText("Additional information about the event. This field can contain multiple paragraphs, separated by blank lines.");
     blurbScrollPane.setViewportView(blurbJTextArea);
     gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.setRowWeight(0.25);
     gb.add(blurbScrollPane);
+
+		// Panel Layout for Why
     whyLabel.setLabelFor(whyJTextArea);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(whyLabel);
     whyJTextArea.setColumns(20);
     whyJTextArea.setLineWrap(true);
-    whyJTextArea.setRows(5);
+    whyJTextArea.setRows(4);
     whyJTextArea.setWrapStyleWord(true);
     whyJTextArea.setToolTipText("Why does the club think that this is an event deserving of our time, attention and resources?");
     whyScrollPane.setViewportView(whyJTextArea);
     gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.setRowWeight(0.25);
     gb.add(whyScrollPane);
 
     gb.setWidth(2);
     gb.setFill(GridBagConstraints.BOTH);
     gb.setColumnWeight(1.0);
-    gb.setRowWeight(1.0);
+    gb.setRowWeight(0.1);
     gb.add(bottomFiller);
  
   }
@@ -126,16 +141,19 @@ public class ClubEventPanel2
     } else {
       teaserJTextArea.setText ("");
     }
+    teaserJTextArea.setCaretPosition(0);
     if (clubEvent.hasBlurb()) {
       blurbJTextArea.setText (clubEvent.getBlurb().toString());
     } else {
       blurbJTextArea.setText ("");
     }
+    blurbJTextArea.setCaretPosition(0);
     if (clubEvent.hasWhy()) {
       whyJTextArea.setText (clubEvent.getWhy().toString());
     } else {
       whyJTextArea.setText ("");
     }
+    whyJTextArea.setCaretPosition(0);
  
   }
 

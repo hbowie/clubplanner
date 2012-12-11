@@ -178,6 +178,14 @@ public class ClubEventWriter {
     boolean outOK = true;
     if (outOK) {
       outOK = writeFieldName
+          (ClubEvent.STATUS_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getStatusAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
           (ClubEvent.WHEN_FIELD_NAME);
     }
     if (outOK) {
@@ -191,14 +199,6 @@ public class ClubEventWriter {
     if (outOK) {
       outOK = writeFieldValue
           (clubEvent.getWhatAsString());
-    }
-    if (outOK) {
-      outOK = writeFieldName
-          (ClubEvent.STATUS_FIELD_NAME);
-    }
-    if (outOK) {
-      outOK = writeFieldValue
-          (clubEvent.getStatusAsString());
     }
     if (outOK) {
       outOK = writeFieldName

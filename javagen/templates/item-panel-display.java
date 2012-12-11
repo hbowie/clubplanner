@@ -31,5 +31,8 @@
     } else {
       =$field&clul$==$panelclass$=.setText ("");
     }
+<?if =$panelclass$= == "JTextArea" ?>
+    =$field&clul$==$panelclass$=.setCaretPosition(0);
+<?endif?>
 <?endif?>
 <?loop?>

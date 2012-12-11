@@ -61,7 +61,7 @@ public class ClubEventPanel4
 		gb.setDefaultRowWeight (0.0);
 		gb.setAllInsets (4);
     gb.setFill(GridBagConstraints.HORIZONTAL);
-    gb.setAnchor(GridBagConstraints.WEST);
+    gb.setAnchor(GridBagConstraints.NORTHWEST);
 
 
   /*
@@ -71,53 +71,77 @@ public class ClubEventPanel4
      data file: fields.xls
    */
  
+
+		// Panel Layout for ID
     idLabel.setLabelFor(idJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(idLabel);
     idJTextField.setToolTipText("After the event has been added to the club web site, the ID assigned to the page by the Content Management System should be entered here.");
     gb.setWidth(3);
+    gb.setTopInset(4);
     gb.add(idJTextField);
+
+		// Panel Layout for Link
     linkLabel.setLabelFor(linkJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(linkLabel);
     linkJTextField.setToolTipText("A URL pointing to a Web page with more information about the event.");
     gb.setWidth(3);
+    gb.setTopInset(4);
     gb.add(linkJTextField);
+
+		// Panel Layout for Venue
     venueLabel.setLabelFor(venueJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(venueLabel);
     venueJTextField.setToolTipText("A URL pointing to a Web page with more information about the venue for the event.");
     gb.setWidth(3);
+    gb.setTopInset(4);
     gb.add(venueJTextField);
+
+		// Panel Layout for Image
     imageLabel.setLabelFor(imageJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(imageLabel);
     imageJTextField.setToolTipText("A URL pointing to an image that can be used to help advertise the event.");
     gb.setWidth(3);
+    gb.setTopInset(4);
     gb.add(imageJTextField);
+
+		// Panel Layout for News Image
     newsImageLabel.setLabelFor(newsImageJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(newsImageLabel);
     newsImageJTextField.setToolTipText("A URL pointing to an image suitable for use in our newsletter.");
     gb.setWidth(3);
+    gb.setTopInset(4);
     gb.add(newsImageJTextField);
+
+		// Panel Layout for Discuss
     discussLabel.setLabelFor(discussJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(discussLabel);
     discussJTextField.setToolTipText("Identification of any issues to be discussed at an upcoming board meeting.");
     gb.setWidth(3);
+    gb.setTopInset(4);
     gb.add(discussJTextField);
 
     gb.setWidth(2);
     gb.setFill(GridBagConstraints.BOTH);
     gb.setColumnWeight(1.0);
-    gb.setRowWeight(1.0);
+    gb.setRowWeight(0.1);
     gb.add(bottomFiller);
  
   }

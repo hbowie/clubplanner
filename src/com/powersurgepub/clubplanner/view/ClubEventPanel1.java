@@ -32,6 +32,9 @@ public class ClubEventPanel1
   private JLabel    seqLabel    = new JLabel("Seq:", JLabel.LEFT);
   private JLabel seqJLabel = new JLabel();
 
+  private JLabel    statusLabel    = new JLabel("Status:", JLabel.LEFT);
+  private TextSelector statusTextSelector = new TextSelector();
+
   private JLabel    whenLabel    = new JLabel("When:", JLabel.LEFT);
   private JTextField whenJTextField = new JTextField();
 
@@ -40,9 +43,6 @@ public class ClubEventPanel1
 
   private JLabel    whatLabel    = new JLabel("What:", JLabel.LEFT);
   private JTextField whatJTextField = new JTextField();
-
-  private JLabel    statusLabel    = new JLabel("Status:", JLabel.LEFT);
-  private TextSelector statusTextSelector = new TextSelector();
 
   private JLabel    whereLabel    = new JLabel("Where:", JLabel.LEFT);
   private JTextField whereJTextField = new JTextField();
@@ -68,7 +68,7 @@ public class ClubEventPanel1
 		gb.setDefaultRowWeight (0.0);
 		gb.setAllInsets (4);
     gb.setFill(GridBagConstraints.HORIZONTAL);
-    gb.setAnchor(GridBagConstraints.WEST);
+    gb.setAnchor(GridBagConstraints.NORTHWEST);
 
 
   /*
@@ -78,73 +78,106 @@ public class ClubEventPanel1
      data file: fields.xls
    */
  
+
+		// Panel Layout for Type
     typeLabel.setLabelFor(typePSComboBox);
     typePSComboBox.load (ClubPlanner.class, "type.txt");
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(typeLabel);
     typePSComboBox.setToolTipText("The category assigned to the event.");
     gb.setWidth(1);
+    gb.setTopInset(4);
     gb.add(typePSComboBox);
+
+		// Panel Layout for Seq
     seqLabel.setLabelFor(seqJLabel);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(seqLabel);
     seqJLabel.setToolTipText("The sequence of discussion at a Board meeting.");
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(seqJLabel);
-    whenLabel.setLabelFor(whenJTextField);
-    gb.setColumnWeight(0.0);
-    gb.setWidth(1);
-    gb.add(whenLabel);
-    whenJTextField.setToolTipText("An indication of the date and time that the event will be held, in a format emphasizing human readability, such as Fri Aug 10 7:00 PM - 10:00.");
-    gb.setWidth(1);
-    gb.add(whenJTextField);
-    ymdLabel.setLabelFor(ymdJLabel);
-    gb.setColumnWeight(0.0);
-    gb.setWidth(1);
-    gb.add(ymdLabel);
-    ymdJLabel.setToolTipText("A full or partial date in year, month, day sequence.");
-    gb.setWidth(1);
-    gb.add(ymdJLabel);
-    whatLabel.setLabelFor(whatJTextField);
-    gb.setColumnWeight(0.0);
-    gb.setWidth(1);
-    gb.add(whatLabel);
-    whatJTextField.setToolTipText("A brief descriptive title for the event.");
-    gb.setWidth(3);
-    gb.add(whatJTextField);
+
+		// Panel Layout for Status
     statusLabel.setLabelFor(statusTextSelector);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(statusLabel);
     statusTextSelector.setToolTipText("One or more tags indicating the status of the event.");
     gb.setWidth(3);
+    gb.setTopInset(4);
     gb.add(statusTextSelector);
+
+		// Panel Layout for When
+    whenLabel.setLabelFor(whenJTextField);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(whenLabel);
+    whenJTextField.setToolTipText("An indication of the date and time that the event will be held, in a format emphasizing human readability, such as Fri Aug 10 7:00 PM - 10:00.");
+    gb.setWidth(1);
+    gb.setTopInset(4);
+    gb.add(whenJTextField);
+
+		// Panel Layout for YMD
+    ymdLabel.setLabelFor(ymdJLabel);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(ymdLabel);
+    ymdJLabel.setToolTipText("A full or partial date in year, month, day sequence.");
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(ymdJLabel);
+
+		// Panel Layout for What
+    whatLabel.setLabelFor(whatJTextField);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(whatLabel);
+    whatJTextField.setToolTipText("A brief descriptive title for the event.");
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(whatJTextField);
+
+		// Panel Layout for Where
     whereLabel.setLabelFor(whereJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(whereLabel);
     whereJTextField.setToolTipText("The location of the event, including the name of the venue and its address.");
     gb.setWidth(3);
+    gb.setTopInset(4);
     gb.add(whereJTextField);
+
+		// Panel Layout for Who
     whoLabel.setLabelFor(whoJTextArea);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(whoLabel);
     whoJTextArea.setColumns(20);
     whoJTextArea.setLineWrap(true);
-    whoJTextArea.setRows(5);
+    whoJTextArea.setRows(3);
     whoJTextArea.setWrapStyleWord(true);
     whoJTextArea.setToolTipText("Who is assigned to plan, coordinate and host the event. Can include multiple names. Can include email addresses and phone numbers.");
     whoScrollPane.setViewportView(whoJTextArea);
     gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.setRowWeight(0.25);
     gb.add(whoScrollPane);
 
     gb.setWidth(2);
     gb.setFill(GridBagConstraints.BOTH);
     gb.setColumnWeight(1.0);
-    gb.setRowWeight(1.0);
+    gb.setRowWeight(0.1);
     gb.add(bottomFiller);
  
   }
@@ -170,6 +203,11 @@ public class ClubEventPanel1
     } else {
       seqJLabel.setText ("");
     }
+    if (clubEvent.hasStatus()) {
+      statusTextSelector.setText (clubEvent.getStatus().toString());
+    } else {
+      statusTextSelector.setText ("");
+    }
     if (clubEvent.hasWhen()) {
       whenJTextField.setText (clubEvent.getWhen().toString());
     } else {
@@ -185,11 +223,6 @@ public class ClubEventPanel1
     } else {
       whatJTextField.setText ("");
     }
-    if (clubEvent.hasStatus()) {
-      statusTextSelector.setText (clubEvent.getStatus().toString());
-    } else {
-      statusTextSelector.setText ("");
-    }
     if (clubEvent.hasWhere()) {
       whereJTextField.setText (clubEvent.getWhere().toString());
     } else {
@@ -200,6 +233,7 @@ public class ClubEventPanel1
     } else {
       whoJTextArea.setText ("");
     }
+    whoJTextArea.setCaretPosition(0);
  
   }
 
@@ -221,6 +255,10 @@ public class ClubEventPanel1
       clubEvent.setSeq(seqJLabel.getText());
       modified = true;
     }
+    if (! clubEvent.getStatusAsString().equals (statusTextSelector.getText())) {
+      clubEvent.setStatus(statusTextSelector.getText());
+      modified = true;
+    }
     if (! clubEvent.getWhenAsString().equals (whenJTextField.getText())) {
       clubEvent.setWhen(whenJTextField.getText());
       modified = true;
@@ -231,10 +269,6 @@ public class ClubEventPanel1
     }
     if (! clubEvent.getWhatAsString().equals (whatJTextField.getText())) {
       clubEvent.setWhat(whatJTextField.getText());
-      modified = true;
-    }
-    if (! clubEvent.getStatusAsString().equals (statusTextSelector.getText())) {
-      clubEvent.setStatus(statusTextSelector.getText());
       modified = true;
     }
     if (! clubEvent.getWhereAsString().equals (whereJTextField.getText())) {
@@ -278,6 +312,15 @@ public class ClubEventPanel1
   }
 
   /**
+    Returns the status for this club event.
+ 
+    @return The status for this club event.
+   */
+  public TextSelector getStatusTextSelector () {
+    return statusTextSelector;
+  }
+
+  /**
     Returns the when for this club event.
  
     @return The when for this club event.
@@ -302,15 +345,6 @@ public class ClubEventPanel1
    */
   public JTextField getWhatJTextField () {
     return whatJTextField;
-  }
-
-  /**
-    Returns the status for this club event.
- 
-    @return The status for this club event.
-   */
-  public TextSelector getStatusTextSelector () {
-    return statusTextSelector;
   }
 
   /**

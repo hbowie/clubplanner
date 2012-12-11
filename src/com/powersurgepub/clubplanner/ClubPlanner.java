@@ -175,6 +175,7 @@ public class ClubPlanner
         userPrefs.getPrefAsInt (CommonPrefs.PREFS_TOP,  100),
         userPrefs.getPrefAsInt (CommonPrefs.PREFS_WIDTH, 620),
         userPrefs.getPrefAsInt (CommonPrefs.PREFS_HEIGHT, 540));
+    pack();
     CommonPrefs.getShared().setSplitPane(mainSplitPane);
     CommonPrefs.getShared().setMainWindow(this);
     
@@ -506,15 +507,6 @@ public class ClubPlanner
       }
       File backupFolder = getBackupFolder();
       fileChooser.setCurrentDirectory (backupFolder);
-      if (goodEventsFile()) {
-        String presumptiveBackupFolderStr = 
-            backupFolder.toString() + 
-            xos.getPathSeparator() + 
-            filePrefs.getBackupFileName(eventsFile, eventsFileName.getExt());
-        System.out.println ("Presumed Backup Folder = " + presumptiveBackupFolderStr);
-        fileChooser.setSelectedFile
-            (new File(presumptiveBackupFolderStr));
-      }
       File selectedFile = fileChooser.showSaveDialog (this);
       if(selectedFile != null) {
         File backupFile = selectedFile;
@@ -540,8 +532,24 @@ public class ClubPlanner
    @return True if backup was successful. 
   */
   public boolean backupWithoutPrompt() {
-    modIfChanged();
-    return false;
+    boolean modOK = modIfChanged();
+    boolean backedUp = false;
+    if (modOK) {
+      File backupFolder = getBackupFolder();
+      if(backupFolder != null) {
+        backedUp = backup (backupFolder);
+        if (backedUp) {
+          FileSpec fileSpec = recentFiles.get(0);
+          fileSpec.setBackupFolder(backupFolder);
+        }
+      } // end if the user selected a backup location
+    } // end if modIfChanged had no problems
+    
+    if (! backedUp) {
+      trouble.report("Could not complete backup", "Backup Errors");
+    }
+
+    return backedUp;
   }
   
   /**
@@ -560,15 +568,12 @@ public class ClubPlanner
       backupPath.append(folderForBackups.getAbsolutePath());
     }
     backupPath.append(xos.getPathSeparator());
-    System.out.println ("ClubPlanner.backup");
-    System.out.println ("  backup path = " + backupPath.toString());
     if (clubEventCalc.ifOpYearFromFolder()) {
       backupPath.append(clubEventCalc.getOpYearFolder());
       backupPath.append(" ");
     }
     backupPath.append("backup ");
     backupPath.append(filePrefs.getBackupDate());
-    System.out.println ("  backup path = " + backupPath.toString());
     File backupFolder = new File (backupPath.toString());
     backupFolder.mkdir();
     ClubEventWriter backupWriter = new ClubEventWriter();
@@ -592,14 +597,11 @@ public class ClubPlanner
            based on his past choices, or on the application defaults.
   */
   private File getBackupFolder() {
-    System.out.println ("ClubPlanner getBackupFolder");
     File backupFolder = home.getUserHome();
     if (goodEventsFile()) {    
       FileSpec fileSpec = recentFiles.get(0);
       String backupFolderStr = fileSpec.getBackupFolder();
-      System.out.println ("  fileSpec backup folder = " + backupFolderStr);
       File defaultBackupFolder = new File (fileSpec.getFolder(), "backups");
-      System.out.println ("  default backup folder  = " + defaultBackupFolder);
       if (backupFolderStr == null
           || backupFolderStr.length() < 2) {
         backupFolder = defaultBackupFolder;
@@ -663,8 +665,8 @@ public class ClubPlanner
    Save various bits of information about a new URL file that we are
    working with.
 
-   @param file The specific file we are working with that contains a list
-   of URLs.
+   @param file The folder containing club events, possibly organized into
+               subfolders by type of event.
 
    */
   private void setClubEventFolder (File file) {
@@ -723,7 +725,6 @@ public class ClubPlanner
       if (clubEventList.roomForMore()) {
         ClubEvent clubEvent = position.getClubEvent();
         ClubEvent newClubEvent = clubEvent.duplicate();
-        System.out.println ("ClubPlanner.duplicate " + newClubEvent.getWhat());
         position = new ClubEventPositioned();
         position.setIndex (clubEventList.size());
         position.setClubEvent(newClubEvent);
@@ -932,7 +933,6 @@ public class ClubPlanner
         String oldDiskLocation = clubEvent.getDiskLocation();
         boolean saved = writer.save(eventsFile, clubEvent, true);
         if (saved) {
-          // System.out.println ("Saved " + clubEvent.getWhatAsString());
           String newDiskLocation = clubEvent.getDiskLocation();
           if (! newDiskLocation.equals(oldDiskLocation)) {
             File oldDiskFile = new File (oldDiskLocation);

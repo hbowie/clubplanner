@@ -76,7 +76,7 @@ public class ClubEventPanel3
 		gb.setDefaultRowWeight (0.0);
 		gb.setAllInsets (4);
     gb.setFill(GridBagConstraints.HORIZONTAL);
-    gb.setAnchor(GridBagConstraints.WEST);
+    gb.setAnchor(GridBagConstraints.NORTHWEST);
 
 
   /*
@@ -86,88 +86,132 @@ public class ClubEventPanel3
      data file: fields.xls
    */
  
+
+		// Panel Layout for Cost
     costLabel.setLabelFor(costJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(costLabel);
     costJTextField.setToolTipText("The cost per person to attend the event. If the event is free, then leave this field blank.");
     gb.setWidth(3);
+    gb.setTopInset(4);
     gb.add(costJTextField);
+
+		// Panel Layout for Purchase
     purchaseLabel.setLabelFor(purchaseJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(purchaseLabel);
     purchaseJTextField.setToolTipText("Instructions on how to purchase tickets to the event, if any.");
     gb.setWidth(3);
+    gb.setTopInset(4);
     gb.add(purchaseJTextField);
+
+		// Panel Layout for Tickets
     ticketsLabel.setLabelFor(ticketsJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(ticketsLabel);
     ticketsJTextField.setToolTipText("For purchasers, information on how they are to receive the tickets.");
     gb.setWidth(3);
+    gb.setTopInset(4);
     gb.add(ticketsJTextField);
+
+		// Panel Layout for Quantity
     quantityLabel.setLabelFor(quantityJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(quantityLabel);
     quantityJTextField.setToolTipText("Number of seats or tickets available for the event; maximum number of attendees.");
     gb.setWidth(3);
+    gb.setTopInset(4);
     gb.add(quantityJTextField);
+
+		// Panel Layout for Planned Income
     plannedIncomeLabel.setLabelFor(plannedIncomeJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(plannedIncomeLabel);
     plannedIncomeJTextField.setToolTipText("The amount of money we have planned to receive for the event. Simple calculations are supported, such as $20 x 40.");
     gb.setWidth(1);
+    gb.setTopInset(4);
     gb.add(plannedIncomeJTextField);
+
+		// Panel Layout for Actual Income
     actualIncomeLabel.setLabelFor(actualIncomeJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(actualIncomeLabel);
     actualIncomeJTextField.setToolTipText("Our actual income for the event.");
     gb.setWidth(1);
+    gb.setTopInset(4);
     gb.add(actualIncomeJTextField);
+
+		// Panel Layout for Planned Expense
     plannedExpenseLabel.setLabelFor(plannedExpenseJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(plannedExpenseLabel);
     plannedExpenseJTextField.setToolTipText("The amount of money we have planned/budgeted to be spent on the event.");
     gb.setWidth(1);
+    gb.setTopInset(4);
     gb.add(plannedExpenseJTextField);
+
+		// Panel Layout for Actual Expense
     actualExpenseLabel.setLabelFor(actualExpenseJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(actualExpenseLabel);
     actualExpenseJTextField.setToolTipText("Our actual expenses for the event.");
     gb.setWidth(1);
+    gb.setTopInset(4);
     gb.add(actualExpenseJTextField);
+
+		// Panel Layout for Planned Attendance
     plannedAttendanceLabel.setLabelFor(plannedAttendanceJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(plannedAttendanceLabel);
     plannedAttendanceJTextField.setToolTipText("The number of attendees built into our planning assumptions.");
     gb.setWidth(1);
+    gb.setTopInset(4);
     gb.add(plannedAttendanceJTextField);
+
+		// Panel Layout for Actual Attendance
     actualAttendanceLabel.setLabelFor(actualAttendanceJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(actualAttendanceLabel);
     actualAttendanceJTextField.setToolTipText("The actual number of people who attended the event.");
     gb.setWidth(1);
+    gb.setTopInset(4);
     gb.add(actualAttendanceJTextField);
+
+		// Panel Layout for Recap
     recapLabel.setLabelFor(recapJTextField);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(recapLabel);
     recapJTextField.setToolTipText("A brief summary of how the event went. Can include lessons learned from the event.");
     gb.setWidth(3);
+    gb.setTopInset(4);
     gb.add(recapJTextField);
 
     gb.setWidth(2);
     gb.setFill(GridBagConstraints.BOTH);
     gb.setColumnWeight(1.0);
-    gb.setRowWeight(1.0);
+    gb.setRowWeight(0.1);
     gb.add(bottomFiller);
  
   }

@@ -19,54 +19,75 @@
 <?endif?>
 <?if =$panelno$= ?>
 <?if =$panelclass$= == "JTextArea" ?>
+
+		// Panel Layout for =$field$=
     =$field&clul$=Label.setLabelFor(=$field&clul$==$panelclass$=);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(=$field&clul$=Label);
     =$field&clul$==$panelclass$=.setColumns(20);
     =$field&clul$==$panelclass$=.setLineWrap(true);
-    =$field&clul$==$panelclass$=.setRows(5);
+    =$field&clul$==$panelclass$=.setRows(=$rows$=);
     =$field&clul$==$panelclass$=.setWrapStyleWord(true);
     =$field&clul$==$panelclass$=.setToolTipText("=$tooltip$=");
     =$field&clul$=ScrollPane.setViewportView(=$field&clul$==$panelclass$=);
     gb.setWidth(=$panelwidth$=);
+    gb.setTopInset(4);
+    gb.setRowWeight(0.25);
     gb.add(=$field&clul$=ScrollPane);
 <?endif?>
 <?if =$panelclass$= == "JLabel" ?>
+
+		// Panel Layout for =$field$=
     =$field&clul$=Label.setLabelFor(=$field&clul$==$panelclass$=);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(=$field&clul$=Label);
     =$field&clul$==$panelclass$=.setToolTipText("=$tooltip$=");
     gb.setWidth(=$panelwidth$=);
+    gb.setTopInset(8);
     gb.add(=$field&clul$==$panelclass$=);
 <?endif?>
 <?if =$panelclass$= == "JTextField" ?>
+
+		// Panel Layout for =$field$=
     =$field&clul$=Label.setLabelFor(=$field&clul$==$panelclass$=);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(=$field&clul$=Label);
     =$field&clul$==$panelclass$=.setToolTipText("=$tooltip$=");
     gb.setWidth(=$panelwidth$=);
+    gb.setTopInset(4);
     gb.add(=$field&clul$==$panelclass$=);
 <?endif?>
 <?if =$panelclass$= == "TextSelector" ?>
+
+		// Panel Layout for =$field$=
     =$field&clul$=Label.setLabelFor(=$field&clul$==$panelclass$=);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(=$field&clul$=Label);
     =$field&clul$==$panelclass$=.setToolTipText("=$tooltip$=");
     gb.setWidth(=$panelwidth$=);
+    gb.setTopInset(4);
     gb.add(=$field&clul$==$panelclass$=);
 <?endif?>
 <?if =$panelclass$= == "PSComboBox" ?>
+
+		// Panel Layout for =$field$=
     =$field&clul$=Label.setLabelFor(=$field&clul$==$panelclass$=);
     =$field&clul$==$panelclass$=.load (ClubPlanner.class, "=$field&clll$=.txt");
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
+    gb.setTopInset(8);
     gb.add(=$field&clul$=Label);
     =$field&clul$==$panelclass$=.setToolTipText("=$tooltip$=");
     gb.setWidth(=$panelwidth$=);
+    gb.setTopInset(4);
     gb.add(=$field&clul$==$panelclass$=);
 <?endif?>
 <?endif?>

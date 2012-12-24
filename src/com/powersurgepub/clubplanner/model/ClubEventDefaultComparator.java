@@ -70,17 +70,5 @@ public class ClubEventDefaultComparator
     } 
     return result;
   }
-  
-  /**
-   Determine whether the two events have equal keys.
-  
-   @param event1 The first club event to be compared. 
-   @param event2 The second club event to be compared. 
-  
-   @return True if the two events have equal keys. 
-  */
-  public boolean equal (Object obj1, Object obj2) {
-    return (compare(obj1, obj2) == 0);
-  }
 
 }

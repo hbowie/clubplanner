@@ -56,8 +56,22 @@ public class ClubEventList
   }
  
   public void setComparator (Comparator comparator) {
-    this.comparator = comparator;
+    if (comparator == null) {
+      this.comparator = new ClubEventDefaultComparator();
+    } 
+    else
+    if (comparator instanceof PSItemComparator) {
+      PSItemComparator itemComparator = (PSItemComparator)comparator;
+      if (itemComparator.getNumberOfFields() == 0) {
+        this.comparator = new ClubEventDefaultComparator();
+      } else {
+        this.comparator = comparator;
+      }
+    } else {
+      this.comparator = new ClubEventDefaultComparator();
+    }
     reloadProxyList();
+    fireTableDataChanged();
   }
  
   public Comparator getComparator() {

@@ -63,8 +63,22 @@ public class =$itemclass$=List
   }
  
   public void setComparator (Comparator comparator) {
-    this.comparator = comparator;
+    if (comparator == null) {
+      this.comparator = new =$itemclass$=DefaultComparator();
+    } 
+    else
+    if (comparator instanceof PSItemComparator) {
+      PSItemComparator itemComparator = (PSItemComparator)comparator;
+      if (itemComparator.getNumberOfFields() == 0) {
+        this.comparator = new =$itemclass$=DefaultComparator();
+      } else {
+        this.comparator = comparator;
+      }
+    } else {
+      this.comparator = new =$itemclass$=DefaultComparator();
+    }
     reloadProxyList();
+    fireTableDataChanged();
   }
  
   public Comparator getComparator() {
@@ -87,6 +101,7 @@ public class =$itemclass$=List
   public void setInputFilter (PSItemFilter inputFilter) {
     this.itemFilter = inputFilter;
     reloadProxyList();
+    fireTableDataChanged();
   }
   
   public void reloadProxyList() {
@@ -267,11 +282,22 @@ public class =$itemclass$=List
   
   private void addToProxyList (int i) {
     =$itemclass$= =$itemclass&clul$= = list.get(i);
+    /* System.out.println (
+        "=$itemclass$=List.addToProxyList " 
+        + " # "
+        + String.valueOf(i)
+        + " : "
+        + =$itemclass&clul$=.toString()); */
     if (itemSelected(=$itemclass&clul$=)) {
+      /* System.out.println("  item selected");
+      System.out.println("  size of proxy list = " + String.valueOf(size()));
+      if (size() > 0) {
+        System.out.println ("  item at end of list = " + get(size() - 1).toString());
+      } */
       =$itemclass$=Proxy =$itemclass&clul$=Proxy = new =$itemclass$=Proxy(i);
       findIndex = size();
-      if (totalSize() == 0) {
-        // If this is the first =$itemclass$= being added to the collection,
+      if (size() == 0) {
+        // If this is the first =$itemclass$= being added to the proxy list,
         // simply add the proxy to the list
         proxyList.add(=$itemclass&clul$=Proxy);
       }

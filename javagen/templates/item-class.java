@@ -6,6 +6,7 @@
 package com.powersurgepub.clubplanner.model;
 
   import com.powersurgepub.psdatalib.psdata.*;
+  import com.powersurgepub.psdatalib.pslist.*;
   import com.powersurgepub.psdatalib.pstags.*;  
   import com.powersurgepub.psutils.*;
   import java.io.*;
@@ -26,7 +27,10 @@ package com.powersurgepub.clubplanner.model;
  @author Herb Bowie
  */
 public class =$itemclass$= 
+    implements
 <?include "../includes/=$itemclass$=-taggable-implements.java"?>
+            Comparable,
+            PSItem
 			 {
 
   private static final RecordDefinition recDef;

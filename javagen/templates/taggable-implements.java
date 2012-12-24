@@ -5,9 +5,7 @@
       // No taggable fields
 <?endif?>
 <?if =$tagsField$= != "none" ?>
-    implements
-      Comparable,
-      Taggable
+      Taggable,
 <?endif?>
 <?ifnewgroup 1 ?>
 <?output "../includes/=$itemclass$=-taggable-implements.java"?>

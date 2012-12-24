@@ -1,6 +1,7 @@
 package com.powersurgepub.clubplanner.io;
 
   import com.powersurgepub.clubplanner.model.*;
+  import com.powersurgepub.psdatalib.ui.*;
   import com.powersurgepub.psutils.*;
   import java.io.*;
   import java.util.*;
@@ -68,9 +69,11 @@ public class ClubEventListLoader {
     }
     Logger.getShared().recordEvent(LogEvent.NORMAL, 
         String.valueOf(eventsLoaded) + " Club Events loaded", false);
-    System.out.println(String.valueOf(eventsLoaded + " Club Events loaded"));
     return ok;
-    
+  }
+  
+  public int getEventsLoaded() {
+    return eventsLoaded;
   }
   
   /**

@@ -5,6 +5,8 @@ package com.powersurgepub.clubplanner;
   import com.powersurgepub.clubplanner.view.*;
   import com.powersurgepub.psfiles.*;
   import com.powersurgepub.psdatalib.pstags.*;
+  import com.powersurgepub.psdatalib.script.*;
+  import com.powersurgepub.psdatalib.textmerge.*;
   import com.powersurgepub.psdatalib.ui.*;
   import com.powersurgepub.psutils.*;
   import com.powersurgepub.regcodes.*;
@@ -99,6 +101,13 @@ public class ClubPlanner
   private             ClubEventPanel3     clubEventPanel3;
   private             ClubEventPanel4     clubEventPanel4;
   private             ClubEventPanel5     clubEventPanel5;
+  
+  // List Manipulation
+  private             ScriptRecorder      scriptRecorder;
+  private             TextMergeFilter     textMergeFilter;
+  private             JFrame              listWindow;
+  private             JTabbedPane         listTabs;
+  private             int                 filterTabIndex = 0;
 
   /**
    Creates new form ClubPlanner
@@ -145,12 +154,14 @@ public class ClubPlanner
     registerWindow = RegisterWindow.getShared();
     registerWindow.setDemoLimit(DEMO_LIMIT);
     
+    // Connect up to Mac environment as necessary
     xos.setFileMenu (fileMenu);
     xos.setHelpMenu (helpMenu);
     xos.setXHandler (this);
     xos.setMainWindow (this);
     xos.enablePreferences();
     
+    // Set up user prefs
     userPrefs = UserPrefs.getShared();
     prefsWindow = new PrefsWindow (this);
     prefsWindow = new PrefsWindow (this);
@@ -175,7 +186,7 @@ public class ClubPlanner
         userPrefs.getPrefAsInt (CommonPrefs.PREFS_TOP,  100),
         userPrefs.getPrefAsInt (CommonPrefs.PREFS_WIDTH, 620),
         userPrefs.getPrefAsInt (CommonPrefs.PREFS_HEIGHT, 540));
-    pack();
+
     CommonPrefs.getShared().setSplitPane(mainSplitPane);
     CommonPrefs.getShared().setMainWindow(this);
     
@@ -189,6 +200,18 @@ public class ClubPlanner
     logger.setLogAllData (false);
     logger.setLogThreshold (LogEvent.NORMAL);
     WindowMenuManager.getShared().add(logWindow);
+    
+    // Set up List Manipulation
+    scriptRecorder = new ScriptRecorder();
+    textMergeFilter = new TextMergeFilter(clubEventList, scriptRecorder);
+    listWindow = new JFrame("List Utilities");
+    listTabs = new JTabbedPane();
+    filterTabIndex = 0;
+    listTabs.add("Filter", textMergeFilter.getPanel());
+    listWindow.add(listTabs);
+    listWindow.setSize(600, 480);
+    WindowMenuManager.getShared().locateUpperLeft(this, listWindow);
+    WindowMenuManager.getShared().add(listWindow);
     
     /*
      Following initialization, to get user's preferred file or folder to open.
@@ -403,7 +426,12 @@ public class ClubPlanner
     initCollection();
     ClubEventListLoader loader = new ClubEventListLoader(fileToOpen);
     loader.setClubEventCalc(clubEventCalc);
-    loader.load(clubEventList);
+    boolean ok = loader.load(clubEventList);
+    if (ok) {
+      statusBar.setStatus(String.valueOf(loader.getEventsLoaded()) + " Club Events Loaded");
+    } else {
+      statusBar.setStatus("Trouble loading Club Events");
+    }
     setClubEventFolder (fileToOpen);
     /*
     readFileContents(eventsFile);
@@ -414,6 +442,30 @@ public class ClubPlanner
     // setPreferredCollectionView();
     position = clubEventList.first(position);
     positionAndDisplay();
+  }
+  
+  private void reload () {
+    if (eventsFile != null) {
+      initCollection();
+      ClubEventListLoader loader = new ClubEventListLoader(eventsFile);
+      loader.setClubEventCalc(clubEventCalc);
+      boolean ok = loader.load(clubEventList);
+      if (ok) {
+        statusBar.setStatus(String.valueOf(loader.getEventsLoaded()) 
+            + " Club Events Reloaded");
+      } else {
+        statusBar.setStatus("Trouble reloading Club Events");
+      }
+      /*
+      readFileContents(eventsFile);
+      collectionWindow.setClubEvents (clubEventList);
+      clubEventList.fireTableDataChanged();
+      */
+      position = new ClubEventPositioned ();
+      // setPreferredCollectionView();
+      position = clubEventList.first(position);
+      positionAndDisplay();
+    }
   }
   
   public boolean saveAll() {
@@ -634,6 +686,7 @@ public class ClubPlanner
   private void initCollection () {
     clubEventList = new ClubEventList();
     itemTable.setModel(clubEventList);
+    textMergeFilter.setPSList(clubEventList);
     
     TableColumn tc = null;
     int avg = 0;
@@ -1175,6 +1228,7 @@ public class ClubPlanner
   
   private void display() {
     ClubEvent clubEvent = position.getClubEvent();
+    reload (clubEvent);
     localPath = clubEvent.getLocalPath();
     clubEventPanel1.display(clubEvent);
     clubEventPanel2.display(clubEvent);
@@ -1183,6 +1237,24 @@ public class ClubPlanner
     clubEventPanel5.display(clubEvent);
     statusBar.setPosition(position.getIndexForDisplay(), clubEventList.size());
     modified = false;
+  }
+  
+  private void reload (ClubEvent clubEvent) {
+      ClubEventReader reader 
+          = new ClubEventReader (
+              clubEvent.getDiskLocation(), 
+              ClubEventReader.PLANNER_TYPE);
+      boolean ok = true;
+      reader.setClubEventCalc(clubEventCalc);
+      try {
+        reader.openForInput(clubEvent);
+      } catch (java.io.IOException e) {
+        ok = false;
+        Logger.getShared().recordEvent(LogEvent.MEDIUM, 
+            "Trouble reading " + clubEvent.getDiskLocation(), false);
+      }
+      
+      reader.close();
   }
   
   /**
@@ -1217,6 +1289,7 @@ public class ClubPlanner
     fileMenu = new javax.swing.JMenu();
     fileOpenMenuItem = new javax.swing.JMenuItem();
     fileOpenRecentMenu = new javax.swing.JMenu();
+    fileReloadMenuItem = new javax.swing.JMenuItem();
     jSeparator1 = new javax.swing.JPopupMenu.Separator();
     fileSaveMenuItem = new javax.swing.JMenuItem();
     fileSaveAllMenuItem = new javax.swing.JMenuItem();
@@ -1231,6 +1304,8 @@ public class ClubPlanner
     eventDeleteMenuItem = new javax.swing.JMenuItem();
     eventDupeMenuItem = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JMenu();
+    listMenu = new javax.swing.JMenu();
+    listFilterMenuItem = new javax.swing.JMenuItem();
     windowMenu = new javax.swing.JMenu();
     helpMenu = new javax.swing.JMenu();
     helpPurchaseMenuItem = new javax.swing.JMenuItem();
@@ -1454,6 +1529,15 @@ public class ClubPlanner
 
     fileOpenRecentMenu.setText("Open Recent");
     fileMenu.add(fileOpenRecentMenu);
+
+    fileReloadMenuItem.setText("Reload");
+    fileReloadMenuItem.setToolTipText("Reload all events from disk");
+    fileReloadMenuItem.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        fileReloadMenuItemActionPerformed(evt);
+      }
+    });
+    fileMenu.add(fileReloadMenuItem);
     fileMenu.add(jSeparator1);
 
     fileSaveMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_S,
@@ -1551,6 +1635,18 @@ eventDeleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
 
   editMenu.setText("Edit");
   mainMenuBar.add(editMenu);
+
+  listMenu.setText("List");
+
+  listFilterMenuItem.setText("Filter");
+  listFilterMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      listFilterMenuItemActionPerformed(evt);
+    }
+  });
+  listMenu.add(listFilterMenuItem);
+
+  mainMenuBar.add(listMenu);
 
   windowMenu.setText("Window");
   mainMenuBar.add(windowMenu);
@@ -1785,6 +1881,15 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     saveAll();
   }//GEN-LAST:event_fileSaveAllMenuItemActionPerformed
 
+  private void listFilterMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listFilterMenuItemActionPerformed
+    displayAuxiliaryWindow(listWindow);
+    listTabs.setSelectedIndex(filterTabIndex);
+  }//GEN-LAST:event_listFilterMenuItemActionPerformed
+
+  private void fileReloadMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileReloadMenuItemActionPerformed
+    reload();
+  }//GEN-LAST:event_fileReloadMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -1840,6 +1945,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenu fileMenu;
   private javax.swing.JMenuItem fileOpenMenuItem;
   private javax.swing.JMenu fileOpenRecentMenu;
+  private javax.swing.JMenuItem fileReloadMenuItem;
   private javax.swing.JMenuItem fileSaveAllMenuItem;
   private javax.swing.JMenuItem fileSaveAsMenuItem;
   private javax.swing.JMenuItem fileSaveMenuItem;
@@ -1861,6 +1967,8 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JSeparator jSeparator8;
   private javax.swing.JPopupMenu.Separator jSeparator9;
   private javax.swing.JButton lastButton;
+  private javax.swing.JMenuItem listFilterMenuItem;
+  private javax.swing.JMenu listMenu;
   private javax.swing.JPanel listPanel;
   private javax.swing.JMenuBar mainMenuBar;
   private javax.swing.JSplitPane mainSplitPane;

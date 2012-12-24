@@ -221,6 +221,13 @@ package com.powersurgepub.clubplanner.io;
     openForInput (inRecDef.getDict());
   } // end of openForInput method
   
+  public void openForInput (ClubEvent clubEvent) 
+      throws IOException {
+    dict = new DataDictionary();
+    this.clubEvent = clubEvent;
+    openForInputCommon();
+  }
+  
   /**
      Opens for input with the supplied data dictionary.
     
@@ -231,9 +238,16 @@ package com.powersurgepub.clubplanner.io;
   public void openForInput (DataDictionary inDict) 
       throws IOException {
     
-    ensureLog();
     dict = inDict;
-
+    clubEvent = new ClubEvent();
+    openForInputCommon();
+    
+  } // end of openForInput method
+  
+  private void openForInputCommon() {
+    
+    ensureLog();
+    
     recordNumber = 0;
     atEnd = false;
     fieldNumber = -1;
@@ -246,7 +260,6 @@ package com.powersurgepub.clubplanner.io;
     // Now gather field values from the input file
     blockComment = false;
     
-    clubEvent = new ClubEvent();
     eventNote = new EventNote();
     if (clubEventCalc.ifOpYearFromFolder()) {
       clubEvent.setYear(clubEventCalc.getOpYearFromFolder());
@@ -271,8 +284,7 @@ package com.powersurgepub.clubplanner.io;
     setLastEventFieldValue();
     clubEventCalc.calcAll(clubEvent);
     noteIndex = 0;
-    
-  } // end of openForInput method
+  }
   
   /**
    Return next ClubEvent object. 

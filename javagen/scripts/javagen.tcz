@@ -54,6 +54,8 @@ template	open	file		#PATH#../templates/duplicate.java
 template	generate			
 template	open	file		#PATH#../templates/item-class.java
 template	generate			
+template	open	file		#PATH#../templates/item-proxy-class.java
+template	generate			
 template	open	file		#PATH#../templates/master-list.java
 template	generate			
 template	open	file		#PATH#../templates/master-writer.java

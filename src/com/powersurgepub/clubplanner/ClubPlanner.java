@@ -106,10 +106,12 @@ public class ClubPlanner
   private             ScriptRecorder      scriptRecorder;
   private             TextMergeFilter     textMergeFilter;
   private             TextMergeSort       textMergeSort;
+  private             TextMergeTemplate   textMergeTemplate;
   private             JFrame              listWindow;
   private             JTabbedPane         listTabs;
   private             int                 filterTabIndex = 0;
   private             int                 sortTabIndex = 1;
+  private             int                 templateTabIndex = 2;
 
   /**
    Creates new form ClubPlanner
@@ -207,12 +209,17 @@ public class ClubPlanner
     scriptRecorder = new ScriptRecorder();
     textMergeFilter = new TextMergeFilter(clubEventList, scriptRecorder);
     textMergeSort   = new TextMergeSort  (clubEventList, scriptRecorder);
+    textMergeTemplate = new TextMergeTemplate (clubEventList, scriptRecorder);
+    File templateLibrary = new File (appFolder.getPath(),  "templates");
+    textMergeTemplate.setTemplateLibrary(templateLibrary);
     listWindow = new JFrame("List Utilities");
     listTabs = new JTabbedPane();
     filterTabIndex = 0;
     listTabs.add("Filter", textMergeFilter.getPanel());
     sortTabIndex = 1;
     listTabs.add("Sort",   textMergeSort.getPanel(false));
+    templateTabIndex = 2;
+    listTabs.add("Template", textMergeTemplate.getPanel(false));
     listWindow.add(listTabs);
     listWindow.setSize(600, 480);
     WindowMenuManager.getShared().locateUpperLeft(this, listWindow);
@@ -693,6 +700,7 @@ public class ClubPlanner
     itemTable.setModel(clubEventList);
     textMergeFilter.setPSList(clubEventList);
     textMergeSort.setPSList(clubEventList);
+    textMergeTemplate.setPSList(clubEventList);
     
     TableColumn tc = null;
     int avg = 0;
@@ -1313,6 +1321,7 @@ public class ClubPlanner
     listMenu = new javax.swing.JMenu();
     listFilterMenuItem = new javax.swing.JMenuItem();
     listSortMenuItem = new javax.swing.JMenuItem();
+    listTemplateMenuItem = new javax.swing.JMenuItem();
     windowMenu = new javax.swing.JMenu();
     helpMenu = new javax.swing.JMenu();
     helpPurchaseMenuItem = new javax.swing.JMenuItem();
@@ -1661,6 +1670,14 @@ eventDeleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
   });
   listMenu.add(listSortMenuItem);
 
+  listTemplateMenuItem.setText("Template");
+  listTemplateMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      listTemplateMenuItemActionPerformed(evt);
+    }
+  });
+  listMenu.add(listTemplateMenuItem);
+
   mainMenuBar.add(listMenu);
 
   windowMenu.setText("Window");
@@ -1910,6 +1927,11 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     listTabs.setSelectedIndex(sortTabIndex);
   }//GEN-LAST:event_listSortMenuItemActionPerformed
 
+  private void listTemplateMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listTemplateMenuItemActionPerformed
+    displayAuxiliaryWindow(listWindow);
+    listTabs.setSelectedIndex(templateTabIndex);
+  }//GEN-LAST:event_listTemplateMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -1991,6 +2013,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenu listMenu;
   private javax.swing.JPanel listPanel;
   private javax.swing.JMenuItem listSortMenuItem;
+  private javax.swing.JMenuItem listTemplateMenuItem;
   private javax.swing.JMenuBar mainMenuBar;
   private javax.swing.JSplitPane mainSplitPane;
   private javax.swing.JToolBar navToolBar;

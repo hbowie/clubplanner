@@ -26,6 +26,7 @@ public class ClubEventList
     extends
       AbstractTableModel
     implements
+      DataSource,
       PSList,
       TaggableList {
  
@@ -45,6 +46,26 @@ public class ClubEventList
   private TagsList        tagsList = new TagsList();
   private TagsModel       tagsModel = new TagsModel();
  
+  private int             dataSourceIndex = 0;
+ 
+  /** Log used to record events. */
+  private    Logger             log;
+ 
+  /** Should all data be logged (or only data preceding significant events(? */
+  private    boolean            dataLogging = false;
+ 
+  /** Data to be logged. */
+  private    LogData            logData;
+ 
+  /** Debug instance. */
+  private		 Debug							debug = new Debug (false);
+ 
+  /** Identifier used to identify this reader in the log. */
+  private    String             fileId;
+ 
+  /** Path to the original source file (if any). */
+  private		 String							dataParent;
+ 
   /**
    List constructor with no arguments.
    */
@@ -53,12 +74,13 @@ public class ClubEventList
     for (int i = 0; i < getColumnCount(); i++) {
       recDef.addColumn(getColumnName(i));
     }
+    log = Logger.getShared();
   }
  
   public void setComparator (Comparator comparator) {
     if (comparator == null) {
       this.comparator = new ClubEventDefaultComparator();
-    } 
+    }
     else
     if (comparator instanceof PSItemComparator) {
       PSItemComparator itemComparator = (PSItemComparator)comparator;
@@ -96,7 +118,7 @@ public class ClubEventList
     reloadProxyList();
     fireTableDataChanged();
   }
-  
+ 
   public void reloadProxyList() {
     proxyList = new ArrayList();
     for (int i = 0; i < list.size(); i++) {
@@ -272,11 +294,11 @@ public class ClubEventList
     tagsModel.add (newClubEvent);
     return new ClubEventPositioned (newClubEvent, findIndex);
   } // end add method
-  
+ 
   private void addToProxyList (int i) {
     ClubEvent clubEvent = list.get(i);
     /* System.out.println (
-        "ClubEventList.addToProxyList " 
+        "ClubEventList.addToProxyList "
         + " # "
         + String.valueOf(i)
         + " : "
@@ -306,7 +328,7 @@ public class ClubEventList
       }
     }
   }
-  
+ 
   public boolean itemSelected (ClubEvent clubEvent) {
     if (itemFilter == null) {
       return true;
@@ -487,6 +509,152 @@ public class ClubEventList
       return positionUsingNode
           (tagsModel.priorItemNode(position.getTagsNode()));
     }
+  }
+ 
+  /**
+     Opens the reader for input.
+ 
+     @param inDict A data dictionary to use.
+ 
+     @throws IOException If there is trouble opening a disk file.
+   */
+  public void openForInput (DataDictionary inDict)
+      throws IOException {
+    dataSourceIndex = 0;
+  }
+ 
+  /**
+     Opens the reader for input.
+ 
+     @param inRecDef A record definition to use.
+ 
+     @throws IOException If there is trouble opening a disk file.
+   */
+  public void openForInput (RecordDefinition inRecDef)
+      throws IOException {
+    dataSourceIndex = 0;
+  }
+ 
+  /**
+     Opens the reader for input.
+ 
+     @throws IOException If there is trouble opening a disk file.
+   */
+  public void openForInput ()
+      throws IOException {
+    dataSourceIndex = 0;
+  }
+ 
+  /**
+     Returns the next input data record.
+ 
+     @return Next data record.
+ 
+     @throws IOException If reading from a source that might generate
+                         these.
+   */
+  public DataRecord nextRecordIn ()
+      throws IOException {
+    if (isAtEnd()) {
+      return null;
+    } else {
+      ClubEvent clubEvent = get(dataSourceIndex);
+      dataSourceIndex++;
+      return clubEvent.getDataRec();
+    }
+  }
+ 
+  /**
+     Indicates whether there are more records to return.
+ 
+     @return True if no more records to return.
+   */
+  public boolean isAtEnd() {
+    return (dataSourceIndex >= size());
+  }
+ 
+  /**
+     Returns the sequential record number of the last record returned.
+ 
+     @return Sequential record number of the last record returned via
+             nextRecordIn, where 1 identifies the first record.
+   */
+  public int getRecordNumber () {
+    return dataSourceIndex;
+  }
+ 
+  /**
+     Closes the reader.
+ 
+     @throws IOException If there is trouble closing the file.
+   */
+  public void close ()
+      throws IOException {
+ 
+  }
+ 
+  /**
+     Sets a log to be used by the reader to record events.
+ 
+     @param  log A logger object to use.
+   */
+  public void setLog (Logger log) {
+    this.log = log;
+  }
+ 
+  /**
+     Sets the debug instance to the passed value.
+ 
+     @param debug Debug instance.
+   */
+  public void setDebug (Debug debug) {
+    this.debug = debug;
+  }
+ 
+  /**
+     Indicates whether all data records are to be logged.
+ 
+     @param  dataLogging True if all data records are to be logged.
+   */
+  public void setDataLogging (boolean dataLogging) {
+    this.dataLogging = dataLogging;
+  }
+ 
+  /**
+     Sets a file ID to be used to identify this reader in the log.
+ 
+     @param  fileId An identifier for this reader.
+   */
+  public void setFileId (String fileId) {
+    this.fileId = fileId;
+    logData.setSourceId (fileId);
+  }
+ 
+  /**
+     Sets the maximum directory explosion depth.
+ 
+     @param maxDepth Desired directory/sub-directory explosion depth.
+   */
+  public void setMaxDepth (int maxDepth) {
+ 
+  }
+ 
+  /**
+     Retrieves the path to the original source file (if any).
+ 
+     @return Path to the original source file (if any).
+   */
+  public String getDataParent () {
+    return dataParent;
+  }
+ 
+  /**
+     Returns the reader as some kind of string.
+ 
+     @return String identification of the reader.
+   */
+  public String toString () {
+    return title;
   }
 
 }

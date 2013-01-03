@@ -10,6 +10,7 @@ package com.powersurgepub.clubplanner.model;
   import com.powersurgepub.psdatalib.psdata.*;
   import com.powersurgepub.psdatalib.pslist.*;
   import com.powersurgepub.psdatalib.pstags.*;
+  import com.powersurgepub.psfiles.*;
   import com.powersurgepub.psutils.*;
   import com.powersurgepub.regcodes.*;
   import java.io.*;
@@ -38,6 +39,8 @@ public class =$itemclass$=List
       TaggableList {
  
   private String          title = "=$itemclass&c uul$= List";
+  
+  private FileSpec        fileSpec = null;
  
   private RecordDefinition recDef = new RecordDefinition();
  
@@ -138,8 +141,9 @@ public class =$itemclass$=List
  
    @param source The file or folder from which the data is taken.
   */
-  public void setSource (File source) {
-    tagsModel.setSource(source);
+  public void setSource (FileSpec fileSpec) {
+    this.fileSpec = fileSpec;
+    tagsModel.setSource(fileSpec.getFile());
   }
  
   /**
@@ -147,8 +151,8 @@ public class =$itemclass$=List
  
    @return The file or folder from which the data is taken.
   */
-  public File getSource () {
-    return tagsModel.getSource();
+  public FileSpec getSource () {
+    return fileSpec;
   }
  
   public void setTitle (String title) {

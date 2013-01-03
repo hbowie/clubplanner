@@ -103,7 +103,7 @@ public class ClubPlanner
   private             ClubEventPanel5     clubEventPanel5;
   
   // List Manipulation
-  private             ScriptRecorder      scriptRecorder;
+  private             TextMergeScript     textMergeScript;
   private             TextMergeFilter     textMergeFilter;
   private             TextMergeSort       textMergeSort;
   private             TextMergeTemplate   textMergeTemplate;
@@ -206,20 +206,25 @@ public class ClubPlanner
     WindowMenuManager.getShared().add(logWindow);
     
     // Set up List Manipulation
-    scriptRecorder = new ScriptRecorder();
-    textMergeFilter = new TextMergeFilter(clubEventList, scriptRecorder);
-    textMergeSort   = new TextMergeSort  (clubEventList, scriptRecorder);
-    textMergeTemplate = new TextMergeTemplate (clubEventList, scriptRecorder);
+    textMergeScript = new TextMergeScript(clubEventList);
+    textMergeFilter = new TextMergeFilter(clubEventList, textMergeScript);
+    textMergeSort   = new TextMergeSort  (clubEventList, textMergeScript);
+    textMergeTemplate = new TextMergeTemplate (clubEventList, textMergeScript);
+    textMergeScript.setFilterModule(textMergeFilter);
+    textMergeScript.setSortModule(textMergeSort);
+    textMergeScript.setTemplateModule(textMergeTemplate);
+    
     File templateLibrary = new File (appFolder.getPath(),  "templates");
     textMergeTemplate.setTemplateLibrary(templateLibrary);
     listWindow = new JFrame("List Utilities");
     listTabs = new JTabbedPane();
+    textMergeScript.setTabs(listTabs);
     filterTabIndex = 0;
-    listTabs.add("Filter", textMergeFilter.getPanel());
+    textMergeFilter.setTabs(listTabs);
     sortTabIndex = 1;
-    listTabs.add("Sort",   textMergeSort.getPanel(false));
+    textMergeSort.setTabs(listTabs, false);
     templateTabIndex = 2;
-    listTabs.add("Template", textMergeTemplate.getPanel(false));
+    textMergeTemplate.setTabs(listTabs);
     listWindow.add(listTabs);
     listWindow.setSize(600, 480);
     WindowMenuManager.getShared().locateUpperLeft(this, listWindow);
@@ -374,7 +379,6 @@ public class ClubPlanner
   }
   
   private void savePrefs () {
-    
     userPrefs.setPref (CommonPrefs.PREFS_LEFT, this.getX());
     userPrefs.setPref (CommonPrefs.PREFS_TOP, this.getY());
     userPrefs.setPref (CommonPrefs.PREFS_WIDTH, this.getWidth());
@@ -445,6 +449,7 @@ public class ClubPlanner
       statusBar.setStatus("Trouble loading Club Events");
     }
     setClubEventFolder (fileToOpen);
+    setPSList();
     /*
     readFileContents(eventsFile);
     collectionWindow.setClubEvents (clubEventList);
@@ -468,6 +473,8 @@ public class ClubPlanner
       } else {
         statusBar.setStatus("Trouble reloading Club Events");
       }
+      setClubEventFolder (eventsFile);
+      setPSList();
       /*
       readFileContents(eventsFile);
       collectionWindow.setClubEvents (clubEventList);
@@ -698,9 +705,6 @@ public class ClubPlanner
   private void initCollection () {
     clubEventList = new ClubEventList();
     itemTable.setModel(clubEventList);
-    textMergeFilter.setPSList(clubEventList);
-    textMergeSort.setPSList(clubEventList);
-    textMergeTemplate.setPSList(clubEventList);
     
     TableColumn tc = null;
     int avg = 0;
@@ -728,6 +732,13 @@ public class ClubPlanner
     tagsTree.doLayout();
   }
   
+  private void setPSList() {
+    textMergeFilter.setPSList(clubEventList);
+    textMergeSort.setPSList(clubEventList);
+    textMergeTemplate.setPSList(clubEventList);
+    textMergeScript.setPSList(clubEventList);
+  }
+  
   /**
    Save various bits of information about a new URL file that we are
    working with.
@@ -742,10 +753,12 @@ public class ClubPlanner
       // currentFileSpec = null;
       statusBar.setFileName("            ", " ");
     } else {
-      if (clubEventList != null) {
-        clubEventList.setSource (file);
-      }
       fileSpec = recentFiles.addRecentFile (file);
+      if (clubEventList != null) {
+        clubEventList.setSource (fileSpec);
+      } else {
+        // System.out.println("ClubPlanner.setClubEventFolder clubEventList is null");
+      }
       eventsFile = file;
       currentDirectory = file.getParentFile();
       FileName fileName = new FileName (file);
@@ -1319,6 +1332,7 @@ public class ClubPlanner
     eventDupeMenuItem = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JMenu();
     listMenu = new javax.swing.JMenu();
+    listScriptMenuItem = new javax.swing.JMenuItem();
     listFilterMenuItem = new javax.swing.JMenuItem();
     listSortMenuItem = new javax.swing.JMenuItem();
     listTemplateMenuItem = new javax.swing.JMenuItem();
@@ -1654,6 +1668,14 @@ eventDeleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
 
   listMenu.setText("List");
 
+  listScriptMenuItem.setText("Script");
+  listScriptMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      listScriptMenuItemActionPerformed(evt);
+    }
+  });
+  listMenu.add(listScriptMenuItem);
+
   listFilterMenuItem.setText("Filter");
   listFilterMenuItem.addActionListener(new java.awt.event.ActionListener() {
     public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1915,7 +1937,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
 
   private void listFilterMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listFilterMenuItemActionPerformed
     displayAuxiliaryWindow(listWindow);
-    listTabs.setSelectedIndex(filterTabIndex);
+    textMergeFilter.selectTab();
   }//GEN-LAST:event_listFilterMenuItemActionPerformed
 
   private void fileReloadMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileReloadMenuItemActionPerformed
@@ -1924,13 +1946,18 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
 
   private void listSortMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listSortMenuItemActionPerformed
     displayAuxiliaryWindow(listWindow);
-    listTabs.setSelectedIndex(sortTabIndex);
+    textMergeSort.selectTab();
   }//GEN-LAST:event_listSortMenuItemActionPerformed
 
   private void listTemplateMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listTemplateMenuItemActionPerformed
     displayAuxiliaryWindow(listWindow);
-    listTabs.setSelectedIndex(templateTabIndex);
+    textMergeTemplate.selectTab();
   }//GEN-LAST:event_listTemplateMenuItemActionPerformed
+
+  private void listScriptMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listScriptMenuItemActionPerformed
+    displayAuxiliaryWindow(listWindow);
+    textMergeScript.selectTab();
+  }//GEN-LAST:event_listScriptMenuItemActionPerformed
 
   /**
    @param args the command line arguments
@@ -2012,6 +2039,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenuItem listFilterMenuItem;
   private javax.swing.JMenu listMenu;
   private javax.swing.JPanel listPanel;
+  private javax.swing.JMenuItem listScriptMenuItem;
   private javax.swing.JMenuItem listSortMenuItem;
   private javax.swing.JMenuItem listTemplateMenuItem;
   private javax.swing.JMenuBar mainMenuBar;

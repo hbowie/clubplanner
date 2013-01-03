@@ -148,6 +148,14 @@
             <Property name="text" type="java.lang.String" value="List"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="listScriptMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Script"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="listScriptMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="listFilterMenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Filter"/>

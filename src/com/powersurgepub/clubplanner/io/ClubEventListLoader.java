@@ -1,5 +1,7 @@
 package com.powersurgepub.clubplanner.io;
 
+import com.powersurgepub.psdatalib.clubplanner.ClubEventCalc;
+import com.powersurgepub.psdatalib.clubplanner.ClubEventReader;
   import com.powersurgepub.clubplanner.model.*;
   import com.powersurgepub.psdatalib.ui.*;
   import com.powersurgepub.psutils.*;

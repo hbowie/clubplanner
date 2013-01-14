@@ -1,5 +1,6 @@
 package com.powersurgepub.clubplanner.model;
 
+  import com.powersurgepub.psdatalib.clubplanner.*;
   import com.powersurgepub.psdatalib.psdata.*;
   import com.powersurgepub.psdatalib.pslist.*;
   import com.powersurgepub.psdatalib.pstags.*;
@@ -78,6 +79,13 @@ public class ClubEventList
       recDef.addColumn(getColumnName(i));
     }
     log = Logger.getShared();
+  }
+  
+  /**
+   Initialize the list with no items in the list. 
+  */
+  public void initialize() {
+    
   }
  
   public void setComparator (Comparator comparator) {
@@ -171,6 +179,15 @@ public class ClubEventList
     return ClubEvent.getColumnClass (columnIndex);
   }
  
+  /**
+   Get the column number assigned to a particular field name.
+ 
+   @param columnName The name of the column. Case and word separation are
+                     not significant.
+ 
+   @return The column number (with the first starting at zero), or -1
+           if the field name could not be found.
+  */
   public int getColumnNumber (String columnName) {
     String commonName = StringUtils.commonName(columnName);
     boolean found = false;
@@ -188,6 +205,11 @@ public class ClubEventList
     }
   }
  
+  /**
+   Return the record definition for this list
+ 
+   @return The record definition, or null if no record defined yet.
+   */
   public RecordDefinition getRecDef() {
     return recDef;
   }

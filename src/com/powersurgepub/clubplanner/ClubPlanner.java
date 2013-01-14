@@ -4,6 +4,7 @@ package com.powersurgepub.clubplanner;
   import com.powersurgepub.clubplanner.model.*;
   import com.powersurgepub.clubplanner.view.*;
   import com.powersurgepub.psfiles.*;
+  import com.powersurgepub.psdatalib.clubplanner.*;
   import com.powersurgepub.psdatalib.pstags.*;
   import com.powersurgepub.psdatalib.script.*;
   import com.powersurgepub.psdatalib.textmerge.*;
@@ -29,6 +30,7 @@ public class ClubPlanner
     extends 
       javax.swing.JFrame 
     implements 
+      TextMergeController,
       // ActionListener,
       TagsChangeAgent,
       // FileOpener,
@@ -75,6 +77,8 @@ public class ClubPlanner
   private             UnregisteredWindow  unregisteredWindow;
   private static final int    DEMO_LIMIT    = 20;
   private             RegistrationCode    registrationCode;
+  
+  private             boolean             listAvailable = false;
   
   private             ClubEventList       clubEventList = new ClubEventList();
   private             ClubEventPositioned position = new ClubEventPositioned();
@@ -207,6 +211,7 @@ public class ClubPlanner
     
     // Set up List Manipulation
     textMergeScript = new TextMergeScript(clubEventList);
+    textMergeScript.allowAutoplay(false);
     textMergeFilter = new TextMergeFilter(clubEventList, textMergeScript);
     textMergeSort   = new TextMergeSort  (clubEventList, textMergeScript);
     textMergeTemplate = new TextMergeTemplate (clubEventList, textMergeScript);
@@ -267,8 +272,26 @@ public class ClubPlanner
     }
   }
   
+  public void setListAvailable(boolean listAvailable) {
+    this.listAvailable = listAvailable;
+  }
+  
+  public boolean isListAvailable() {
+    return listAvailable;
+  }
+  
   /**
-   Help the user purchase a software license for URL Union.
+   Is the user registered?
+  
+   @return True if we should treat the user with unrestricted access rights, 
+           false if we should limit their usage in some way. 
+  */
+  public boolean isRegistered() {
+    return RegisterWindow.getShared().isRegistered();
+  }
+  
+  /**
+   Help the user purchase a software license for Club Planner.
    */
   private void purchase () {
     appster.openURL (UnregisteredWindow.STORE);
@@ -293,7 +316,7 @@ public class ClubPlanner
    Handle the condition of not saving all user input due to the application
    not being registered.
    */
-  private void handleRegistrationLimitation () {
+  public void handleRegistrationLimitation () {
     Trouble.getShared().report("Unregistered copy will save no more than "
         + String.valueOf(DEMO_LIMIT) + " items in Demo mode",
         "Demo Warning");
@@ -1237,6 +1260,7 @@ public class ClubPlanner
       boolean modOK = modIfChanged();
       if (modOK) {
         ClubEvent branch = (ClubEvent)node.getTaggable();
+        System.out.println();
         int branchIndex = clubEventList.find (branch);
         if (branchIndex >= 0) {
           position = clubEventList.positionUsingListIndex (branchIndex);
@@ -1255,7 +1279,9 @@ public class ClubPlanner
   
   private void display() {
     ClubEvent clubEvent = position.getClubEvent();
-    reload (clubEvent);
+    if (clubEvent.hasDiskLocation()) {
+      reload (clubEvent);
+    }
     localPath = clubEvent.getLocalPath();
     clubEventPanel1.display(clubEvent);
     clubEventPanel2.display(clubEvent);

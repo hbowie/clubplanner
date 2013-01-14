@@ -7,6 +7,7 @@
 <?output "../../src/com/powersurgepub/clubplanner/model/=$itemclass$=Positioned.java"?>
 package com.powersurgepub.clubplanner.model;
 
+  import com.powersurgepub.psdatalib.clubplanner.*;
   import com.powersurgepub.psdatalib.pstags.TagsNode;
 
   /* 

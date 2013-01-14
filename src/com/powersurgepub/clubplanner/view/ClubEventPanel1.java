@@ -2,6 +2,7 @@ package com.powersurgepub.clubplanner.view;
 
   import com.powersurgepub.clubplanner.*;
   import com.powersurgepub.clubplanner.model.*;
+  import com.powersurgepub.psdatalib.clubplanner.*;
   import com.powersurgepub.psdatalib.ui.*;
   import java.awt.*;
   import javax.swing.*;
@@ -81,7 +82,7 @@ public class ClubEventPanel1
 
 		// Panel Layout for Type
     typeLabel.setLabelFor(typePSComboBox);
-    typePSComboBox.load (ClubPlanner.class, "type.txt");
+    typePSComboBox.load (ClubEvent.class, "type.txt");
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
     gb.setTopInset(8);

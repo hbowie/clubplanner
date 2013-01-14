@@ -11,6 +11,7 @@ package com.powersurgepub.clubplanner.view;
 
   import com.powersurgepub.clubplanner.*;
   import com.powersurgepub.clubplanner.model.*;
+  import com.powersurgepub.psdatalib.clubplanner.*;
   import com.powersurgepub.psdatalib.ui.*;
   import java.awt.*;
   import javax.swing.*;

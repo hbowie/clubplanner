@@ -7,6 +7,7 @@
 <?output "../../src/com/powersurgepub/clubplanner/model/=$itemclass$=List.java"?>
 package com.powersurgepub.clubplanner.model;
 
+  import com.powersurgepub.psdatalib.clubplanner.*;
   import com.powersurgepub.psdatalib.psdata.*;
   import com.powersurgepub.psdatalib.pslist.*;
   import com.powersurgepub.psdatalib.pstags.*;
@@ -178,6 +179,15 @@ public class =$itemclass$=List
     return =$itemclass$=.getColumnClass (columnIndex);
   }
  
+  /**
+   Get the column number assigned to a particular field name. 
+  
+   @param columnName The name of the column. Case and word separation are
+                     not significant. 
+  
+   @return The column number (with the first starting at zero), or -1
+           if the field name could not be found.
+  */
   public int getColumnNumber (String columnName) {
     String commonName = StringUtils.commonName(columnName);
     boolean found = false;
@@ -195,6 +205,11 @@ public class =$itemclass$=List
     }
   }
  
+  /**
+   Return the record definition for this list 
+   
+   @return The record definition, or null if no record defined yet. 
+   */
   public RecordDefinition getRecDef() {
     return recDef;
   }

@@ -2,8 +2,8 @@
 <?definegroup 1 =$itemclass$=?>
 <?ifendgroup 1 ?>
 <?ifnewgroup 1 ?>
-<?output "../../src/com/powersurgepub/clubplanner/model/=$itemclass$=.java"?>
-package com.powersurgepub.clubplanner.model;
+<?output "../../../psdatalib/src/com/powersurgepub/psdatalib/clubplanner/=$itemclass$=.java"?>
+package com.powersurgepub.psdatalib.clubplanner;
 
   import com.powersurgepub.psdatalib.psdata.*;
   import com.powersurgepub.psdatalib.pslist.*;
@@ -165,6 +165,16 @@ public class =$itemclass$=
     } catch (java.io.IOException e) {
       this.diskLocation = diskLocationFile.getAbsolutePath();
     }
+  }
+  
+  /**
+   Indicate whether the item has a disk location. 
+  
+   @return True if we've got a disk location, false otherwise. 
+  */
+  public boolean hasDiskLocation() {
+    return (diskLocation != null
+        && diskLocation.length() > 0);
   }
   
   /**

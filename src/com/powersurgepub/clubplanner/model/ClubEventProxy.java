@@ -1,5 +1,6 @@
 package com.powersurgepub.clubplanner.model;
 
+  import com.powersurgepub.psdatalib.clubplanner.*;
   import java.util.*;
 
 /**

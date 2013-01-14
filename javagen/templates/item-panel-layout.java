@@ -80,7 +80,7 @@
 
 		// Panel Layout for =$field$=
     =$field&clul$=Label.setLabelFor(=$field&clul$==$panelclass$=);
-    =$field&clul$==$panelclass$=.load (ClubPlanner.class, "=$field&clll$=.txt");
+    =$field&clul$==$panelclass$=.load (=$itemclass$=.class, "=$field&clll$=.txt");
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
     gb.setTopInset(8);

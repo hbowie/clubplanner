@@ -87,6 +87,19 @@ public class =$itemclass$=List
     }
     log = Logger.getShared();
   }
+  
+  /**
+   Initialize the list with no items in the list. 
+  */
+  public void initialize() {
+    list = new ArrayList();
+    proxyList = new ArrayList();
+    tagsList = new TagsList();
+    tagsModel = new TagsModel();
+    tagsList.registerValue("");
+    comparator = new =$itemclass$=DefaultComparator();
+    itemFilter = null;
+  }
  
   public void setComparator (Comparator comparator) {
     if (comparator == null) {

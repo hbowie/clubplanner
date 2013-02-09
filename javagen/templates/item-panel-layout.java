@@ -90,5 +90,19 @@
     gb.setTopInset(4);
     gb.add(=$field&clul$==$panelclass$=);
 <?endif?>
+<?if =$panelclass$= == "DatePanel" ?>
+
+		// Panel Layout for =$field$=
+    =$field&clul$=Label.setLabelFor(=$field&clul$==$panelclass$=);
+    =$field&clul$==$panelclass$= = new =$panelclass$=(frame, this);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(=$field&clul$=Label);
+    =$field&clul$==$panelclass$=.setToolTipText("=$tooltip$=");
+    gb.setWidth(=$panelwidth$=);
+    gb.setTopInset(4);
+    gb.add(=$field&clul$==$panelclass$=);
+<?endif?>
 <?endif?>
 <?loop?>

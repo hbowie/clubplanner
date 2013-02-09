@@ -144,13 +144,13 @@ public class ClubPlanner
         false);
     }
     
-    clubEventPanel1 = new ClubEventPanel1();
-    clubEventPanel2 = new ClubEventPanel2();
-    clubEventPanel3 = new ClubEventPanel3();
-    clubEventPanel4 = new ClubEventPanel4();
-    clubEventPanel5 = new ClubEventPanel5();
+    clubEventPanel1 = new ClubEventPanel1(this);
+    clubEventPanel2 = new ClubEventPanel2(this);
+    clubEventPanel3 = new ClubEventPanel3(this);
+    clubEventPanel4 = new ClubEventPanel4(this);
+    clubEventPanel5 = new ClubEventPanel5(this);
     itemTabs.add("Basics", clubEventPanel1);
-    itemTabs.add("Description", clubEventPanel2);
+    itemTabs.add("Text", clubEventPanel2);
     itemTabs.add("Numbers", clubEventPanel3);
     itemTabs.add("Links", clubEventPanel4);
     itemTabs.add("Notes", clubEventPanel5);

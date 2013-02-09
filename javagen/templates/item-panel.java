@@ -14,6 +14,7 @@ package com.powersurgepub.clubplanner.view;
   import com.powersurgepub.psdatalib.clubplanner.*;
   import com.powersurgepub.psdatalib.ui.*;
   import java.awt.*;
+  import java.util.*;
   import javax.swing.*;
   
 /**
@@ -25,7 +26,9 @@ package com.powersurgepub.clubplanner.view;
  */
 public class =$itemclass$=Panel=$panelno$= 
 		extends 
-			JPanel {
+			JPanel 
+		implements
+			DateOwner {
 			
 <?include "../includes/=$itemclass$=Panel=$panelno$=-panel-definitions.java"?>
 
@@ -34,12 +37,15 @@ public class =$itemclass$=Panel=$panelno$=
   private     boolean             modified = false;
 
 	private     GridBagger          gb = new GridBagger();
+	
+	private     JFrame              frame;
 
   /**
-   A constructor without any arguments.
+   The constructor.
    */
-  public =$itemclass$=Panel=$panelno$=() {
+  public =$itemclass$=Panel=$panelno$=(JFrame frame) {
   
+    this.frame = frame;
     gb.startLayout (this, 4, 99);
     gb.setByRows(true);
 		gb.setDefaultColumnWeight (0.5);
@@ -63,6 +69,37 @@ public class =$itemclass$=Panel=$panelno$=
 <?include "../includes/=$itemclass$=Panel=$panelno$=-panel-mod.java"?>
 
 <?include "../includes/=$itemclass$=Panel=$panelno$=-panel-get.java"?>
+
+  /**
+   To be called whenever the date is modified by DatePanel.
+   */
+  public void dateModified (Date date) {
+  
+  }
+  
+  /**
+   Does this date have an associated rule for recurrence?
+   */
+  public boolean canRecur() {
+    return false;
+	}
+  
+  /**
+   Provide a text string describing the recurrence rule, that can
+   be used as a tool tip.
+   */
+  public String getRecurrenceRule() {
+    return "";
+  }
+  
+  /**
+   Apply the recurrence rule to the date.
+   
+   @param date Date that will be incremented. 
+   */
+  public void recur (GregorianCalendar date) {
+  
+  }
 
 }
 <?endif?>

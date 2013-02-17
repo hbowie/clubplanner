@@ -298,6 +298,14 @@ public class ClubEventList
       return null;
     }
   } // end method get (int)
+  
+  public ClubEvent getUnfiltered (int index) {
+    if (index >= 0 && index < totalSize()) {
+      return list.get(index);
+    } else {
+      return null;
+    }
+  }
  
   public ClubEventPositioned positionUsingNode (TagsNode node) {
     ClubEventPositioned position = new ClubEventPositioned();

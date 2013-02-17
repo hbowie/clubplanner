@@ -590,8 +590,8 @@ public class ClubPlanner
     int numberSaved = 0;
     int numberDeleted = 0;
     
-    for (int i = 0; i < clubEventList.size() && saveOK; i++) {
-      ClubEvent nextClubEvent = clubEventList.get(i);
+    for (int i = 0; i < clubEventList.totalSize() && saveOK; i++) {
+      ClubEvent nextClubEvent = clubEventList.getUnfiltered(i);
       writer = new ClubEventWriter();
       String oldDiskLocation = nextClubEvent.getDiskLocation();
       saveOK = writer.save(eventsFile, nextClubEvent, true);

@@ -127,6 +127,15 @@ public class ClubEventWriter {
     return outOK;
   }
  
+  /**
+   Save the supplied event to disk. 
+  
+   @param folder The folder to which the event should be saved. 
+   @param clubEvent
+   @param primaryLocation Is this the primary location where the event is stored?
+  
+   @return True if the save went without a hitch. 
+  */
   public boolean save (File folder, ClubEvent clubEvent,
       boolean primaryLocation) {
  

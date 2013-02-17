@@ -45,9 +45,6 @@ public class ClubEventPanel4
   private JLabel    newsImageLabel    = new JLabel("News Image:", JLabel.LEFT);
   private JTextField newsImageJTextField = new JTextField();
 
-  private JLabel    discussLabel    = new JLabel("Discuss:", JLabel.LEFT);
-  private JTextField discussJTextField = new JTextField();
-
   private     JLabel              bottomFiller   = new JLabel("");
 
   private     boolean             modified = false;
@@ -134,17 +131,6 @@ public class ClubEventPanel4
     gb.setTopInset(4);
     gb.add(newsImageJTextField);
 
-		// Panel Layout for Discuss
-    discussLabel.setLabelFor(discussJTextField);
-    gb.setColumnWeight(0.0);
-    gb.setWidth(1);
-    gb.setTopInset(8);
-    gb.add(discussLabel);
-    discussJTextField.setToolTipText("Identification of any issues to be discussed at an upcoming board meeting.");
-    gb.setWidth(3);
-    gb.setTopInset(4);
-    gb.add(discussJTextField);
-
     gb.setWidth(2);
     gb.setFill(GridBagConstraints.BOTH);
     gb.setColumnWeight(1.0);
@@ -189,11 +175,6 @@ public class ClubEventPanel4
     } else {
       newsImageJTextField.setText ("");
     }
-    if (clubEvent.hasDiscuss()) {
-      discussJTextField.setText (clubEvent.getDiscuss().toString());
-    } else {
-      discussJTextField.setText ("");
-    }
  
   }
 
@@ -225,10 +206,6 @@ public class ClubEventPanel4
     }
     if (! clubEvent.getNewsImageAsString().equals (newsImageJTextField.getText())) {
       clubEvent.setNewsImage(newsImageJTextField.getText());
-      modified = true;
-    }
-    if (! clubEvent.getDiscussAsString().equals (discussJTextField.getText())) {
-      clubEvent.setDiscuss(discussJTextField.getText());
       modified = true;
     }
 
@@ -288,15 +265,6 @@ public class ClubEventPanel4
    */
   public JTextField getNewsImageJTextField () {
     return newsImageJTextField;
-  }
-
-  /**
-    Returns the discuss for this club event.
- 
-    @return The discuss for this club event.
-   */
-  public JTextField getDiscussJTextField () {
-    return discussJTextField;
   }
 
   /**

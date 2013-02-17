@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013 Herb Bowie
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.powersurgepub.clubplanner;
 
   import com.powersurgepub.clubplanner.io.*;
@@ -6,7 +22,6 @@ package com.powersurgepub.clubplanner;
   import com.powersurgepub.psfiles.*;
   import com.powersurgepub.psdatalib.clubplanner.*;
   import com.powersurgepub.psdatalib.pstags.*;
-  import com.powersurgepub.psdatalib.script.*;
   import com.powersurgepub.psdatalib.textmerge.*;
   import com.powersurgepub.psdatalib.ui.*;
   import com.powersurgepub.psutils.*;
@@ -111,7 +126,7 @@ public class ClubPlanner
   private             TextMergeFilter     textMergeFilter;
   private             TextMergeSort       textMergeSort;
   private             TextMergeTemplate   textMergeTemplate;
-  private             JFrame              listWindow;
+  private             JFrame              listArrangerWindow = null;
   private             JTabbedPane         listTabs;
   private             int                 filterTabIndex = 0;
   private             int                 sortTabIndex = 1;
@@ -209,7 +224,7 @@ public class ClubPlanner
     logger.setLogThreshold (LogEvent.NORMAL);
     WindowMenuManager.getShared().add(logWindow);
     
-    // Set up List Manipulation
+    // Set up List Arranger
     textMergeScript = new TextMergeScript(clubEventList);
     textMergeScript.allowAutoplay(false);
     textMergeFilter = new TextMergeFilter(clubEventList, textMergeScript);
@@ -221,7 +236,7 @@ public class ClubPlanner
     
     File templateLibrary = new File (appFolder.getPath(),  "templates");
     textMergeTemplate.setTemplateLibrary(templateLibrary);
-    listWindow = new JFrame("List Utilities");
+    listArrangerWindow = new JFrame("List Arranger");
     listTabs = new JTabbedPane();
     textMergeScript.setTabs(listTabs);
     filterTabIndex = 0;
@@ -230,10 +245,10 @@ public class ClubPlanner
     textMergeSort.setTabs(listTabs, false);
     templateTabIndex = 2;
     textMergeTemplate.setTabs(listTabs);
-    listWindow.add(listTabs);
-    listWindow.setSize(600, 480);
-    WindowMenuManager.getShared().locateUpperLeft(this, listWindow);
-    WindowMenuManager.getShared().add(listWindow);
+    listArrangerWindow.add(listTabs);
+    textMergeScript.selectEasyTab();
+    
+    WindowMenuManager.getShared().add(listArrangerWindow, KeyEvent.VK_L);
     
     /*
      Following initialization, to get user's preferred file or folder to open.
@@ -246,6 +261,64 @@ public class ClubPlanner
           && lastFile.isDirectory()
           && lastFile.canRead()) {
         openFile (lastFile);
+      }
+    }
+  }
+  
+  private void auxWindowCalcs() {
+    if (listArrangerWindow != null) {
+      if (mainSplitPane.getOrientation() == JSplitPane.HORIZONTAL_SPLIT) {
+        int lawx = 
+            this.getX() 
+              + mainSplitPane.getDividerLocation() 
+              + mainSplitPane.getDividerSize();
+
+        int lawy =
+            this.getY()
+              + mainSplitPane.getY()
+              + navToolBar.getHeight();
+
+        int laww =
+            this.getWidth()
+              - mainSplitPane.getDividerLocation()
+              - mainSplitPane.getDividerSize();
+
+        int lawh =
+            this.getHeight()
+              - mainSplitPane.getY()
+              - navToolBar.getHeight()
+              - statusBar.getHeight();
+
+        listArrangerWindow.setBounds(lawx, lawy, laww, lawh);
+      } else {
+        int lawx = 
+            this.getX() 
+              // + mainSplitPane.getDividerLocation() 
+              // + mainSplitPane.getDividerSize()
+            ;
+
+        int lawy =
+            this.getY()
+              + mainSplitPane.getY()
+              + navToolBar.getHeight()
+              + mainSplitPane.getDividerLocation() 
+              + mainSplitPane.getDividerSize();
+
+        int laww =
+            this.getWidth()
+              // - mainSplitPane.getDividerLocation()
+              // - mainSplitPane.getDividerSize()
+            ;
+
+        int lawh =
+            this.getHeight()
+              - mainSplitPane.getY()
+              - navToolBar.getHeight()
+              - statusBar.getHeight()
+              - mainSplitPane.getDividerLocation()
+              - mainSplitPane.getDividerSize();
+
+        listArrangerWindow.setBounds(lawx, lawy, laww, lawh); 
       }
     }
   }
@@ -1357,11 +1430,6 @@ public class ClubPlanner
     eventDeleteMenuItem = new javax.swing.JMenuItem();
     eventDupeMenuItem = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JMenu();
-    listMenu = new javax.swing.JMenu();
-    listScriptMenuItem = new javax.swing.JMenuItem();
-    listFilterMenuItem = new javax.swing.JMenuItem();
-    listSortMenuItem = new javax.swing.JMenuItem();
-    listTemplateMenuItem = new javax.swing.JMenuItem();
     windowMenu = new javax.swing.JMenu();
     helpMenu = new javax.swing.JMenu();
     helpPurchaseMenuItem = new javax.swing.JMenuItem();
@@ -1377,6 +1445,14 @@ public class ClubPlanner
     helpReduceWindowSizeMenuItem = new javax.swing.JMenuItem();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+    addComponentListener(new java.awt.event.ComponentAdapter() {
+      public void componentResized(java.awt.event.ComponentEvent evt) {
+        formComponentResized(evt);
+      }
+      public void componentMoved(java.awt.event.ComponentEvent evt) {
+        formComponentMoved(evt);
+      }
+    });
 
     navToolBar.setRollover(true);
 
@@ -1526,6 +1602,11 @@ public class ClubPlanner
     getContentPane().add(navToolBar, java.awt.BorderLayout.NORTH);
 
     mainSplitPane.setDividerLocation(120);
+    mainSplitPane.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+      public void propertyChange(java.beans.PropertyChangeEvent evt) {
+        mainSplitPanePropertyChange(evt);
+      }
+    });
 
     listPanel.setLayout(new java.awt.BorderLayout());
 
@@ -1691,42 +1772,6 @@ eventDeleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
 
   editMenu.setText("Edit");
   mainMenuBar.add(editMenu);
-
-  listMenu.setText("List");
-
-  listScriptMenuItem.setText("Script");
-  listScriptMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      listScriptMenuItemActionPerformed(evt);
-    }
-  });
-  listMenu.add(listScriptMenuItem);
-
-  listFilterMenuItem.setText("Filter");
-  listFilterMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      listFilterMenuItemActionPerformed(evt);
-    }
-  });
-  listMenu.add(listFilterMenuItem);
-
-  listSortMenuItem.setText("Sort");
-  listSortMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      listSortMenuItemActionPerformed(evt);
-    }
-  });
-  listMenu.add(listSortMenuItem);
-
-  listTemplateMenuItem.setText("Template");
-  listTemplateMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      listTemplateMenuItemActionPerformed(evt);
-    }
-  });
-  listMenu.add(listTemplateMenuItem);
-
-  mainMenuBar.add(listMenu);
 
   windowMenu.setText("Window");
   mainMenuBar.add(windowMenu);
@@ -1961,29 +2006,21 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     saveAll();
   }//GEN-LAST:event_fileSaveAllMenuItemActionPerformed
 
-  private void listFilterMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listFilterMenuItemActionPerformed
-    displayAuxiliaryWindow(listWindow);
-    textMergeFilter.selectTab();
-  }//GEN-LAST:event_listFilterMenuItemActionPerformed
-
   private void fileReloadMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileReloadMenuItemActionPerformed
     reload();
   }//GEN-LAST:event_fileReloadMenuItemActionPerformed
 
-  private void listSortMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listSortMenuItemActionPerformed
-    displayAuxiliaryWindow(listWindow);
-    textMergeSort.selectTab();
-  }//GEN-LAST:event_listSortMenuItemActionPerformed
+  private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
+    auxWindowCalcs();
+  }//GEN-LAST:event_formComponentMoved
 
-  private void listTemplateMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listTemplateMenuItemActionPerformed
-    displayAuxiliaryWindow(listWindow);
-    textMergeTemplate.selectTab();
-  }//GEN-LAST:event_listTemplateMenuItemActionPerformed
+  private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+    auxWindowCalcs();
+  }//GEN-LAST:event_formComponentResized
 
-  private void listScriptMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listScriptMenuItemActionPerformed
-    displayAuxiliaryWindow(listWindow);
-    textMergeScript.selectTab();
-  }//GEN-LAST:event_listScriptMenuItemActionPerformed
+  private void mainSplitPanePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_mainSplitPanePropertyChange
+    auxWindowCalcs();
+  }//GEN-LAST:event_mainSplitPanePropertyChange
 
   /**
    @param args the command line arguments
@@ -2022,7 +2059,9 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     java.awt.EventQueue.invokeLater(new Runnable() {
 
       public void run() {
-        new ClubPlanner().setVisible(true);
+        ClubPlanner clubPlanner = new ClubPlanner();
+        clubPlanner.setVisible(true);
+        clubPlanner.auxWindowCalcs();
       }
     });
   }
@@ -2062,12 +2101,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JSeparator jSeparator8;
   private javax.swing.JPopupMenu.Separator jSeparator9;
   private javax.swing.JButton lastButton;
-  private javax.swing.JMenuItem listFilterMenuItem;
-  private javax.swing.JMenu listMenu;
   private javax.swing.JPanel listPanel;
-  private javax.swing.JMenuItem listScriptMenuItem;
-  private javax.swing.JMenuItem listSortMenuItem;
-  private javax.swing.JMenuItem listTemplateMenuItem;
   private javax.swing.JMenuBar mainMenuBar;
   private javax.swing.JSplitPane mainSplitPane;
   private javax.swing.JToolBar navToolBar;

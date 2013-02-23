@@ -1,3 +1,19 @@
+/*
+ * Copyright 1999 - 2013 Herb Bowie
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.powersurgepub.clubplanner.view;
 
   import com.powersurgepub.clubplanner.*;
@@ -45,10 +61,6 @@ public class ClubEventPanel2
   private JLabel    recapLabel    = new JLabel("Recap:", JLabel.LEFT);
   private JScrollPane recapScrollPane = new javax.swing.JScrollPane();
   private JTextArea recapJTextArea = new JTextArea();
-
-  private JLabel    discussLabel    = new JLabel("Discuss:", JLabel.LEFT);
-  private JScrollPane discussScrollPane = new javax.swing.JScrollPane();
-  private JTextArea discussJTextArea = new JTextArea();
 
   private     JLabel              bottomFiller   = new JLabel("");
 
@@ -149,23 +161,6 @@ public class ClubEventPanel2
     gb.setRowWeight(0.25);
     gb.add(recapScrollPane);
 
-		// Panel Layout for Discuss
-    discussLabel.setLabelFor(discussJTextArea);
-    gb.setColumnWeight(0.0);
-    gb.setWidth(1);
-    gb.setTopInset(8);
-    gb.add(discussLabel);
-    discussJTextArea.setColumns(20);
-    discussJTextArea.setLineWrap(true);
-    discussJTextArea.setRows(6);
-    discussJTextArea.setWrapStyleWord(true);
-    discussJTextArea.setToolTipText("Identification of any issues to be discussed at an upcoming board meeting.");
-    discussScrollPane.setViewportView(discussJTextArea);
-    gb.setWidth(3);
-    gb.setTopInset(4);
-    gb.setRowWeight(0.25);
-    gb.add(discussScrollPane);
-
     gb.setWidth(2);
     gb.setFill(GridBagConstraints.BOTH);
     gb.setColumnWeight(1.0);
@@ -209,12 +204,6 @@ public class ClubEventPanel2
       recapJTextArea.setText ("");
     }
     recapJTextArea.setCaretPosition(0);
-    if (clubEvent.hasDiscuss()) {
-      discussJTextArea.setText (clubEvent.getDiscuss().toString());
-    } else {
-      discussJTextArea.setText ("");
-    }
-    discussJTextArea.setCaretPosition(0);
  
   }
 
@@ -242,10 +231,6 @@ public class ClubEventPanel2
     }
     if (! clubEvent.getRecapAsString().equals (recapJTextArea.getText())) {
       clubEvent.setRecap(recapJTextArea.getText());
-      modified = true;
-    }
-    if (! clubEvent.getDiscussAsString().equals (discussJTextArea.getText())) {
-      clubEvent.setDiscuss(discussJTextArea.getText());
       modified = true;
     }
 
@@ -296,15 +281,6 @@ public class ClubEventPanel2
    */
   public JTextArea getRecapJTextArea () {
     return recapJTextArea;
-  }
-
-  /**
-    Returns the discuss for this club event.
- 
-    @return The discuss for this club event.
-   */
-  public JTextArea getDiscussJTextArea () {
-    return discussJTextArea;
   }
 
   /**

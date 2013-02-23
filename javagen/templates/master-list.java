@@ -5,6 +5,22 @@
 <?if =$itemtype$= = "Master" ?>
 <?set masterItemClass = =$itemclass$= ?>
 <?output "../../src/com/powersurgepub/clubplanner/model/=$itemclass$=List.java"?>
+/*
+ * Copyright 1999 - 2013 Herb Bowie
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.powersurgepub.clubplanner.model;
 
   import com.powersurgepub.psdatalib.clubplanner.*;
@@ -305,6 +321,22 @@ public class =$itemclass$=List
       return null;
     }
   } // end method get (int)
+  
+  /**
+   Get the item at the specified index in the raw, unfiltered list.
+ 
+   @param index Indicates the desired position within the raw, unfiltered list.
+ 
+   @return The item at the desired index, or null if the index is out
+           of bounds.
+  */
+  public =$itemclass$= getUnfiltered (int index) {
+    if (index >= 0 && index < totalSize()) {
+      return list.get(index);
+    } else {
+      return null;
+    }
+  } // end method getUnfiltered (int)
  
   public =$itemclass$=Positioned positionUsingNode (TagsNode node) {
     =$itemclass$=Positioned position = new =$itemclass$=Positioned();

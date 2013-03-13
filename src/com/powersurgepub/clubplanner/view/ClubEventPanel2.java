@@ -107,7 +107,6 @@ public class ClubEventPanel2
     teaserScrollPane.setViewportView(teaserJTextArea);
     gb.setWidth(3);
     gb.setTopInset(4);
-    gb.setRowWeight(0.25);
     gb.add(teaserScrollPane);
 
 		// Panel Layout for Blurb
@@ -124,7 +123,6 @@ public class ClubEventPanel2
     blurbScrollPane.setViewportView(blurbJTextArea);
     gb.setWidth(3);
     gb.setTopInset(4);
-    gb.setRowWeight(0.25);
     gb.add(blurbScrollPane);
 
 		// Panel Layout for Why
@@ -141,7 +139,6 @@ public class ClubEventPanel2
     whyScrollPane.setViewportView(whyJTextArea);
     gb.setWidth(3);
     gb.setTopInset(4);
-    gb.setRowWeight(0.25);
     gb.add(whyScrollPane);
 
 		// Panel Layout for Recap
@@ -158,13 +155,12 @@ public class ClubEventPanel2
     recapScrollPane.setViewportView(recapJTextArea);
     gb.setWidth(3);
     gb.setTopInset(4);
-    gb.setRowWeight(0.25);
     gb.add(recapScrollPane);
 
-    gb.setWidth(2);
+    gb.setWidth(4);
     gb.setFill(GridBagConstraints.BOTH);
     gb.setColumnWeight(1.0);
-    gb.setRowWeight(0.1);
+    gb.setRowWeight(1.0);
     gb.add(bottomFiller);
  
   }

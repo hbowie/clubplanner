@@ -901,6 +901,7 @@ public class ClubPlanner
       if (clubEventList.roomForMore()) {
         ClubEvent clubEvent = position.getClubEvent();
         ClubEvent newClubEvent = clubEvent.duplicate();
+        newClubEvent.setWhat(clubEvent.getWhat() + " copy");
         position = new ClubEventPositioned();
         position.setIndex (clubEventList.size());
         position.setClubEvent(newClubEvent);

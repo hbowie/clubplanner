@@ -58,23 +58,33 @@ public class ClubEventPanel3
   private JLabel    quantityLabel    = new JLabel("Quantity:", JLabel.LEFT);
   private JTextField quantityJTextField = new JTextField();
 
-  private JLabel    plannedIncomeLabel    = new JLabel("Planned Income:", JLabel.LEFT);
-  private JTextField plannedIncomeJTextField = new JTextField();
-
-  private JLabel    actualIncomeLabel    = new JLabel("Actual Income:", JLabel.LEFT);
-  private JTextField actualIncomeJTextField = new JTextField();
-
-  private JLabel    plannedExpenseLabel    = new JLabel("Planned Expense:", JLabel.LEFT);
-  private JTextField plannedExpenseJTextField = new JTextField();
-
-  private JLabel    actualExpenseLabel    = new JLabel("Actual Expense:", JLabel.LEFT);
-  private JTextField actualExpenseJTextField = new JTextField();
-
   private JLabel    plannedAttendanceLabel    = new JLabel("Planned Attendance:", JLabel.LEFT);
   private JTextField plannedAttendanceJTextField = new JTextField();
 
   private JLabel    actualAttendanceLabel    = new JLabel("Actual Attendance:", JLabel.LEFT);
   private JTextField actualAttendanceJTextField = new JTextField();
+
+  private JLabel    plannedIncomeLabel    = new JLabel("Planned Income:", JLabel.LEFT);
+  private JScrollPane plannedIncomeScrollPane = new javax.swing.JScrollPane();
+  private JTextArea plannedIncomeJTextArea = new JTextArea();
+
+  private JLabel    actualIncomeLabel    = new JLabel("Actual Income:", JLabel.LEFT);
+  private JScrollPane actualIncomeScrollPane = new javax.swing.JScrollPane();
+  private JTextArea actualIncomeJTextArea = new JTextArea();
+
+  private JLabel    plannedExpenseLabel    = new JLabel("Planned Expense:", JLabel.LEFT);
+  private JScrollPane plannedExpenseScrollPane = new javax.swing.JScrollPane();
+  private JTextArea plannedExpenseJTextArea = new JTextArea();
+
+  private JLabel    actualExpenseLabel    = new JLabel("Actual Expense:", JLabel.LEFT);
+  private JScrollPane actualExpenseScrollPane = new javax.swing.JScrollPane();
+  private JTextArea actualExpenseJTextArea = new JTextArea();
+
+  private JLabel    overUnderLabel    = new JLabel("Over/Under:", JLabel.LEFT);
+  private JLabel overUnderJLabel = new JLabel();
+
+  private JLabel    financeProjectionLabel    = new JLabel("Finance Projection:", JLabel.LEFT);
+  private JLabel financeProjectionJLabel = new JLabel();
 
   private     JLabel              bottomFiller   = new JLabel("");
 
@@ -151,50 +161,6 @@ public class ClubEventPanel3
     gb.setTopInset(4);
     gb.add(quantityJTextField);
 
-		// Panel Layout for Planned Income
-    plannedIncomeLabel.setLabelFor(plannedIncomeJTextField);
-    gb.setColumnWeight(0.0);
-    gb.setWidth(1);
-    gb.setTopInset(8);
-    gb.add(plannedIncomeLabel);
-    plannedIncomeJTextField.setToolTipText("The amount of money we have planned to receive for the event. Simple calculations are supported, such as $20 x 40.");
-    gb.setWidth(1);
-    gb.setTopInset(4);
-    gb.add(plannedIncomeJTextField);
-
-		// Panel Layout for Actual Income
-    actualIncomeLabel.setLabelFor(actualIncomeJTextField);
-    gb.setColumnWeight(0.0);
-    gb.setWidth(1);
-    gb.setTopInset(8);
-    gb.add(actualIncomeLabel);
-    actualIncomeJTextField.setToolTipText("Our actual income for the event.");
-    gb.setWidth(1);
-    gb.setTopInset(4);
-    gb.add(actualIncomeJTextField);
-
-		// Panel Layout for Planned Expense
-    plannedExpenseLabel.setLabelFor(plannedExpenseJTextField);
-    gb.setColumnWeight(0.0);
-    gb.setWidth(1);
-    gb.setTopInset(8);
-    gb.add(plannedExpenseLabel);
-    plannedExpenseJTextField.setToolTipText("The amount of money we have planned/budgeted to be spent on the event.");
-    gb.setWidth(1);
-    gb.setTopInset(4);
-    gb.add(plannedExpenseJTextField);
-
-		// Panel Layout for Actual Expense
-    actualExpenseLabel.setLabelFor(actualExpenseJTextField);
-    gb.setColumnWeight(0.0);
-    gb.setWidth(1);
-    gb.setTopInset(8);
-    gb.add(actualExpenseLabel);
-    actualExpenseJTextField.setToolTipText("Our actual expenses for the event.");
-    gb.setWidth(1);
-    gb.setTopInset(4);
-    gb.add(actualExpenseJTextField);
-
 		// Panel Layout for Planned Attendance
     plannedAttendanceLabel.setLabelFor(plannedAttendanceJTextField);
     gb.setColumnWeight(0.0);
@@ -217,10 +183,96 @@ public class ClubEventPanel3
     gb.setTopInset(4);
     gb.add(actualAttendanceJTextField);
 
-    gb.setWidth(2);
+		// Panel Layout for Planned Income
+    plannedIncomeLabel.setLabelFor(plannedIncomeJTextArea);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(plannedIncomeLabel);
+    plannedIncomeJTextArea.setColumns(20);
+    plannedIncomeJTextArea.setLineWrap(true);
+    plannedIncomeJTextArea.setRows(3);
+    plannedIncomeJTextArea.setWrapStyleWord(true);
+    plannedIncomeJTextArea.setToolTipText("The amount of money we have planned to receive for the event. Simple calculations are supported, such as $20 x 40.");
+    plannedIncomeScrollPane.setViewportView(plannedIncomeJTextArea);
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(plannedIncomeScrollPane);
+
+		// Panel Layout for Actual Income
+    actualIncomeLabel.setLabelFor(actualIncomeJTextArea);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(actualIncomeLabel);
+    actualIncomeJTextArea.setColumns(20);
+    actualIncomeJTextArea.setLineWrap(true);
+    actualIncomeJTextArea.setRows(3);
+    actualIncomeJTextArea.setWrapStyleWord(true);
+    actualIncomeJTextArea.setToolTipText("Our actual income for the event.");
+    actualIncomeScrollPane.setViewportView(actualIncomeJTextArea);
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(actualIncomeScrollPane);
+
+		// Panel Layout for Planned Expense
+    plannedExpenseLabel.setLabelFor(plannedExpenseJTextArea);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(plannedExpenseLabel);
+    plannedExpenseJTextArea.setColumns(20);
+    plannedExpenseJTextArea.setLineWrap(true);
+    plannedExpenseJTextArea.setRows(3);
+    plannedExpenseJTextArea.setWrapStyleWord(true);
+    plannedExpenseJTextArea.setToolTipText("The amount of money we have planned/budgeted to be spent on the event.");
+    plannedExpenseScrollPane.setViewportView(plannedExpenseJTextArea);
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(plannedExpenseScrollPane);
+
+		// Panel Layout for Actual Expense
+    actualExpenseLabel.setLabelFor(actualExpenseJTextArea);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(actualExpenseLabel);
+    actualExpenseJTextArea.setColumns(20);
+    actualExpenseJTextArea.setLineWrap(true);
+    actualExpenseJTextArea.setRows(3);
+    actualExpenseJTextArea.setWrapStyleWord(true);
+    actualExpenseJTextArea.setToolTipText("Our actual expenses for the event.");
+    actualExpenseScrollPane.setViewportView(actualExpenseJTextArea);
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(actualExpenseScrollPane);
+
+		// Panel Layout for Over/Under
+    overUnderLabel.setLabelFor(overUnderJLabel);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(overUnderLabel);
+    overUnderJLabel.setToolTipText("The difference between our actuals and our planned income or expense.");
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(overUnderJLabel);
+
+		// Panel Layout for Finance Projection
+    financeProjectionLabel.setLabelFor(financeProjectionJLabel);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(financeProjectionLabel);
+    financeProjectionJLabel.setToolTipText("The projected impacted on our club finances, based on actuals, if available, or planned income/expense, if actuals are not yet available.");
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(financeProjectionJLabel);
+
+    gb.setWidth(4);
     gb.setFill(GridBagConstraints.BOTH);
     gb.setColumnWeight(1.0);
-    gb.setRowWeight(0.1);
+    gb.setRowWeight(1.0);
     gb.add(bottomFiller);
  
   }
@@ -256,26 +308,6 @@ public class ClubEventPanel3
     } else {
       quantityJTextField.setText ("");
     }
-    if (clubEvent.hasPlannedIncome()) {
-      plannedIncomeJTextField.setText (clubEvent.getPlannedIncome().toString());
-    } else {
-      plannedIncomeJTextField.setText ("");
-    }
-    if (clubEvent.hasActualIncome()) {
-      actualIncomeJTextField.setText (clubEvent.getActualIncome().toString());
-    } else {
-      actualIncomeJTextField.setText ("");
-    }
-    if (clubEvent.hasPlannedExpense()) {
-      plannedExpenseJTextField.setText (clubEvent.getPlannedExpense().toString());
-    } else {
-      plannedExpenseJTextField.setText ("");
-    }
-    if (clubEvent.hasActualExpense()) {
-      actualExpenseJTextField.setText (clubEvent.getActualExpense().toString());
-    } else {
-      actualExpenseJTextField.setText ("");
-    }
     if (clubEvent.hasPlannedAttendance()) {
       plannedAttendanceJTextField.setText (clubEvent.getPlannedAttendance().toString());
     } else {
@@ -285,6 +317,40 @@ public class ClubEventPanel3
       actualAttendanceJTextField.setText (clubEvent.getActualAttendance().toString());
     } else {
       actualAttendanceJTextField.setText ("");
+    }
+    if (clubEvent.hasPlannedIncome()) {
+      plannedIncomeJTextArea.setText (clubEvent.getPlannedIncome().toString());
+    } else {
+      plannedIncomeJTextArea.setText ("");
+    }
+    plannedIncomeJTextArea.setCaretPosition(0);
+    if (clubEvent.hasActualIncome()) {
+      actualIncomeJTextArea.setText (clubEvent.getActualIncome().toString());
+    } else {
+      actualIncomeJTextArea.setText ("");
+    }
+    actualIncomeJTextArea.setCaretPosition(0);
+    if (clubEvent.hasPlannedExpense()) {
+      plannedExpenseJTextArea.setText (clubEvent.getPlannedExpense().toString());
+    } else {
+      plannedExpenseJTextArea.setText ("");
+    }
+    plannedExpenseJTextArea.setCaretPosition(0);
+    if (clubEvent.hasActualExpense()) {
+      actualExpenseJTextArea.setText (clubEvent.getActualExpense().toString());
+    } else {
+      actualExpenseJTextArea.setText ("");
+    }
+    actualExpenseJTextArea.setCaretPosition(0);
+    if (clubEvent.hasOverUnder()) {
+      overUnderJLabel.setText (clubEvent.getOverUnder().toString());
+    } else {
+      overUnderJLabel.setText ("");
+    }
+    if (clubEvent.hasFinanceProjection()) {
+      financeProjectionJLabel.setText (clubEvent.getFinanceProjection().toString());
+    } else {
+      financeProjectionJLabel.setText ("");
     }
  
   }
@@ -315,28 +381,36 @@ public class ClubEventPanel3
       clubEvent.setQuantity(quantityJTextField.getText());
       modified = true;
     }
-    if (! clubEvent.getPlannedIncomeAsString().equals (plannedIncomeJTextField.getText())) {
-      clubEvent.setPlannedIncome(plannedIncomeJTextField.getText());
-      modified = true;
-    }
-    if (! clubEvent.getActualIncomeAsString().equals (actualIncomeJTextField.getText())) {
-      clubEvent.setActualIncome(actualIncomeJTextField.getText());
-      modified = true;
-    }
-    if (! clubEvent.getPlannedExpenseAsString().equals (plannedExpenseJTextField.getText())) {
-      clubEvent.setPlannedExpense(plannedExpenseJTextField.getText());
-      modified = true;
-    }
-    if (! clubEvent.getActualExpenseAsString().equals (actualExpenseJTextField.getText())) {
-      clubEvent.setActualExpense(actualExpenseJTextField.getText());
-      modified = true;
-    }
     if (! clubEvent.getPlannedAttendanceAsString().equals (plannedAttendanceJTextField.getText())) {
       clubEvent.setPlannedAttendance(plannedAttendanceJTextField.getText());
       modified = true;
     }
     if (! clubEvent.getActualAttendanceAsString().equals (actualAttendanceJTextField.getText())) {
       clubEvent.setActualAttendance(actualAttendanceJTextField.getText());
+      modified = true;
+    }
+    if (! clubEvent.getPlannedIncomeAsString().equals (plannedIncomeJTextArea.getText())) {
+      clubEvent.setPlannedIncome(plannedIncomeJTextArea.getText());
+      modified = true;
+    }
+    if (! clubEvent.getActualIncomeAsString().equals (actualIncomeJTextArea.getText())) {
+      clubEvent.setActualIncome(actualIncomeJTextArea.getText());
+      modified = true;
+    }
+    if (! clubEvent.getPlannedExpenseAsString().equals (plannedExpenseJTextArea.getText())) {
+      clubEvent.setPlannedExpense(plannedExpenseJTextArea.getText());
+      modified = true;
+    }
+    if (! clubEvent.getActualExpenseAsString().equals (actualExpenseJTextArea.getText())) {
+      clubEvent.setActualExpense(actualExpenseJTextArea.getText());
+      modified = true;
+    }
+    if (! clubEvent.getOverUnderAsString().equals (overUnderJLabel.getText())) {
+      clubEvent.setOverUnder(overUnderJLabel.getText());
+      modified = true;
+    }
+    if (! clubEvent.getFinanceProjectionAsString().equals (financeProjectionJLabel.getText())) {
+      clubEvent.setFinanceProjection(financeProjectionJLabel.getText());
       modified = true;
     }
 
@@ -390,42 +464,6 @@ public class ClubEventPanel3
   }
 
   /**
-    Returns the planned income for this club event.
- 
-    @return The planned income for this club event.
-   */
-  public JTextField getPlannedIncomeJTextField () {
-    return plannedIncomeJTextField;
-  }
-
-  /**
-    Returns the actual income for this club event.
- 
-    @return The actual income for this club event.
-   */
-  public JTextField getActualIncomeJTextField () {
-    return actualIncomeJTextField;
-  }
-
-  /**
-    Returns the planned expense for this club event.
- 
-    @return The planned expense for this club event.
-   */
-  public JTextField getPlannedExpenseJTextField () {
-    return plannedExpenseJTextField;
-  }
-
-  /**
-    Returns the actual expense for this club event.
- 
-    @return The actual expense for this club event.
-   */
-  public JTextField getActualExpenseJTextField () {
-    return actualExpenseJTextField;
-  }
-
-  /**
     Returns the planned attendance for this club event.
  
     @return The planned attendance for this club event.
@@ -441,6 +479,60 @@ public class ClubEventPanel3
    */
   public JTextField getActualAttendanceJTextField () {
     return actualAttendanceJTextField;
+  }
+
+  /**
+    Returns the planned income for this club event.
+ 
+    @return The planned income for this club event.
+   */
+  public JTextArea getPlannedIncomeJTextArea () {
+    return plannedIncomeJTextArea;
+  }
+
+  /**
+    Returns the actual income for this club event.
+ 
+    @return The actual income for this club event.
+   */
+  public JTextArea getActualIncomeJTextArea () {
+    return actualIncomeJTextArea;
+  }
+
+  /**
+    Returns the planned expense for this club event.
+ 
+    @return The planned expense for this club event.
+   */
+  public JTextArea getPlannedExpenseJTextArea () {
+    return plannedExpenseJTextArea;
+  }
+
+  /**
+    Returns the actual expense for this club event.
+ 
+    @return The actual expense for this club event.
+   */
+  public JTextArea getActualExpenseJTextArea () {
+    return actualExpenseJTextArea;
+  }
+
+  /**
+    Returns the over under for this club event.
+ 
+    @return The over under for this club event.
+   */
+  public JLabel getOverUnderJLabel () {
+    return overUnderJLabel;
+  }
+
+  /**
+    Returns the finance projection for this club event.
+ 
+    @return The finance projection for this club event.
+   */
+  public JLabel getFinanceProjectionJLabel () {
+    return financeProjectionJLabel;
   }
 
   /**

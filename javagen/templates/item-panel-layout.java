@@ -34,7 +34,6 @@
     =$field&clul$=ScrollPane.setViewportView(=$field&clul$==$panelclass$=);
     gb.setWidth(=$panelwidth$=);
     gb.setTopInset(4);
-    gb.setRowWeight(0.25);
     gb.add(=$field&clul$=ScrollPane);
 <?endif?>
 <?if =$panelclass$= == "JLabel" ?>

@@ -72,10 +72,10 @@ public class =$itemclass$=Panel=$panelno$=
 
 <?include "../includes/=$itemclass$=Panel=$panelno$=-panel-layout.java"?>
 
-    gb.setWidth(2);
+    gb.setWidth(4);
     gb.setFill(GridBagConstraints.BOTH);
     gb.setColumnWeight(1.0);
-    gb.setRowWeight(0.1);    
+    gb.setRowWeight(1.0);    
     gb.add(bottomFiller);
     
   }  

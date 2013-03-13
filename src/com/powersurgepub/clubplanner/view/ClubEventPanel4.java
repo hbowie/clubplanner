@@ -147,10 +147,10 @@ public class ClubEventPanel4
     gb.setTopInset(4);
     gb.add(newsImageJTextField);
 
-    gb.setWidth(2);
+    gb.setWidth(4);
     gb.setFill(GridBagConstraints.BOTH);
     gb.setColumnWeight(1.0);
-    gb.setRowWeight(0.1);
+    gb.setRowWeight(1.0);
     gb.add(bottomFiller);
  
   }

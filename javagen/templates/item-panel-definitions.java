@@ -18,8 +18,11 @@
 <?endif?>
 <?endif?>
 <?if =$panelno$= ?>
-
+<?if =$panelclass$= == "Link" ?>
+  private LinkLabel =$field&clul$=Label    = new LinkLabel("=$field$=:");
+<?else?>
   private JLabel    =$field&clul$=Label    = new JLabel("=$field$=:", JLabel.LEFT);
+<?endif?>
 <?if =$panelclass$= == "JTextField" ?>  
   private =$panelclass$= =$field&clul$==$panelclass$= = new =$panelclass$=();
 <?endif?>
@@ -38,6 +41,10 @@
 <?if =$panelclass$= == "JTextArea" ?>  
   private JScrollPane =$field&clul$=ScrollPane = new javax.swing.JScrollPane();
   private =$panelclass$= =$field&clul$==$panelclass$= = new =$panelclass$=();
+<?endif?>
+<?if =$panelclass$= == "Link" ?>  
+  private JScrollPane =$field&clul$=ScrollPane = new javax.swing.JScrollPane();
+  private JTextArea =$field&clul$=JTextArea = new JTextArea();
 <?endif?>
 <?endif?>
 <?loop?>

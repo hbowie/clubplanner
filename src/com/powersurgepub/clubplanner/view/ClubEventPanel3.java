@@ -18,6 +18,7 @@ package com.powersurgepub.clubplanner.view;
 
   import com.powersurgepub.clubplanner.*;
   import com.powersurgepub.clubplanner.model.*;
+  import com.powersurgepub.linktweaker.*;
   import com.powersurgepub.psdatalib.clubplanner.*;
   import com.powersurgepub.psdatalib.ui.*;
   import java.awt.*;
@@ -45,44 +46,32 @@ public class ClubEventPanel3
      data file: /Users/hbowie/Java/projects/nbproj/clubplanner/javagen/fields.xls
    */
  
-
   private JLabel    costLabel    = new JLabel("Cost:", JLabel.LEFT);
   private JTextField costJTextField = new JTextField();
-
   private JLabel    purchaseLabel    = new JLabel("Purchase:", JLabel.LEFT);
   private JTextField purchaseJTextField = new JTextField();
-
   private JLabel    ticketsLabel    = new JLabel("Tickets:", JLabel.LEFT);
   private JTextField ticketsJTextField = new JTextField();
-
   private JLabel    quantityLabel    = new JLabel("Quantity:", JLabel.LEFT);
   private JTextField quantityJTextField = new JTextField();
-
   private JLabel    plannedAttendanceLabel    = new JLabel("Planned Attendance:", JLabel.LEFT);
   private JTextField plannedAttendanceJTextField = new JTextField();
-
   private JLabel    actualAttendanceLabel    = new JLabel("Actual Attendance:", JLabel.LEFT);
   private JTextField actualAttendanceJTextField = new JTextField();
-
   private JLabel    plannedIncomeLabel    = new JLabel("Planned Income:", JLabel.LEFT);
   private JScrollPane plannedIncomeScrollPane = new javax.swing.JScrollPane();
   private JTextArea plannedIncomeJTextArea = new JTextArea();
-
   private JLabel    actualIncomeLabel    = new JLabel("Actual Income:", JLabel.LEFT);
   private JScrollPane actualIncomeScrollPane = new javax.swing.JScrollPane();
   private JTextArea actualIncomeJTextArea = new JTextArea();
-
   private JLabel    plannedExpenseLabel    = new JLabel("Planned Expense:", JLabel.LEFT);
   private JScrollPane plannedExpenseScrollPane = new javax.swing.JScrollPane();
   private JTextArea plannedExpenseJTextArea = new JTextArea();
-
   private JLabel    actualExpenseLabel    = new JLabel("Actual Expense:", JLabel.LEFT);
   private JScrollPane actualExpenseScrollPane = new javax.swing.JScrollPane();
   private JTextArea actualExpenseJTextArea = new JTextArea();
-
   private JLabel    overUnderLabel    = new JLabel("Over/Under:", JLabel.LEFT);
   private JLabel overUnderJLabel = new JLabel();
-
   private JLabel    financeProjectionLabel    = new JLabel("Finance Projection:", JLabel.LEFT);
   private JLabel financeProjectionJLabel = new JLabel();
 
@@ -93,13 +82,16 @@ public class ClubEventPanel3
 	private     GridBagger          gb = new GridBagger();
 	
 	private     JFrame              frame;
+	
+	private     LinkTweaker         linkTweaker = null;
 
   /**
    The constructor.
    */
-  public ClubEventPanel3(JFrame frame) {
+  public ClubEventPanel3(JFrame frame, LinkTweaker linkTweaker) {
  
     this.frame = frame;
+    this.linkTweaker = linkTweaker;
     gb.startLayout (this, 4, 99);
     gb.setByRows(true);
 		gb.setDefaultColumnWeight (0.5);
@@ -365,50 +357,62 @@ public class ClubEventPanel3
  
   public boolean modIfChanged (ClubEvent clubEvent) {
  
+
     if (! clubEvent.getCostAsString().equals (costJTextField.getText())) {
       clubEvent.setCost(costJTextField.getText());
       modified = true;
     }
+
     if (! clubEvent.getPurchaseAsString().equals (purchaseJTextField.getText())) {
       clubEvent.setPurchase(purchaseJTextField.getText());
       modified = true;
     }
+
     if (! clubEvent.getTicketsAsString().equals (ticketsJTextField.getText())) {
       clubEvent.setTickets(ticketsJTextField.getText());
       modified = true;
     }
+
     if (! clubEvent.getQuantityAsString().equals (quantityJTextField.getText())) {
       clubEvent.setQuantity(quantityJTextField.getText());
       modified = true;
     }
+
     if (! clubEvent.getPlannedAttendanceAsString().equals (plannedAttendanceJTextField.getText())) {
       clubEvent.setPlannedAttendance(plannedAttendanceJTextField.getText());
       modified = true;
     }
+
     if (! clubEvent.getActualAttendanceAsString().equals (actualAttendanceJTextField.getText())) {
       clubEvent.setActualAttendance(actualAttendanceJTextField.getText());
       modified = true;
     }
+
     if (! clubEvent.getPlannedIncomeAsString().equals (plannedIncomeJTextArea.getText())) {
       clubEvent.setPlannedIncome(plannedIncomeJTextArea.getText());
       modified = true;
     }
+
     if (! clubEvent.getActualIncomeAsString().equals (actualIncomeJTextArea.getText())) {
       clubEvent.setActualIncome(actualIncomeJTextArea.getText());
       modified = true;
     }
+
     if (! clubEvent.getPlannedExpenseAsString().equals (plannedExpenseJTextArea.getText())) {
       clubEvent.setPlannedExpense(plannedExpenseJTextArea.getText());
       modified = true;
     }
+
     if (! clubEvent.getActualExpenseAsString().equals (actualExpenseJTextArea.getText())) {
       clubEvent.setActualExpense(actualExpenseJTextArea.getText());
       modified = true;
     }
+
     if (! clubEvent.getOverUnderAsString().equals (overUnderJLabel.getText())) {
       clubEvent.setOverUnder(overUnderJLabel.getText());
       modified = true;
     }
+
     if (! clubEvent.getFinanceProjectionAsString().equals (financeProjectionJLabel.getText())) {
       clubEvent.setFinanceProjection(financeProjectionJLabel.getText());
       modified = true;
@@ -533,6 +537,23 @@ public class ClubEventPanel3
    */
   public JLabel getFinanceProjectionJLabel () {
     return financeProjectionJLabel;
+  }
+
+
+  /**
+   Set a link field to a new value after it has been tweaked.
+ 
+   This method generated by PSTextMerge using:
+ 
+     template:  item-panel-tweak.java
+     data file: /Users/hbowie/Java/projects/nbproj/clubplanner/javagen/fields.xls
+ 
+   @param tweakedLink The link after it has been tweaked.
+   @param linkID      A string identifying the link, in case there are more
+                      than one. This would be the text used in the label
+                      for the link.
+  */
+  public void setTweakedLink (String tweakedLink, String linkID) {
   }
 
   /**

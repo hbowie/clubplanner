@@ -26,11 +26,19 @@
 <?endif?>
 <?endif?>
 <?if =$panelno$= ?>
+<?if =$panelclass$= == "Link" ?>  
+    if (=$itemclass&clul$=.has=$field&cuul$=()) {
+      =$field&clul$=JTextArea.setText (=$itemclass&clul$=.get=$field&cuul$=().toString());
+    } else {
+      =$field&clul$=JTextArea.setText ("");
+    }
+<?else?>
     if (=$itemclass&clul$=.has=$field&cuul$=()) {
       =$field&clul$==$panelclass$=.setText (=$itemclass&clul$=.get=$field&cuul$=().toString());
     } else {
       =$field&clul$==$panelclass$=.setText ("");
     }
+<?endif?>
 <?if =$panelclass$= == "JTextArea" ?>
     =$field&clul$==$panelclass$=.setCaretPosition(0);
 <?endif?>

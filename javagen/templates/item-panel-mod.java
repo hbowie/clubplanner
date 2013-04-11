@@ -27,9 +27,18 @@
 <?endif?>
 <?endif?>
 <?if =$panelno$= ?>
+<?if =$panelclass$= == "Link" ?>
+
+    if (! =$itemclass&clul$=.get=$field&cuul$=AsString().equals (=$field&clul$=JTextArea.getText())) {
+      =$itemclass&clul$=.set=$field&cuul$=(=$field&clul$=JTextArea.getText());
+      modified = true;
+    }
+<?else?>
+
     if (! =$itemclass&clul$=.get=$field&cuul$=AsString().equals (=$field&clul$==$panelclass$=.getText())) {
       =$itemclass&clul$=.set=$field&cuul$=(=$field&clul$==$panelclass$=.getText());
       modified = true;
     }
+<?endif?>
 <?endif?>
 <?loop?>

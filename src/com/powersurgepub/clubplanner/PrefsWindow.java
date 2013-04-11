@@ -15,7 +15,9 @@ package com.powersurgepub.clubplanner;
  *
  * @author  hbowie
  */
-public class PrefsWindow extends javax.swing.JFrame {
+public class PrefsWindow 
+  extends javax.swing.JFrame 
+    implements WindowToManage  {
   
   private ClubPlanner       clubPlanner;
 
@@ -59,6 +61,15 @@ public class PrefsWindow extends javax.swing.JFrame {
       filePrefs.savePrefs();
     }
     // favoritesPrefs.savePrefs();
+  }
+  
+  /**
+   Return the Tabbed Pane used for the Preference Panes. 
+  
+   @return Tabbed Pane used for the Preference Panes.
+  */
+  public JTabbedPane getPrefsTabs() {
+    return prefsTabs;
   }
 
   /* public FavoritesPrefs getFavoritesPrefs() {

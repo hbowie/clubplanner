@@ -18,6 +18,7 @@ package com.powersurgepub.clubplanner.view;
 
   import com.powersurgepub.clubplanner.*;
   import com.powersurgepub.clubplanner.model.*;
+  import com.powersurgepub.linktweaker.*;
   import com.powersurgepub.psdatalib.clubplanner.*;
   import com.powersurgepub.psdatalib.ui.*;
   import java.awt.*;
@@ -45,21 +46,20 @@ public class ClubEventPanel4
      data file: /Users/hbowie/Java/projects/nbproj/clubplanner/javagen/fields.xls
    */
  
-
   private JLabel    idLabel    = new JLabel("ID:", JLabel.LEFT);
   private JTextField idJTextField = new JTextField();
-
-  private JLabel    linkLabel    = new JLabel("Link:", JLabel.LEFT);
-  private JTextField linkJTextField = new JTextField();
-
-  private JLabel    venueLabel    = new JLabel("Venue:", JLabel.LEFT);
-  private JTextField venueJTextField = new JTextField();
-
-  private JLabel    imageLabel    = new JLabel("Image:", JLabel.LEFT);
-  private JTextField imageJTextField = new JTextField();
-
-  private JLabel    newsImageLabel    = new JLabel("News Image:", JLabel.LEFT);
-  private JTextField newsImageJTextField = new JTextField();
+  private LinkLabel linkLabel    = new LinkLabel("Link:");
+  private JScrollPane linkScrollPane = new javax.swing.JScrollPane();
+  private JTextArea linkJTextArea = new JTextArea();
+  private LinkLabel venueLabel    = new LinkLabel("Venue:");
+  private JScrollPane venueScrollPane = new javax.swing.JScrollPane();
+  private JTextArea venueJTextArea = new JTextArea();
+  private LinkLabel imageLabel    = new LinkLabel("Image:");
+  private JScrollPane imageScrollPane = new javax.swing.JScrollPane();
+  private JTextArea imageJTextArea = new JTextArea();
+  private LinkLabel newsImageLabel    = new LinkLabel("News Image:");
+  private JScrollPane newsImageScrollPane = new javax.swing.JScrollPane();
+  private JTextArea newsImageJTextArea = new JTextArea();
 
   private     JLabel              bottomFiller   = new JLabel("");
 
@@ -68,13 +68,16 @@ public class ClubEventPanel4
 	private     GridBagger          gb = new GridBagger();
 	
 	private     JFrame              frame;
+	
+	private     LinkTweaker         linkTweaker = null;
 
   /**
    The constructor.
    */
-  public ClubEventPanel4(JFrame frame) {
+  public ClubEventPanel4(JFrame frame, LinkTweaker linkTweaker) {
  
     this.frame = frame;
+    this.linkTweaker = linkTweaker;
     gb.startLayout (this, 4, 99);
     gb.setByRows(true);
 		gb.setDefaultColumnWeight (0.5);
@@ -104,48 +107,96 @@ public class ClubEventPanel4
     gb.add(idJTextField);
 
 		// Panel Layout for Link
-    linkLabel.setLabelFor(linkJTextField);
+		linkLabel.setLinkTweaker(linkTweaker);
+    linkLabel.setLinkTextArea(linkJTextArea);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
-    gb.setTopInset(8);
-    gb.add(linkLabel);
-    linkJTextField.setToolTipText("A URL pointing to a Web page with more information about the event.");
-    gb.setWidth(3);
     gb.setTopInset(4);
-    gb.add(linkJTextField);
+    gb.setRowWeight(0.1);
+    gb.setFill(GridBagConstraints.BOTH);
+    gb.add(linkLabel);
+    linkJTextArea.setColumns(20);
+    linkJTextArea.setLineWrap(true);
+    linkJTextArea.setRows(3);
+    linkJTextArea.setWrapStyleWord(false);
+    linkJTextArea.setToolTipText("A URL pointing to a Web page with more information about the event.");
+    linkScrollPane.setViewportView(linkJTextArea);
+    gb.setWidth(3);
+    gb.setHeight(1);
+    gb.setTopInset(4);
+    gb.setRowWeight(0.1);
+    gb.setFill(GridBagConstraints.BOTH);
+    gb.add(linkScrollPane);
+    gb.setFill(GridBagConstraints.HORIZONTAL);
 
 		// Panel Layout for Venue
-    venueLabel.setLabelFor(venueJTextField);
+		venueLabel.setLinkTweaker(linkTweaker);
+    venueLabel.setLinkTextArea(venueJTextArea);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
-    gb.setTopInset(8);
-    gb.add(venueLabel);
-    venueJTextField.setToolTipText("A URL pointing to a Web page with more information about the venue for the event.");
-    gb.setWidth(3);
     gb.setTopInset(4);
-    gb.add(venueJTextField);
+    gb.setRowWeight(0.1);
+    gb.setFill(GridBagConstraints.BOTH);
+    gb.add(venueLabel);
+    venueJTextArea.setColumns(20);
+    venueJTextArea.setLineWrap(true);
+    venueJTextArea.setRows(3);
+    venueJTextArea.setWrapStyleWord(false);
+    venueJTextArea.setToolTipText("A URL pointing to a Web page with more information about the venue for the event.");
+    venueScrollPane.setViewportView(venueJTextArea);
+    gb.setWidth(3);
+    gb.setHeight(1);
+    gb.setTopInset(4);
+    gb.setRowWeight(0.1);
+    gb.setFill(GridBagConstraints.BOTH);
+    gb.add(venueScrollPane);
+    gb.setFill(GridBagConstraints.HORIZONTAL);
 
 		// Panel Layout for Image
-    imageLabel.setLabelFor(imageJTextField);
+		imageLabel.setLinkTweaker(linkTweaker);
+    imageLabel.setLinkTextArea(imageJTextArea);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
-    gb.setTopInset(8);
-    gb.add(imageLabel);
-    imageJTextField.setToolTipText("A URL pointing to an image that can be used to help advertise the event.");
-    gb.setWidth(3);
     gb.setTopInset(4);
-    gb.add(imageJTextField);
+    gb.setRowWeight(0.1);
+    gb.setFill(GridBagConstraints.BOTH);
+    gb.add(imageLabel);
+    imageJTextArea.setColumns(20);
+    imageJTextArea.setLineWrap(true);
+    imageJTextArea.setRows(3);
+    imageJTextArea.setWrapStyleWord(false);
+    imageJTextArea.setToolTipText("A URL pointing to an image that can be used to help advertise the event.");
+    imageScrollPane.setViewportView(imageJTextArea);
+    gb.setWidth(3);
+    gb.setHeight(1);
+    gb.setTopInset(4);
+    gb.setRowWeight(0.1);
+    gb.setFill(GridBagConstraints.BOTH);
+    gb.add(imageScrollPane);
+    gb.setFill(GridBagConstraints.HORIZONTAL);
 
 		// Panel Layout for News Image
-    newsImageLabel.setLabelFor(newsImageJTextField);
+		newsImageLabel.setLinkTweaker(linkTweaker);
+    newsImageLabel.setLinkTextArea(newsImageJTextArea);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
-    gb.setTopInset(8);
-    gb.add(newsImageLabel);
-    newsImageJTextField.setToolTipText("A URL pointing to an image suitable for use in our newsletter.");
-    gb.setWidth(3);
     gb.setTopInset(4);
-    gb.add(newsImageJTextField);
+    gb.setRowWeight(0.1);
+    gb.setFill(GridBagConstraints.BOTH);
+    gb.add(newsImageLabel);
+    newsImageJTextArea.setColumns(20);
+    newsImageJTextArea.setLineWrap(true);
+    newsImageJTextArea.setRows(3);
+    newsImageJTextArea.setWrapStyleWord(false);
+    newsImageJTextArea.setToolTipText("A URL pointing to an image suitable for use in our newsletter.");
+    newsImageScrollPane.setViewportView(newsImageJTextArea);
+    gb.setWidth(3);
+    gb.setHeight(1);
+    gb.setTopInset(4);
+    gb.setRowWeight(0.1);
+    gb.setFill(GridBagConstraints.BOTH);
+    gb.add(newsImageScrollPane);
+    gb.setFill(GridBagConstraints.HORIZONTAL);
 
     gb.setWidth(4);
     gb.setFill(GridBagConstraints.BOTH);
@@ -172,24 +223,24 @@ public class ClubEventPanel4
       idJTextField.setText ("");
     }
     if (clubEvent.hasLink()) {
-      linkJTextField.setText (clubEvent.getLink().toString());
+      linkJTextArea.setText (clubEvent.getLink().toString());
     } else {
-      linkJTextField.setText ("");
+      linkJTextArea.setText ("");
     }
     if (clubEvent.hasVenue()) {
-      venueJTextField.setText (clubEvent.getVenue().toString());
+      venueJTextArea.setText (clubEvent.getVenue().toString());
     } else {
-      venueJTextField.setText ("");
+      venueJTextArea.setText ("");
     }
     if (clubEvent.hasImage()) {
-      imageJTextField.setText (clubEvent.getImage().toString());
+      imageJTextArea.setText (clubEvent.getImage().toString());
     } else {
-      imageJTextField.setText ("");
+      imageJTextArea.setText ("");
     }
     if (clubEvent.hasNewsImage()) {
-      newsImageJTextField.setText (clubEvent.getNewsImage().toString());
+      newsImageJTextArea.setText (clubEvent.getNewsImage().toString());
     } else {
-      newsImageJTextField.setText ("");
+      newsImageJTextArea.setText ("");
     }
  
   }
@@ -204,24 +255,29 @@ public class ClubEventPanel4
  
   public boolean modIfChanged (ClubEvent clubEvent) {
  
+
     if (! clubEvent.getIdAsString().equals (idJTextField.getText())) {
       clubEvent.setId(idJTextField.getText());
       modified = true;
     }
-    if (! clubEvent.getLinkAsString().equals (linkJTextField.getText())) {
-      clubEvent.setLink(linkJTextField.getText());
+
+    if (! clubEvent.getLinkAsString().equals (linkJTextArea.getText())) {
+      clubEvent.setLink(linkJTextArea.getText());
       modified = true;
     }
-    if (! clubEvent.getVenueAsString().equals (venueJTextField.getText())) {
-      clubEvent.setVenue(venueJTextField.getText());
+
+    if (! clubEvent.getVenueAsString().equals (venueJTextArea.getText())) {
+      clubEvent.setVenue(venueJTextArea.getText());
       modified = true;
     }
-    if (! clubEvent.getImageAsString().equals (imageJTextField.getText())) {
-      clubEvent.setImage(imageJTextField.getText());
+
+    if (! clubEvent.getImageAsString().equals (imageJTextArea.getText())) {
+      clubEvent.setImage(imageJTextArea.getText());
       modified = true;
     }
-    if (! clubEvent.getNewsImageAsString().equals (newsImageJTextField.getText())) {
-      clubEvent.setNewsImage(newsImageJTextField.getText());
+
+    if (! clubEvent.getNewsImageAsString().equals (newsImageJTextArea.getText())) {
+      clubEvent.setNewsImage(newsImageJTextArea.getText());
       modified = true;
     }
 
@@ -252,8 +308,8 @@ public class ClubEventPanel4
  
     @return The link for this club event.
    */
-  public JTextField getLinkJTextField () {
-    return linkJTextField;
+  public JTextArea getLinkJTextArea () {
+    return linkJTextArea;
   }
 
   /**
@@ -261,8 +317,8 @@ public class ClubEventPanel4
  
     @return The venue for this club event.
    */
-  public JTextField getVenueJTextField () {
-    return venueJTextField;
+  public JTextArea getVenueJTextArea () {
+    return venueJTextArea;
   }
 
   /**
@@ -270,8 +326,8 @@ public class ClubEventPanel4
  
     @return The image for this club event.
    */
-  public JTextField getImageJTextField () {
-    return imageJTextField;
+  public JTextArea getImageJTextArea () {
+    return imageJTextArea;
   }
 
   /**
@@ -279,8 +335,37 @@ public class ClubEventPanel4
  
     @return The news image for this club event.
    */
-  public JTextField getNewsImageJTextField () {
-    return newsImageJTextField;
+  public JTextArea getNewsImageJTextArea () {
+    return newsImageJTextArea;
+  }
+
+
+  /**
+   Set a link field to a new value after it has been tweaked.
+ 
+   This method generated by PSTextMerge using:
+ 
+     template:  item-panel-tweak.java
+     data file: /Users/hbowie/Java/projects/nbproj/clubplanner/javagen/fields.xls
+ 
+   @param tweakedLink The link after it has been tweaked.
+   @param linkID      A string identifying the link, in case there are more
+                      than one. This would be the text used in the label
+                      for the link.
+  */
+  public void setTweakedLink (String tweakedLink, String linkID) {
+    if (linkID.equals(linkLabel.getLabelText())) {
+      linkJTextArea.setText (tweakedLink);
+    }
+    if (linkID.equals(venueLabel.getLabelText())) {
+      venueJTextArea.setText (tweakedLink);
+    }
+    if (linkID.equals(imageLabel.getLabelText())) {
+      imageJTextArea.setText (tweakedLink);
+    }
+    if (linkID.equals(newsImageLabel.getLabelText())) {
+      newsImageJTextArea.setText (tweakedLink);
+    }
   }
 
   /**

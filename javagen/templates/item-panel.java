@@ -27,6 +27,7 @@ package com.powersurgepub.clubplanner.view;
 
   import com.powersurgepub.clubplanner.*;
   import com.powersurgepub.clubplanner.model.*;
+  import com.powersurgepub.linktweaker.*;
   import com.powersurgepub.psdatalib.clubplanner.*;
   import com.powersurgepub.psdatalib.ui.*;
   import java.awt.*;
@@ -55,13 +56,16 @@ public class =$itemclass$=Panel=$panelno$=
 	private     GridBagger          gb = new GridBagger();
 	
 	private     JFrame              frame;
+	
+	private     LinkTweaker         linkTweaker = null;
 
   /**
    The constructor.
    */
-  public =$itemclass$=Panel=$panelno$=(JFrame frame) {
+  public =$itemclass$=Panel=$panelno$=(JFrame frame, LinkTweaker linkTweaker) {
   
     this.frame = frame;
+    this.linkTweaker = linkTweaker;
     gb.startLayout (this, 4, 99);
     gb.setByRows(true);
 		gb.setDefaultColumnWeight (0.5);
@@ -85,6 +89,8 @@ public class =$itemclass$=Panel=$panelno$=
 <?include "../includes/=$itemclass$=Panel=$panelno$=-panel-mod.java"?>
 
 <?include "../includes/=$itemclass$=Panel=$panelno$=-panel-get.java"?>
+
+<?include "../includes/=$itemclass$=Panel=$panelno$=-panel-tweak.java"?>
 
   /**
    To be called whenever the date is modified by DatePanel.

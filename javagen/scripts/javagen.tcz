@@ -78,5 +78,7 @@ template	open	file		#PATH#../templates/item-panel-mod.java
 template	generate			
 template	open	file		#PATH#../templates/item-panel-get.java
 template	generate			
+template	open	file		#PATH#../templates/item-panel-tweak.java
+template	generate			
 template	open	file		#PATH#../templates/item-panel.java
 template	generate			

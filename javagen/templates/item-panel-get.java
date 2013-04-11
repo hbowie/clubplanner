@@ -27,8 +27,14 @@
    
     @return The =$field&c lll$= for this =$itemclass&c lll$=.
    */
+<?if =$panelclass$= == "Link" ?>
+  public JTextArea get=$field&cuul$=JTextArea () {
+    return =$field&clul$=JTextArea;
+  }
+<?else?>
   public =$panelclass$= get=$field&cuul$==$panelclass$= () {
     return =$field&clul$==$panelclass$=;
   }
+<?endif?>
 <?endif?>
 <?loop?>

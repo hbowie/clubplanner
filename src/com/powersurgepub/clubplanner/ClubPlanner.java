@@ -19,6 +19,7 @@ package com.powersurgepub.clubplanner;
   import com.powersurgepub.clubplanner.io.*;
   import com.powersurgepub.clubplanner.model.*;
   import com.powersurgepub.clubplanner.view.*;
+  import com.powersurgepub.linktweaker.*;
   import com.powersurgepub.psfiles.*;
   import com.powersurgepub.psdatalib.clubplanner.*;
   import com.powersurgepub.psdatalib.pstags.*;
@@ -54,7 +55,8 @@ public class ClubPlanner
       // ClubEventValidationRegistrar,
       AppToBackup, 
       FileSpecOpener,
-      XHandler 
+      XHandler,
+      LinkTweakerApp
     { 
   
   public static final String              PROGRAM_NAME    = "Club Planner";
@@ -86,6 +88,9 @@ public class ClubPlanner
   private             PrefsWindow         prefsWindow;
   private             RecentFiles         recentFiles;
   private             FilePrefs           filePrefs;
+  
+  private             LinkTweaker         linkTweaker;
+  private             TweakerPrefs        tweakerPrefs;
   
   // Registration variables
   private             RegisterWindow      registerWindow;
@@ -126,8 +131,7 @@ public class ClubPlanner
   private             TextMergeFilter     textMergeFilter;
   private             TextMergeSort       textMergeSort;
   private             TextMergeTemplate   textMergeTemplate;
-  private             JFrame              listArrangerWindow = null;
-  private             JTabbedPane         listTabs;
+  private             ListArranger        listArrangerWindow = null;
   private             int                 filterTabIndex = 0;
   private             int                 sortTabIndex = 1;
   private             int                 templateTabIndex = 2;
@@ -158,17 +162,6 @@ public class ClubPlanner
         "App Folder = " + appFolder.toString(),
         false);
     }
-    
-    clubEventPanel1 = new ClubEventPanel1(this);
-    clubEventPanel2 = new ClubEventPanel2(this);
-    clubEventPanel3 = new ClubEventPanel3(this);
-    clubEventPanel4 = new ClubEventPanel4(this);
-    clubEventPanel5 = new ClubEventPanel5(this);
-    itemTabs.add("Basics", clubEventPanel1);
-    itemTabs.add("Text", clubEventPanel2);
-    itemTabs.add("Numbers", clubEventPanel3);
-    itemTabs.add("Links", clubEventPanel4);
-    itemTabs.add("Notes", clubEventPanel5);
     
     windowMenuManager = WindowMenuManager.getShared(windowMenu);
     
@@ -213,6 +206,9 @@ public class ClubPlanner
     CommonPrefs.getShared().setSplitPane(mainSplitPane);
     CommonPrefs.getShared().setMainWindow(this);
     
+    tweakerPrefs = new TweakerPrefs();
+    prefsWindow.getPrefsTabs().add(TweakerPrefs.PREFS_TAB_NAME, tweakerPrefs);
+    
 	  checkUnregistered();
     
     // Set up Logging
@@ -236,19 +232,30 @@ public class ClubPlanner
     
     File templateLibrary = new File (appFolder.getPath(),  "templates");
     textMergeTemplate.setTemplateLibrary(templateLibrary);
-    listArrangerWindow = new JFrame("List Arranger");
-    listTabs = new JTabbedPane();
-    textMergeScript.setTabs(listTabs);
+    listArrangerWindow = new ListArranger ("List Arranger");
+    textMergeScript.setTabs(listArrangerWindow.getTabs());
     filterTabIndex = 0;
-    textMergeFilter.setTabs(listTabs);
+    textMergeFilter.setTabs(listArrangerWindow.getTabs());
     sortTabIndex = 1;
-    textMergeSort.setTabs(listTabs, false);
+    textMergeSort.setTabs(listArrangerWindow.getTabs(), false);
     templateTabIndex = 2;
-    textMergeTemplate.setTabs(listTabs);
-    listArrangerWindow.add(listTabs);
+    textMergeTemplate.setTabs(listArrangerWindow.getTabs());
     textMergeScript.selectEasyTab();
     
     WindowMenuManager.getShared().add(listArrangerWindow, KeyEvent.VK_L);
+    
+    linkTweaker = new LinkTweaker(this, prefsWindow.getPrefsTabs());
+    
+    clubEventPanel1 = new ClubEventPanel1(this, linkTweaker);
+    clubEventPanel2 = new ClubEventPanel2(this, linkTweaker);
+    clubEventPanel3 = new ClubEventPanel3(this, linkTweaker);
+    clubEventPanel4 = new ClubEventPanel4(this, linkTweaker);
+    clubEventPanel5 = new ClubEventPanel5(this, linkTweaker);
+    itemTabs.add("Basics", clubEventPanel1);
+    itemTabs.add("Text", clubEventPanel2);
+    itemTabs.add("Numbers", clubEventPanel3);
+    itemTabs.add("Links", clubEventPanel4);
+    itemTabs.add("Notes", clubEventPanel5);
     
     /*
      Following initialization, to get user's preferred file or folder to open.
@@ -444,7 +451,7 @@ public class ClubPlanner
     displayAuxiliaryWindow(prefsWindow);
   }
   
-  public void displayAuxiliaryWindow(JFrame window) {
+  public void displayAuxiliaryWindow(WindowToManage window) {
     window.setLocation(
         this.getX() + 60,
         this.getY() + 60);
@@ -491,6 +498,7 @@ public class ClubPlanner
     boolean prefsOK = userPrefs.savePrefs();
     recentFiles.savePrefs();
 		filePrefs.savePrefs();
+    tweakerPrefs.savePrefs();
   }
   
   /**
@@ -1382,6 +1390,18 @@ public class ClubPlanner
       }
       
       reader.close();
+  }
+  
+  /**
+   Set a link field to a new value after it has been tweaked. 
+  
+   @param tweakedLink The link after it has been tweaked. 
+   @param linkID      A string identifying the link, in case there are more
+                      than one. This would be the text used in the label
+                      for the link. 
+  */
+  public void setTweakedLink (String tweakedLink, String linkID) {
+    this.clubEventPanel4.setTweakedLink (tweakedLink, linkID);
   }
   
   /**

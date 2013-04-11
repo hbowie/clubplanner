@@ -18,6 +18,31 @@
 <?endif?>
 <?endif?>
 <?if =$panelno$= ?>
+<?if =$panelclass$= == "Link" ?>
+
+		// Panel Layout for =$field$=
+		=$field&clul$=Label.setLinkTweaker(linkTweaker);
+    =$field&clul$=Label.setLinkTextArea(=$field&clul$=JTextArea);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(4);
+    gb.setRowWeight(0.1);
+    gb.setFill(GridBagConstraints.BOTH);
+    gb.add(=$field&clul$=Label);
+    =$field&clul$=JTextArea.setColumns(20);
+    =$field&clul$=JTextArea.setLineWrap(true);
+    =$field&clul$=JTextArea.setRows(3);
+    =$field&clul$=JTextArea.setWrapStyleWord(false);
+    =$field&clul$=JTextArea.setToolTipText("=$tooltip$=");
+    =$field&clul$=ScrollPane.setViewportView(=$field&clul$=JTextArea);
+    gb.setWidth(=$panelwidth$=);
+    gb.setHeight(1);
+    gb.setTopInset(4);
+    gb.setRowWeight(0.1);
+    gb.setFill(GridBagConstraints.BOTH);
+    gb.add(=$field&clul$=ScrollPane);
+    gb.setFill(GridBagConstraints.HORIZONTAL);
+<?endif?>
 <?if =$panelclass$= == "JTextArea" ?>
 
 		// Panel Layout for =$field$=

@@ -23,6 +23,7 @@
 		// Panel Layout for =$field$=
 		=$field&clul$=Label.setLinkTweaker(linkTweaker);
     =$field&clul$=Label.setLinkTextArea(=$field&clul$=JTextArea);
+    =$field&clul$=Label.setFrame(frame);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
     gb.setTopInset(4);

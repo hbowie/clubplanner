@@ -109,6 +109,7 @@ public class ClubEventPanel4
 		// Panel Layout for Link
 		linkLabel.setLinkTweaker(linkTweaker);
     linkLabel.setLinkTextArea(linkJTextArea);
+    linkLabel.setFrame(frame);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
     gb.setTopInset(4);

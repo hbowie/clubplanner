@@ -39,7 +39,6 @@ public class ListArranger
 
     jTabbedPane1 = new javax.swing.JTabbedPane();
 
-    setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     getContentPane().setLayout(new java.awt.GridBagLayout());
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;

@@ -220,6 +220,15 @@ public class ClubPlanner
     logger.setLogThreshold (LogEvent.NORMAL);
     WindowMenuManager.getShared().add(logWindow);
     
+    aboutWindow = new AboutWindow (
+      false,   // loadFromDisk
+      true,    // browserLauncher2Used
+      true,    // jxlUsed
+      true,    // pegdownUsed
+      false,   // xerces used
+      false,   // saxon used
+      "2012"); // copyRightYearFrom));
+    
     // Set up List Arranger
     textMergeScript = new TextMergeScript(clubEventList);
     textMergeScript.allowAutoplay(false);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Herb Bowie
+ * Copyright 2012 - 2013 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 package com.powersurgepub.clubplanner.io;
 
   import com.powersurgepub.psdatalib.clubplanner.*;
@@ -25,8 +26,6 @@ package com.powersurgepub.clubplanner.io;
 
 /**
  Loads a ClubEventList from a folder containing club events. 
-
- @author Herb Bowie
  */
 public class ClubEventListLoader {
   

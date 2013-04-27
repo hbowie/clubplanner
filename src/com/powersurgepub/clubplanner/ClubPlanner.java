@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Herb Bowie
+ * Copyright 2012 - 2013 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,8 +39,6 @@ package com.powersurgepub.clubplanner;
 
 /**
  Club Planner application. 
-
- @author Herb Bowie
  */
 public class ClubPlanner 
     extends 
@@ -60,7 +58,7 @@ public class ClubPlanner
     { 
   
   public static final String              PROGRAM_NAME    = "Club Planner";
-  public static final String              PROGRAM_VERSION = "1.00";
+  public static final String              PROGRAM_VERSION = "0.50";
   
   public  static final String             FIND = "Find";
   public  static final String             FIND_AGAIN = "Again";

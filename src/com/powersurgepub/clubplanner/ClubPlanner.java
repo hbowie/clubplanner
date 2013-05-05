@@ -26,7 +26,6 @@ package com.powersurgepub.clubplanner;
   import com.powersurgepub.psdatalib.textmerge.*;
   import com.powersurgepub.psdatalib.ui.*;
   import com.powersurgepub.psutils.*;
-  import com.powersurgepub.regcodes.*;
   import com.powersurgepub.xos2.*;
   import java.awt.*;
   import java.awt.event.*;
@@ -89,12 +88,6 @@ public class ClubPlanner
   
   private             LinkTweaker         linkTweaker;
   private             TweakerPrefs        tweakerPrefs;
-  
-  // Registration variables
-  private             RegisterWindow      registerWindow;
-  private             UnregisteredWindow  unregisteredWindow;
-  private static final int    DEMO_LIMIT    = 20;
-  private             RegistrationCode    registrationCode;
   
   private             boolean             listAvailable = false;
   
@@ -163,11 +156,6 @@ public class ClubPlanner
     
     windowMenuManager = WindowMenuManager.getShared(windowMenu);
     
-    // Set up registration window
-    RegisterWindow.getShared().setStatusBar (statusBar);
-    registerWindow = RegisterWindow.getShared();
-    registerWindow.setDemoLimit(DEMO_LIMIT);
-    
     // Connect up to Mac environment as necessary
     xos.setFileMenu (fileMenu);
     xos.setHelpMenu (helpMenu);
@@ -177,7 +165,6 @@ public class ClubPlanner
     
     // Set up user prefs
     userPrefs = UserPrefs.getShared();
-    prefsWindow = new PrefsWindow (this);
     prefsWindow = new PrefsWindow (this);
     
     filePrefs = new FilePrefs(this);
@@ -206,8 +193,6 @@ public class ClubPlanner
     
     tweakerPrefs = new TweakerPrefs();
     prefsWindow.getPrefsTabs().add(TweakerPrefs.PREFS_TAB_NAME, tweakerPrefs);
-    
-	  checkUnregistered();
     
     // Set up Logging
     logWindow = new LogWindow ();
@@ -264,6 +249,8 @@ public class ClubPlanner
     itemTabs.add("Links", clubEventPanel4);
     itemTabs.add("Notes", clubEventPanel5);
     
+    initCollection();
+    
     /*
      Following initialization, to get user's preferred file or folder to open.
      */
@@ -275,7 +262,15 @@ public class ClubPlanner
           && lastFile.isDirectory()
           && lastFile.canRead()) {
         openFile (lastFile);
+      } else {
+        openFile();
       }
+    } else {
+      openFile();
+    }
+    
+    if (fileSpec == null) {
+      handleQuit();
     }
   }
   
@@ -337,76 +332,12 @@ public class ClubPlanner
     }
   }
   
-  /**
-   If the program hasn't been registered, then remind the user upon application
-   launch.
-   */
-  private void checkUnregistered() {
-    if (! RegisterWindow.getShared().isRegistered()) {
-        unregisteredWindow
-            = new UnregisteredWindow(
-            "You may continue to use it in demo mode for as long as you like, "
-            + "but the program will save no more than 20 Events "
-            + "until it is registered.");
-        int w = this.getWidth();
-        int h = this.getHeight();
-        int x = this.getX();
-        int y = this.getY();
-        unregisteredWindow.setLocation(
-            x + ((w - unregisteredWindow.getWidth()) / 2),
-            y + ((h - unregisteredWindow.getHeight()) / 2));
-        WindowMenuManager.getShared().makeVisible(unregisteredWindow);
-    }
-  }
-  
   public void setListAvailable(boolean listAvailable) {
     this.listAvailable = listAvailable;
   }
   
   public boolean isListAvailable() {
     return listAvailable;
-  }
-  
-  /**
-   Is the user registered?
-  
-   @return True if we should treat the user with unrestricted access rights, 
-           false if we should limit their usage in some way. 
-  */
-  public boolean isRegistered() {
-    return RegisterWindow.getShared().isRegistered();
-  }
-  
-  /**
-   Help the user purchase a software license for Club Planner.
-   */
-  private void purchase () {
-    appster.openURL (UnregisteredWindow.STORE);
-  }
-
-  private void register () {
-    WindowMenuManager.getShared().locateCenterAndMakeVisible
-        (this, registerWindow);
-  }
-
-  /**
-   Handle the condition of not storing all user input due to the application
-   not being registered.
-
-   @param reg The registration exception generated.
-   */
-  public void handleRegistrationException (RegistrationException reg) {
-    handleRegistrationLimitation();
-  }
-
-  /**
-   Handle the condition of not saving all user input due to the application
-   not being registered.
-   */
-  public void handleRegistrationLimitation () {
-    Trouble.getShared().report("Unregistered copy will save no more than "
-        + String.valueOf(DEMO_LIMIT) + " items in Demo mode",
-        "Demo Warning");
   }
   
   /**
@@ -512,39 +443,77 @@ public class ClubPlanner
    Let the user choose a file or folder to open.
    */
   private void openFile() {
-    closeFile();
-    recentFiles.chooseFileToOpen(this);
-
-    /*
-    fileChooser.setDialogTitle ("Open ClubEvents");
-    fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-    if (currentDirectory != null
-        && currentDirectory.exists()
-        && currentDirectory.isDirectory()
-        && currentDirectory.canRead()) {
-      fileChooser.setCurrentDirectory (currentDirectory);
+    
+    // Initialize local variables
+    File clubRecordsFolder = null;
+    File opYearFolder = null;
+    File eventsFolder = null;
+    ClubEventCalc newClubEventCalc = new ClubEventCalc();
+    StringDate strDate = newClubEventCalc.getStringDate();
+    File result = null;
+    String resultName = "";
+    XFileChooser chooser = new XFileChooser ();
+    chooser.setFileSelectionMode(XFileChooser.DIRECTORIES_ONLY);
+    boolean ok = true;
+    int progress = 0;
+    String desiredFolder = "";
+    while (ok && progress < 3) {
+      switch (progress) {
+        case 0: 
+          desiredFolder = "Folder Containing Club Records";
+          break;
+        case 1:
+          chooser.setCurrentDirectory(clubRecordsFolder);
+          desiredFolder = "Folder for Desired Operating Year";
+          break;
+        case 2:
+          chooser.setCurrentDirectory(opYearFolder);
+          desiredFolder = "Events Folder";
+          break;
+      }
+      chooser.setDialogTitle ("Specify " + desiredFolder);
+      result = chooser.showOpenDialog (this);
+      if (result != null
+          && result.exists()
+          && result.canRead()
+          && result.isDirectory()) {
+        resultName = result.getName();
+        boolean folderContainsOpYear = strDate.parseOpYear(resultName);
+        boolean pathContainsOpYear = newClubEventCalc.setFileName(result);
+        if (folderContainsOpYear) {
+          opYearFolder = result;
+          progress = 2;
+        }
+        else
+        if (pathContainsOpYear) {
+          eventsFolder = result;
+          progress = 3;
+        }
+        else
+        if (progress < 1) {
+          clubRecordsFolder = result;
+          progress = 1;
+        } else {
+          ok = false;
+          JOptionPane.showMessageDialog(this,
+            "A Valid Operating Year Folder was not specified",
+            "Operating Year Folder Missing",
+            JOptionPane.WARNING_MESSAGE);
+        }
+      } else {
+        ok = false;
+        JOptionPane.showMessageDialog(this,
+          "A Valid " + desiredFolder + " was not specified",
+          "Invalid Folder Specification",
+          JOptionPane.WARNING_MESSAGE);
+      }
     }
-    File fileToOpen = null;
-    File selectedFile = null;
-    selectedFile = fileChooser.showOpenDialog(this);
-    if (selectedFile != null) {
-      if (selectedFile.isDirectory()) {
-        // System.out.println ("Selected file is a directory");
-        fileToOpen = new File (selectedFile, DEFAULT_FILE_NAME);
-        // System.out.println ("fileToOpen is " + fileToOpen.toString());
-      } else {
-        fileToOpen = selectedFile;
-      }
-      if (fileToOpen.exists()
-          && fileToOpen.isFile()
-          && fileToOpen.canRead()) {
-        openFile (fileToOpen);
-      } else {
-        trouble.report ("Trouble opening file " + fileToOpen.toString(),
-            "File Open Error");
-      }
-    } // end if user approved a file/folder choice
-    */
+    
+    if (ok) {
+      closeFile();
+      fileSpec = recentFiles.addRecentFile (result);
+      handleOpenFile(fileSpec);
+    }
     currentFileModified = false;
   } // end method openFile
   
@@ -800,15 +769,15 @@ public class ClubPlanner
     return backupFolder;
   }
   
+  /**
+   Let's close the current file, if one is open. 
+  */
   private void closeFile() {
-
-    boolean modOK = modIfChanged();
-    /*
-    checkForUnsavedChanges();
-    publishWindow.closeSource();
-    */
-    if (currentFileModified) {
-      filePrefs.handleClose();
+    if (fileSpec != null) {
+      boolean modOK = modIfChanged();
+      if (currentFileModified) {
+        filePrefs.handleClose();
+      }
     }
     currentFileModified = false;
   }
@@ -893,15 +862,11 @@ public class ClubPlanner
     boolean modOK = modIfChanged();
 
     if (modOK) {
-      if (clubEventList.roomForMore()) {
-        position = new ClubEventPositioned();
-        position.setIndex (clubEventList.size());
-        localPath = "";
-        display();
-        clubEventPanel1.getStatusTextSelector().setText (selectedTags);
-      } else {
-        handleRegistrationLimitation();
-      }
+      position = new ClubEventPositioned();
+      position.setIndex (clubEventList.size());
+      localPath = "";
+      display();
+      clubEventPanel1.getStatusTextSelector().setText (selectedTags);
     }
   }
   
@@ -913,19 +878,15 @@ public class ClubPlanner
     boolean modOK = modIfChanged();
 
     if (modOK) {
-      if (clubEventList.roomForMore()) {
-        ClubEvent clubEvent = position.getClubEvent();
-        ClubEvent newClubEvent = clubEvent.duplicate();
-        newClubEvent.setWhat(clubEvent.getWhat() + " copy");
-        position = new ClubEventPositioned();
-        position.setIndex (clubEventList.size());
-        position.setClubEvent(newClubEvent);
-        position.setNewClubEvent(true);
-        localPath = "";
-        display();
-      } else {
-        handleRegistrationLimitation();
-      }
+      ClubEvent clubEvent = position.getClubEvent();
+      ClubEvent newClubEvent = clubEvent.duplicate();
+      newClubEvent.setWhat(clubEvent.getWhat() + " copy");
+      position = new ClubEventPositioned();
+      position.setIndex (clubEventList.size());
+      position.setClubEvent(newClubEvent);
+      position.setNewClubEvent(true);
+      localPath = "";
+      display();
     }
   }
   
@@ -1146,14 +1107,10 @@ public class ClubPlanner
    Add a new club event.
   */
   private void addClubEvent (ClubEvent clubEvent) {
-    if (clubEventList.roomForMore()) {
-      position = clubEventList.add (position.getClubEvent());
-      if (position.hasValidIndex (clubEventList)) {
-        writer.save(eventsFile, clubEvent, true);
-        positionAndDisplay();
-      }
-    } else {
-      handleRegistrationLimitation();
+    position = clubEventList.add (position.getClubEvent());
+    if (position.hasValidIndex (clubEventList)) {
+      writer.save(eventsFile, clubEvent, true);
+      positionAndDisplay();
     }
   }
   
@@ -1349,7 +1306,6 @@ public class ClubPlanner
       boolean modOK = modIfChanged();
       if (modOK) {
         ClubEvent branch = (ClubEvent)node.getTaggable();
-        System.out.println();
         int branchIndex = clubEventList.find (branch);
         if (branchIndex >= 0) {
           position = clubEventList.positionUsingListIndex (branchIndex);
@@ -1460,9 +1416,6 @@ public class ClubPlanner
     editMenu = new javax.swing.JMenu();
     windowMenu = new javax.swing.JMenu();
     helpMenu = new javax.swing.JMenu();
-    helpPurchaseMenuItem = new javax.swing.JMenuItem();
-    registerMenuItem = new javax.swing.JMenuItem();
-    jSeparator9 = new javax.swing.JPopupMenu.Separator();
     helpHistoryMenuItem = new javax.swing.JMenuItem();
     userGuideMenuItem = new javax.swing.JMenuItem();
     jSeparator7 = new javax.swing.JSeparator();
@@ -1806,23 +1759,6 @@ eventDeleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
 
   helpMenu.setText("Help");
 
-  helpPurchaseMenuItem.setText("Purchase License");
-  helpPurchaseMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      helpPurchaseMenuItemActionPerformed(evt);
-    }
-  });
-  helpMenu.add(helpPurchaseMenuItem);
-
-  registerMenuItem.setText("Product Registration...");
-  registerMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      registerMenuItemActionPerformed(evt);
-    }
-  });
-  helpMenu.add(registerMenuItem);
-  helpMenu.add(jSeparator9);
-
   helpHistoryMenuItem.setText("Program History");
   helpHistoryMenuItem.addActionListener(new java.awt.event.ActionListener() {
     public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1938,14 +1874,6 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private void itemTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableMouseClicked
     selectTableRow();
   }//GEN-LAST:event_itemTableMouseClicked
-
-  private void helpPurchaseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpPurchaseMenuItemActionPerformed
-    purchase();
-  }//GEN-LAST:event_helpPurchaseMenuItemActionPerformed
-
-  private void registerMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerMenuItemActionPerformed
-    register();
-  }//GEN-LAST:event_registerMenuItemActionPerformed
 
   private void helpHistoryMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpHistoryMenuItemActionPerformed
     File historyFile = new File (appFolder, "versions.html");
@@ -2063,22 +1991,29 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
      look and feel. For details see
      http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
      */
-    try {
+    /* try {
       for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+        System.out.println ("ClubPlanner main installed look and feel " + info.getName());
         if ("Nimbus".equals(info.getName())) {
           javax.swing.UIManager.setLookAndFeel(info.getClassName());
+          System.out.println("  setting " + info.getClassName());
           break;
         }
       }
     } catch (ClassNotFoundException ex) {
+      System.out.println("  class not found");
       java.util.logging.Logger.getLogger(ClubPlanner.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     } catch (InstantiationException ex) {
+      System.out.println("  instantiation exception");
       java.util.logging.Logger.getLogger(ClubPlanner.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     } catch (IllegalAccessException ex) {
+      System.out.println("  illegal access");
       java.util.logging.Logger.getLogger(ClubPlanner.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+      System.out.println("  unsupported look and feel");
       java.util.logging.Logger.getLogger(ClubPlanner.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
+    */
     //</editor-fold>
 
     /*
@@ -2116,7 +2051,6 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JButton firstButton;
   private javax.swing.JMenuItem helpHistoryMenuItem;
   private javax.swing.JMenu helpMenu;
-  private javax.swing.JMenuItem helpPurchaseMenuItem;
   private javax.swing.JMenuItem helpReduceWindowSizeMenuItem;
   private javax.swing.JMenuItem helpSoftwareUpdatesMenuItem;
   private javax.swing.JTable itemTable;
@@ -2127,7 +2061,6 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JPopupMenu.Separator jSeparator3;
   private javax.swing.JSeparator jSeparator7;
   private javax.swing.JSeparator jSeparator8;
-  private javax.swing.JPopupMenu.Separator jSeparator9;
   private javax.swing.JButton lastButton;
   private javax.swing.JPanel listPanel;
   private javax.swing.JMenuBar mainMenuBar;
@@ -2137,7 +2070,6 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JButton nextButton;
   private javax.swing.JButton okButton;
   private javax.swing.JButton priorButton;
-  private javax.swing.JMenuItem registerMenuItem;
   private javax.swing.JMenuItem submitFeedbackMenuItem;
   private javax.swing.JTree tagsTree;
   private javax.swing.JPanel treePanel;

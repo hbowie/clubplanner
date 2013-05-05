@@ -68,6 +68,8 @@ sort	add	Ascending	Item Class
 sort	add	Ascending	Panel No.	
 sort	add	Ascending	Panel Seq	
 sort	set		params	
+template	open	file		#PATH#../templates/fields.md
+template	generate			
 template	open	file		#PATH#../templates/item-panel-definitions.java
 template	generate			
 template	open	file		#PATH#../templates/item-panel-layout.java

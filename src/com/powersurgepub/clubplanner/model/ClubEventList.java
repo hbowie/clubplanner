@@ -22,7 +22,6 @@ package com.powersurgepub.clubplanner.model;
   import com.powersurgepub.psdatalib.pstags.*;
   import com.powersurgepub.psfiles.*;
   import com.powersurgepub.psutils.*;
-  import com.powersurgepub.regcodes.*;
   import java.io.*;
   import java.util.*;
   import javax.swing.table.*;
@@ -248,15 +247,6 @@ public class ClubEventList
       names.add(getColumnName(i));
     }
     return names;
-  }
- 
-  /**
-   Can more records/items be added without exceeding the demo limitation?
-
-   @return     True if more can be added, false if we've hit the ceiling.
-   */
-  public boolean roomForMore() {
-    return RegisterWindow.getShared().roomForMore(totalSize());
   }
  
   /**

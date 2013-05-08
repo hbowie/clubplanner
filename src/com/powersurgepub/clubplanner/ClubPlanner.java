@@ -1637,6 +1637,7 @@ public class ClubPlanner
 
     fileMenu.setText("File");
 
+    fileOpenMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
     fileOpenMenuItem.setText("Open...");
     fileOpenMenuItem.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1784,7 +1785,7 @@ eventDeleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
   });
   helpMenu.add(helpSoftwareUpdatesMenuItem);
 
-  webMenuItem.setText("URL Union Home Page");
+  webMenuItem.setText("Club Planner Home Page");
   webMenuItem.addActionListener(new java.awt.event.ActionListener() {
     public void actionPerformed(java.awt.event.ActionEvent evt) {
       webMenuItemActionPerformed(evt);

@@ -9,19 +9,22 @@
 <?definegroup 1 =$itemclass$= ?>
 <?definegroup 2 =$panelno$= ?>
 <?ifendgroup 2 ?>
-</dl>
 <?ifendgroup 1 ?>
 <?ifnewgroup 1 ?>
+
 ### =$itemclass$= Item
 <?ifnewgroup 2 ?>
 <?if =$panelno$= ?>
-#### =$itemclass$= - Panel =$panelno$=
 
-<dl class="fields">
+#### =$itemclass$= - Panel =$panelno$=
 <?endif?>
 <?endif?>
 <?if =$panelno$= ?>
-<dt>=$field$=</dt>
-	<dd>=$tooltip$=</dd>
+
+**=$field$=**: 
+<?if =$calc$= ?>
+(Calculated)
+<?endif?>
+=$description$=
 <?endif?>
 <?loop?>

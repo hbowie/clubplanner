@@ -103,13 +103,13 @@ The first form is a zip archive. This form can be used on either a Windows machi
 
 The second form of distribution is a Mac OS X disk image. This form can only be used on Mac OS X (and is the recommended distribution package for the Mac). Once downloaded and mounted (via a double-click if it doesn't mount automatically), you will see a folder containing a complete self-contained application bundle. To install the app, drag the application into your Applications folder. Launch the app by double-clicking on the application.  
 
-<h3 id="events">Events</h2>
+<h3 id="events">Events</h3>
 
 *Club Planner* tracks information about your club's planned, current, and past events. 
 
 Other agenda items to be discussed by your club may be entered as if they were events, in order to build complete meeting agendas. 
 
-<h3 id="files">Files and Folders</h2>
+<h3 id="files">Files and Folders</h3>
 
 Club Planner assumes that your club records are stored electronically, using something like the following nested folder structure. 
 
@@ -131,7 +131,7 @@ Note that all of these folders above the *Events* folder may contain other folde
 
 The only folder naming convention that is required is the inclusion of the club operating year in the name of the folder above the Events folder. By storing the operating year in this folder name, event info can easily be duplicated and transferred from one operating year to the next, based on the assumption that many of your club's events will recur on a fairly predictable annual cycle. 
 
-<h3 id="createnew">Creating a New Events Folder</h2>
+<h3 id="createnew">Creating a New Events Folder</h3>
 
 The first time you launch Club Planner, or after selecting <em>Open</em> from the <em>File</em> menu, you will be presented with a series of Open dialogs that will ask you to specify the folder containing Club Records, the folder for the desired Operating Year, and the Events folder. There is no default location for these folder. You can create the necessary folders outside of Club Planner, before launching it, or can create the new folders from within the Open dialogs. Again, it is recommended that the folder containing Club Records be a shared [Dropbox][] folder.  
 
@@ -153,11 +153,11 @@ The Club Planner interface also contains a **Tool Bar** containing a number of *
 
 The following text box allows you to enter a text string you wish to search for. The following button, initially labeled **Find**, causes the first event containing that text string to be found and displayed. After the first event is found, this button will be relabeled **Again**, and will then allow you to continue forward through the list of found events.
 
-<h3 id="list">The List</h2>
+<h3 id="list">The List</h3>
 
 On the first half of the main screen, you'll see two tabs. The first of these displays the **List**. This is just a simple list of all your events. Click on an event to select that event for display on the other half of the main screen.
 
-<h3 id="tags">Tags</h2>
+<h3 id="tags">Tags</h3>
 
 The second Tab on the first half of the main screen displays the **Tags**. This is an indented list of all your status tags, with events appearing under as many tags as have been assigned to them, and with events with no tags displaying at the very top. Click to the left of a tag to expand it, showing events and/or sub-tags contained within it.
 

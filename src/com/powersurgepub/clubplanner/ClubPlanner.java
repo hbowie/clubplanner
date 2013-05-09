@@ -122,7 +122,7 @@ public class ClubPlanner
   private             TextMergeFilter     textMergeFilter;
   private             TextMergeSort       textMergeSort;
   private             TextMergeTemplate   textMergeTemplate;
-  private             ListArranger        listArrangerWindow = null;
+  private             PublishWindow       publishWindow = null;
   private             int                 filterTabIndex = 0;
   private             int                 sortTabIndex = 1;
   private             int                 templateTabIndex = 2;
@@ -201,7 +201,7 @@ public class ClubPlanner
     logger.setLog (logOutput);
     logger.setLogAllData (false);
     logger.setLogThreshold (LogEvent.NORMAL);
-    WindowMenuManager.getShared().add(logWindow);
+    windowMenuManager.add(logWindow);
     
     aboutWindow = new AboutWindow (
       false,   // loadFromDisk
@@ -212,7 +212,7 @@ public class ClubPlanner
       false,   // saxon used
       "2012"); // copyRightYearFrom));
     
-    // Set up List Arranger
+    // Set up Publish Window
     textMergeScript = new TextMergeScript(clubEventList);
     textMergeScript.allowAutoplay(false);
     textMergeFilter = new TextMergeFilter(clubEventList, textMergeScript);
@@ -224,17 +224,17 @@ public class ClubPlanner
     
     File templateLibrary = new File (appFolder.getPath(),  "templates");
     textMergeTemplate.setTemplateLibrary(templateLibrary);
-    listArrangerWindow = new ListArranger ("List Arranger");
-    textMergeScript.setTabs(listArrangerWindow.getTabs());
+    publishWindow = new PublishWindow ("Publish");
+    textMergeScript.setTabs(publishWindow.getTabs());
     filterTabIndex = 0;
-    textMergeFilter.setTabs(listArrangerWindow.getTabs());
+    textMergeFilter.setTabs(publishWindow.getTabs());
     sortTabIndex = 1;
-    textMergeSort.setTabs(listArrangerWindow.getTabs(), false);
+    textMergeSort.setTabs(publishWindow.getTabs(), false);
     templateTabIndex = 2;
-    textMergeTemplate.setTabs(listArrangerWindow.getTabs());
+    textMergeTemplate.setTabs(publishWindow.getTabs());
     textMergeScript.selectEasyTab();
     
-    WindowMenuManager.getShared().add(listArrangerWindow, KeyEvent.VK_L);
+    windowMenuManager.add(publishWindow);
     
     linkTweaker = new LinkTweaker(this, prefsWindow.getPrefsTabs());
     
@@ -275,7 +275,7 @@ public class ClubPlanner
   }
   
   private void auxWindowCalcs() {
-    if (listArrangerWindow != null) {
+    if (publishWindow != null) {
       if (mainSplitPane.getOrientation() == JSplitPane.HORIZONTAL_SPLIT) {
         int lawx = 
             this.getX() 
@@ -298,7 +298,7 @@ public class ClubPlanner
               - navToolBar.getHeight()
               - statusBar.getHeight();
 
-        listArrangerWindow.setBounds(lawx, lawy, laww, lawh);
+        publishWindow.setBounds(lawx, lawy, laww, lawh);
       } else {
         int lawx = 
             this.getX() 
@@ -327,7 +327,7 @@ public class ClubPlanner
               - mainSplitPane.getDividerLocation()
               - mainSplitPane.getDividerSize();
 
-        listArrangerWindow.setBounds(lawx, lawy, laww, lawh); 
+        publishWindow.setBounds(lawx, lawy, laww, lawh); 
       }
     }
   }
@@ -393,7 +393,7 @@ public class ClubPlanner
     window.setLocation(
         this.getX() + 60,
         this.getY() + 60);
-    WindowMenuManager.getShared().makeVisible(window);
+    windowMenuManager.makeVisible(window);
   }
   
   /**
@@ -1405,6 +1405,8 @@ public class ClubPlanner
     fileSaveAllMenuItem = new javax.swing.JMenuItem();
     fileSaveAsMenuItem = new javax.swing.JMenuItem();
     jSeparator2 = new javax.swing.JPopupMenu.Separator();
+    filePublishMenuItem = new javax.swing.JMenuItem();
+    jSeparator4 = new javax.swing.JPopupMenu.Separator();
     fileBackupMenuItem = new javax.swing.JMenuItem();
     eventMenu = new javax.swing.JMenu();
     eventNextMenuItem = new javax.swing.JMenuItem();
@@ -1687,6 +1689,16 @@ public class ClubPlanner
   });
   fileMenu.add(fileSaveAsMenuItem);
   fileMenu.add(jSeparator2);
+
+  filePublishMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+  filePublishMenuItem.setText("Publish...");
+  filePublishMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      filePublishMenuItemActionPerformed(evt);
+    }
+  });
+  fileMenu.add(filePublishMenuItem);
+  fileMenu.add(jSeparator4);
 
   fileBackupMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
   fileBackupMenuItem.setText("Backup...");
@@ -1979,6 +1991,10 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     auxWindowCalcs();
   }//GEN-LAST:event_mainSplitPanePropertyChange
 
+  private void filePublishMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filePublishMenuItemActionPerformed
+    windowMenuManager.makeVisible(publishWindow);
+  }//GEN-LAST:event_filePublishMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -2043,6 +2059,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenu fileMenu;
   private javax.swing.JMenuItem fileOpenMenuItem;
   private javax.swing.JMenu fileOpenRecentMenu;
+  private javax.swing.JMenuItem filePublishMenuItem;
   private javax.swing.JMenuItem fileReloadMenuItem;
   private javax.swing.JMenuItem fileSaveAllMenuItem;
   private javax.swing.JMenuItem fileSaveAsMenuItem;
@@ -2060,6 +2077,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JPopupMenu.Separator jSeparator1;
   private javax.swing.JPopupMenu.Separator jSeparator2;
   private javax.swing.JPopupMenu.Separator jSeparator3;
+  private javax.swing.JPopupMenu.Separator jSeparator4;
   private javax.swing.JSeparator jSeparator7;
   private javax.swing.JSeparator jSeparator8;
   private javax.swing.JButton lastButton;

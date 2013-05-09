@@ -43,12 +43,16 @@ Table of Contents
 	</ul>
 </li>
 
+<li><a href="#publish">Publish</a></li>
+
 <li><a href="#prefs">Preferences</a>
 	<ul>
 		<li><a href="#general_prefs">General Prefs</a></li>
 	</ul>
 </li>
+
 <li><a href="#help">Help</a></li>
+
 </ul>
 
 </div>
@@ -576,6 +580,13 @@ A toolbar with multiple buttons appears at the top of the user interface.
 * **Launch** -- Launch the current URL in your Web browser. (This may also be accomplished by clicking the arrow that appears just to the left of the URL itself.)
 * **Find** -- Looks for the text entered in the field just to the left of this button, and displays the first URL containing this text in any field, ignoring case. After finding the first occurrence, this button's text changes to **Again**, to allow you to search again for the next URL containing the specified text. 
 
+<h2 id="publish">Publish</h2>
+
+A large part of the power of Club Planner lies in its ability to publish the event information you've collected in a variety of different formats, for different purposes. For example, web pages, calendar entries, board meeting agendas, minutes, and e-mail newsletters can all be published using Club Planner. 
+
+Club Planner uses the [PSTextMerge][pstm] engine for its publish function. Open the Publish window by selecting Publish from the File menu. See the [PSTextMerge User Guide][pstmug] for details. 
+
+Note that filtering and sorting functions within the Publish window will affect the list of events visible in the main window. 
 
 <h2 id="prefs">Preferences</h2>
 
@@ -619,6 +630,8 @@ The following commands are available. Note that the first two commands open loca
 [pspub]:     http://www.powersurgepub.com/
 [downloads]: http://www.powersurgepub.com/downloads.html
 [store]:     http://www.powersurgepub.com/store.html
+[pstm]:      http://www.powersurgepub.com/products/pstextmerge.html
+[pstmug]:    http://www.powersurgepub.com/products/pstextmerge/opguide.html
 
 [markdown]:  http://daringfireball.net/projects/markdown/
 [pegdown]:   https://github.com/sirthias/pegdown/blob/master/LICENSE

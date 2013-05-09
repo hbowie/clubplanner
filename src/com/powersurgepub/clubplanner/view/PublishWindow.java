@@ -24,18 +24,18 @@ package com.powersurgepub.clubplanner.view;
 
  @author Herb Bowie
  */
-public class ListArranger 
+public class PublishWindow 
   extends javax.swing.JFrame
     implements WindowToManage {
 
   /**
-   Creates new form ListArranger
+   Creates new form PublishWindow
    */
-  public ListArranger() {
+  public PublishWindow() {
     initComponents();
   }
   
-  public ListArranger (String title) {
+  public PublishWindow (String title) {
     super (title);
     initComponents();
   }

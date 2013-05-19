@@ -578,7 +578,7 @@ public class ClubPlanner
       ClubEvent nextClubEvent = clubEventList.getUnfiltered(i);
       writer = new ClubEventWriter();
       String oldDiskLocation = nextClubEvent.getDiskLocation();
-      saveOK = writer.save(eventsFile, nextClubEvent, true);
+      saveOK = writer.save(eventsFile, nextClubEvent, true, false);
       if (saveOK) {
         numberSaved++;
         String newDiskLocation = nextClubEvent.getDiskLocation();
@@ -624,7 +624,7 @@ public class ClubPlanner
       File selectedFile = fileChooser.showSaveDialog (this);
       if (selectedFile != null) {
         writer = new ClubEventWriter();
-        saved = writer.save (selectedFile, clubEventList, true);
+        saved = writer.save (selectedFile, clubEventList, true, false);
         if (saved) {
           setClubEventFolder (selectedFile);
           logger.recordEvent (LogEvent.NORMAL,
@@ -728,7 +728,7 @@ public class ClubPlanner
     File backupFolder = new File (backupPath.toString());
     backupFolder.mkdir();
     ClubEventWriter backupWriter = new ClubEventWriter();
-    backedUp = backupWriter.save (backupFolder, clubEventList, false);
+    backedUp = backupWriter.save (backupFolder, clubEventList, false, false);
     if (backedUp) {
       logger.recordEvent (LogEvent.NORMAL,
           "URLs backed up to " + backupFolder.toString(),
@@ -767,6 +767,109 @@ public class ClubPlanner
       }
     }
     return backupFolder;
+  }
+  
+  public boolean startNewYear() {
+    boolean started = false;
+    File newEventsFolder = null;
+    if (eventsFile != null) {
+      File clubRecordsFolder = null;
+      File opYearFolder = null;
+      File parent = eventsFile.getParentFile();
+      String parentName = "";
+      ClubEventCalc newClubEventCalc = new ClubEventCalc();
+      StringDate strDate = newClubEventCalc.getStringDate();
+      
+      // Look for Club Records Folder
+      while (parent != null && clubRecordsFolder == null) {
+        if (parent != null
+            && parent.exists()
+            && parent.canRead()
+            && parent.isDirectory()) {
+          parentName = parent.getName();
+          boolean folderContainsOpYear = strDate.parseOpYear(parentName);
+          boolean pathContainsOpYear = newClubEventCalc.setFileName(parent);
+          if (folderContainsOpYear) {
+            opYearFolder = parent;
+            clubRecordsFolder = parent.getParentFile();
+          } else {
+            parent = parent.getParentFile();
+          } // end if op year not found
+        } // end if parent is usable
+      } // end while looking for op year folder and its parent
+      
+      if (clubRecordsFolder != null) {
+        
+        XFileChooser chooser = new XFileChooser ();
+        chooser.setFileSelectionMode(XFileChooser.DIRECTORIES_ONLY);
+        boolean ok = true;
+        int progress = 1;
+        String desiredFolder = "";
+        File result = null;
+        String resultName = "";
+        while (ok && progress < 3) {
+          switch (progress) {
+            case 1:
+              chooser.setCurrentDirectory(clubRecordsFolder);
+              desiredFolder = "Folder for New Operating Year";
+              break;
+            case 2:
+              chooser.setCurrentDirectory(opYearFolder);
+              desiredFolder = "New Events Folder";
+              break;
+          }
+          chooser.setDialogTitle ("Specify " + desiredFolder);
+          result = chooser.showOpenDialog (this);
+          if (result != null
+              && result.exists()
+              && result.canRead()
+              && result.isDirectory()) {
+            resultName = result.getName();
+            boolean folderContainsOpYear = strDate.parseOpYear(resultName);
+            boolean pathContainsOpYear = newClubEventCalc.setFileName(result);
+            if (folderContainsOpYear) {
+              opYearFolder = result;
+              progress = 2;
+            }
+            else
+            if (pathContainsOpYear) {
+              newEventsFolder = result;
+              progress = 3;
+            } else {
+              ok = false;
+              JOptionPane.showMessageDialog(this,
+                "A Valid " + desiredFolder + " was not specified",
+                "Invalid Folder Specification",
+                JOptionPane.WARNING_MESSAGE);
+            }
+          } else {
+            ok = false;
+            JOptionPane.showMessageDialog(this,
+              "A Valid " + desiredFolder + " was not specified",
+              "Invalid Folder Specification",
+              JOptionPane.WARNING_MESSAGE);
+          }
+        } // end while asking user for new events folder
+
+        if (ok) {
+          ClubEventWriter newEventsWriter = new ClubEventWriter();
+          started = newEventsWriter.save (newEventsFolder, clubEventList, 
+              false, true);
+          if (started) {
+            logger.recordEvent (LogEvent.NORMAL,
+                "New year started at " + newEventsFolder.toString(),
+                  false);
+            FileSpec newEventsFileSpec = new FileSpec (newEventsFolder);
+            recentFiles.addNotSoRecentFile(newEventsFileSpec);
+          } else {
+            logger.recordEvent (LogEvent.MEDIUM,
+                "Problem starting new year at " + newEventsFolder.toString(),
+                  false);
+          }
+        } // end if we found a new events folder
+      } // end if we found a club records folder
+    } // end if we have an open events file
+    return started;
   }
   
   /**
@@ -1084,7 +1187,7 @@ public class ClubPlanner
         clubEventList.modify(position);
         writer = new ClubEventWriter();
         String oldDiskLocation = clubEvent.getDiskLocation();
-        boolean saved = writer.save(eventsFile, clubEvent, true);
+        boolean saved = writer.save(eventsFile, clubEvent, true, false);
         if (saved) {
           String newDiskLocation = clubEvent.getDiskLocation();
           if (! newDiskLocation.equals(oldDiskLocation)) {
@@ -1109,7 +1212,7 @@ public class ClubPlanner
   private void addClubEvent (ClubEvent clubEvent) {
     position = clubEventList.add (position.getClubEvent());
     if (position.hasValidIndex (clubEventList)) {
-      writer.save(eventsFile, clubEvent, true);
+      writer.save(eventsFile, clubEvent, true, false);
       positionAndDisplay();
     }
   }
@@ -1408,6 +1511,8 @@ public class ClubPlanner
     filePublishMenuItem = new javax.swing.JMenuItem();
     jSeparator4 = new javax.swing.JPopupMenu.Separator();
     fileBackupMenuItem = new javax.swing.JMenuItem();
+    jSeparator5 = new javax.swing.JPopupMenu.Separator();
+    fileStartNewYearMenuItem = new javax.swing.JMenuItem();
     eventMenu = new javax.swing.JMenu();
     eventNextMenuItem = new javax.swing.JMenuItem();
     eventPriorMenuItem = new javax.swing.JMenuItem();
@@ -1708,6 +1813,15 @@ public class ClubPlanner
     }
   });
   fileMenu.add(fileBackupMenuItem);
+  fileMenu.add(jSeparator5);
+
+  fileStartNewYearMenuItem.setText("Start New Year...");
+  fileStartNewYearMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      fileStartNewYearMenuItemActionPerformed(evt);
+    }
+  });
+  fileMenu.add(fileStartNewYearMenuItem);
 
   mainMenuBar.add(fileMenu);
 
@@ -1995,6 +2109,10 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     windowMenuManager.makeVisible(publishWindow);
   }//GEN-LAST:event_filePublishMenuItemActionPerformed
 
+  private void fileStartNewYearMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileStartNewYearMenuItemActionPerformed
+    startNewYear();
+  }//GEN-LAST:event_fileStartNewYearMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -2064,6 +2182,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenuItem fileSaveAllMenuItem;
   private javax.swing.JMenuItem fileSaveAsMenuItem;
   private javax.swing.JMenuItem fileSaveMenuItem;
+  private javax.swing.JMenuItem fileStartNewYearMenuItem;
   private javax.swing.JButton findButton;
   private javax.swing.JTextField findText;
   private javax.swing.JButton firstButton;
@@ -2078,6 +2197,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JPopupMenu.Separator jSeparator2;
   private javax.swing.JPopupMenu.Separator jSeparator3;
   private javax.swing.JPopupMenu.Separator jSeparator4;
+  private javax.swing.JPopupMenu.Separator jSeparator5;
   private javax.swing.JSeparator jSeparator7;
   private javax.swing.JSeparator jSeparator8;
   private javax.swing.JButton lastButton;

@@ -133,18 +133,18 @@ public class ClubEventWriter {
   }
  
   public boolean save (File folder, ClubEventList clubEventList,
-      boolean primaryLocation) {
+      boolean primaryLocation, boolean adjustForNewYear) {
  
     boolean outOK = true;
     for (int i = 0; i < clubEventList.size() && outOK; i++) {
       ClubEvent nextClubEvent = clubEventList.get(i);
-      outOK = save (folder, nextClubEvent, primaryLocation);
+      outOK = save (folder, nextClubEvent, primaryLocation, adjustForNewYear);
     }
     return outOK;
   }
  
   public boolean save (File folder, ClubEvent clubEvent,
-      boolean primaryLocation) {
+      boolean primaryLocation, boolean adjustForNewYear) {
  
     boolean outOK = true;
  

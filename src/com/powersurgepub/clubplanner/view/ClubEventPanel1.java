@@ -46,8 +46,8 @@ public class ClubEventPanel1
      data file: /Users/hbowie/Java/projects/nbproj/clubplanner/javagen/fields.xls
    */
  
-  private JLabel    typeLabel    = new JLabel("Type:", JLabel.LEFT);
-  private PSComboBox typePSComboBox = new PSComboBox();
+  private JLabel    categoryLabel    = new JLabel("Category:", JLabel.LEFT);
+  private PSComboBox categoryPSComboBox = new PSComboBox();
   private JLabel    seqLabel    = new JLabel("Seq:", JLabel.LEFT);
   private JLabel seqJLabel = new JLabel();
   private JLabel    statusLabel    = new JLabel("Status:", JLabel.LEFT);
@@ -101,17 +101,17 @@ public class ClubEventPanel1
    */
  
 
-		// Panel Layout for Type
-    typeLabel.setLabelFor(typePSComboBox);
-    typePSComboBox.load (ClubEvent.class, "type.txt");
+		// Panel Layout for Category
+    categoryLabel.setLabelFor(categoryPSComboBox);
+    categoryPSComboBox.load (ClubEvent.class, "category.txt");
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
     gb.setTopInset(8);
-    gb.add(typeLabel);
-    typePSComboBox.setToolTipText("The category assigned to the event.");
+    gb.add(categoryLabel);
+    categoryPSComboBox.setToolTipText("The category assigned to the event.");
     gb.setWidth(1);
     gb.setTopInset(4);
-    gb.add(typePSComboBox);
+    gb.add(categoryPSComboBox);
 
 		// Panel Layout for Seq
     seqLabel.setLabelFor(seqJLabel);
@@ -230,10 +230,10 @@ public class ClubEventPanel1
  
     modified = false;
  
-    if (clubEvent.hasType()) {
-      typePSComboBox.setText (clubEvent.getType().toString());
+    if (clubEvent.hasCategory()) {
+      categoryPSComboBox.setText (clubEvent.getCategory().toString());
     } else {
-      typePSComboBox.setText ("");
+      categoryPSComboBox.setText ("");
     }
     if (clubEvent.hasSeq()) {
       seqJLabel.setText (clubEvent.getSeq().toString());
@@ -291,8 +291,8 @@ public class ClubEventPanel1
   public boolean modIfChanged (ClubEvent clubEvent) {
  
 
-    if (! clubEvent.getTypeAsString().equals (typePSComboBox.getText())) {
-      clubEvent.setType(typePSComboBox.getText());
+    if (! clubEvent.getCategoryAsString().equals (categoryPSComboBox.getText())) {
+      clubEvent.setCategory(categoryPSComboBox.getText());
       modified = true;
     }
 
@@ -350,12 +350,12 @@ public class ClubEventPanel1
  
 
   /**
-    Returns the type for this club event.
+    Returns the category for this club event.
  
-    @return The type for this club event.
+    @return The category for this club event.
    */
-  public PSComboBox getTypePSComboBox () {
-    return typePSComboBox;
+  public PSComboBox getCategoryPSComboBox () {
+    return categoryPSComboBox;
   }
 
   /**

@@ -196,26 +196,26 @@ public class =$itemclass$=Writer {
   }
   
   public boolean save (File folder, =$itemclass$=List =$itemclass&clul$=List, 
-      boolean primaryLocation) {
+      boolean primaryLocation, boolean adjustForNewYear) {
   
     boolean outOK = true;
     for (int i = 0; i < =$itemclass&clul$=List.size() && outOK; i++) {
       =$itemclass$= next=$itemclass$= = =$itemclass&clul$=List.get(i);
-      outOK = save (folder, next=$itemclass$=, primaryLocation);
+      outOK = save (folder, next=$itemclass$=, primaryLocation, adjustForNewYear);
     }
     return outOK;
   }
   
   public boolean save (File folder, =$itemclass$= =$itemclass&clul$=, 
-      boolean primaryLocation) {
+      boolean primaryLocation, boolean adjustForNewYear) {
     
     boolean outOK = true;
     
-    File typeFolder = new File (folder, clubEvent.getTypeAsString());
-    if (! typeFolder.exists()) {
-      typeFolder.mkdir();
+    File categoryFolder = new File (folder, clubEvent.getCategoryAsString());
+    if (! categoryFolder.exists()) {
+      categoryFolder.mkdir();
     }
-    File file = new File (typeFolder, clubEvent.getFileName() + FILE_EXT);
+    File file = new File (categoryFolder, clubEvent.getFileName() + FILE_EXT);
     outOK = openOutput (file);
     if (outOK) {
       String oldDiskLocation = clubEvent.getDiskLocation();

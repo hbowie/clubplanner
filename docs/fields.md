@@ -9,7 +9,7 @@
 
 #### ClubEvent - Panel 1
 
-**Type**:
+**Category**:
 (Calculated)
 The category assigned to the event.
 

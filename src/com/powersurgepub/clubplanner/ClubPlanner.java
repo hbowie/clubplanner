@@ -1735,7 +1735,7 @@ public class ClubPlanner
 
     treePanel.add(treeScrollPane, java.awt.BorderLayout.CENTER);
 
-    collectionTabs.addTab("Tags", treePanel);
+    collectionTabs.addTab("Categories", treePanel);
 
     mainSplitPane.setLeftComponent(collectionTabs);
     mainSplitPane.setRightComponent(itemTabs);

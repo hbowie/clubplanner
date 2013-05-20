@@ -129,7 +129,7 @@ For example, the U-M Seattle club's folders look like this.
         - *UM Seattle 2013 - 2014*
             - *Events*
             
-The *Events* folder would then contain one folder for each type of event. Each of those folders would then contain one file for each event. These are plain text files, and may be viewed and even edited using any text editor. 
+The *Events* folder would then contain one folder for each category of event. Each of those folders would then contain one file for each event. These are plain text files, and may be viewed and even edited using any text editor. 
 
 Note that all of these folders above the *Events* folder may contain other folders and files, unrelated to Club Planner. 
 
@@ -435,7 +435,7 @@ Following is a list of all keyboard shortcuts. The command key is used in conjun
 
 The following basic event data is available for viewing and editing on this first tab. 
 
-**Type**: This is the general type of the event. The following values are suggested.  
+**Category**: This is the general category of the event. The following values are suggested.  
 
 * Active -- An active event, such as a hike.
 * Board -- An item for consideration by the board, or pertaining to the board. 
@@ -455,12 +455,12 @@ The following basic event data is available for viewing and editing on this firs
 * Sports -- An event having to do with athletics. 
 * Student Connections -- A topic related to prospective or current students hailing from the local area. 
 
-**Seq**: (Calculated) The sequence of discussion at a Board meeting. This is calculated based on the Type value selected. The following sequence numbers will be assigned. 
+**Seq**: (Calculated) The sequence of discussion at a Board meeting. This is calculated based on the Category value selected. The following sequence numbers will be assigned. 
 
 * 1 -- Open Meeting
 * 2 -- Finance
-* 4 -- All other types, if the event's date is in the past. 
-* 5 -- All other types, if the event's date is in the future. 
+* 4 -- All other categories, if the event's date is in the past. 
+* 5 -- All other categories, if the event's date is in the future. 
 * 8 -- Communication
 * 9 -- Close Meeting
 

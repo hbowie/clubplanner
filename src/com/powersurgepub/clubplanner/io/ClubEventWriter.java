@@ -195,6 +195,14 @@ public class ClubEventWriter {
     boolean outOK = true;
     if (outOK) {
       outOK = writeFieldName
+          (ClubEvent.ITEM_TYPE_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getItemTypeAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
           (ClubEvent.STATUS_FIELD_NAME);
     }
     if (outOK) {

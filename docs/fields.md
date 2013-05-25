@@ -9,6 +9,9 @@
 
 #### ClubEvent - Panel 1
 
+**Item Type**:
+The type of item.
+
 **Category**:
 (Calculated)
 The category assigned to the event.

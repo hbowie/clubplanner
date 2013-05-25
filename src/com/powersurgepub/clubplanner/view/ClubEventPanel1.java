@@ -46,6 +46,8 @@ public class ClubEventPanel1
      data file: /Users/hbowie/Java/projects/nbproj/clubplanner/javagen/fields.xls
    */
  
+  private JLabel    itemTypeLabel    = new JLabel("Item Type:", JLabel.LEFT);
+  private PSComboBox itemTypePSComboBox = new PSComboBox();
   private JLabel    categoryLabel    = new JLabel("Category:", JLabel.LEFT);
   private PSComboBox categoryPSComboBox = new PSComboBox();
   private JLabel    seqLabel    = new JLabel("Seq:", JLabel.LEFT);
@@ -100,6 +102,18 @@ public class ClubEventPanel1
      data file: /Users/hbowie/Java/projects/nbproj/clubplanner/javagen/fields.xls
    */
  
+
+		// Panel Layout for Item Type
+    itemTypeLabel.setLabelFor(itemTypePSComboBox);
+    itemTypePSComboBox.load (ClubEvent.class, "itemtype.txt");
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(itemTypeLabel);
+    itemTypePSComboBox.setToolTipText("The type of item.");
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(itemTypePSComboBox);
 
 		// Panel Layout for Category
     categoryLabel.setLabelFor(categoryPSComboBox);
@@ -230,6 +244,11 @@ public class ClubEventPanel1
  
     modified = false;
  
+    if (clubEvent.hasItemType()) {
+      itemTypePSComboBox.setText (clubEvent.getItemType().toString());
+    } else {
+      itemTypePSComboBox.setText ("");
+    }
     if (clubEvent.hasCategory()) {
       categoryPSComboBox.setText (clubEvent.getCategory().toString());
     } else {
@@ -291,6 +310,11 @@ public class ClubEventPanel1
   public boolean modIfChanged (ClubEvent clubEvent) {
  
 
+    if (! clubEvent.getItemTypeAsString().equals (itemTypePSComboBox.getText())) {
+      clubEvent.setItemType(itemTypePSComboBox.getText());
+      modified = true;
+    }
+
     if (! clubEvent.getCategoryAsString().equals (categoryPSComboBox.getText())) {
       clubEvent.setCategory(categoryPSComboBox.getText());
       modified = true;
@@ -348,6 +372,15 @@ public class ClubEventPanel1
      data file: /Users/hbowie/Java/projects/nbproj/clubplanner/javagen/fields.xls
    */
  
+
+  /**
+    Returns the item type for this club event.
+ 
+    @return The item type for this club event.
+   */
+  public PSComboBox getItemTypePSComboBox () {
+    return itemTypePSComboBox;
+  }
 
   /**
     Returns the category for this club event.

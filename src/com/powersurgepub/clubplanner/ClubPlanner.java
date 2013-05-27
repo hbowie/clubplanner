@@ -233,6 +233,7 @@ public class ClubPlanner
     templateTabIndex = 2;
     textMergeTemplate.setTabs(publishWindow.getTabs());
     textMergeScript.selectEasyTab();
+    textMergeScript.setMenus(mainMenuBar, "Publish");
     
     windowMenuManager.add(publishWindow);
     

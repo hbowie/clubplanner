@@ -50,6 +50,9 @@ One to three sentences describing the event. Not intended to provide complete in
 **Blurb**:
 Additional information about the event. Need not repeat information in the teaser, and need not repeat additional event details available from other fields, such as When and Where. This field can contain multiple paragraphs, separated by blank lines.
 
+**Purchase**:
+Instructions on how to purchase tickets to the event, if any.
+
 **Why**:
 Why does the club think it would be a good idea to host the event? If applying for Strategic Priority Funds, then why do we think this is a deserving event?
 
@@ -60,9 +63,6 @@ A brief summary of how the event went. Can include lessons learned from the even
 
 **Cost**:
 The cost per person to attend the event. If the event is free, then leave this field blank.
-
-**Purchase**:
-Instructions on how to purchase tickets to the event, if any.
 
 **Tickets**:
 For purchasers, information on how they are to receive the tickets.

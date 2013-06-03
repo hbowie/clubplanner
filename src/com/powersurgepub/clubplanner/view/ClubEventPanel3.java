@@ -48,8 +48,6 @@ public class ClubEventPanel3
  
   private JLabel    costLabel    = new JLabel("Cost:", JLabel.LEFT);
   private JTextField costJTextField = new JTextField();
-  private JLabel    purchaseLabel    = new JLabel("Purchase:", JLabel.LEFT);
-  private JTextField purchaseJTextField = new JTextField();
   private JLabel    ticketsLabel    = new JLabel("Tickets:", JLabel.LEFT);
   private JTextField ticketsJTextField = new JTextField();
   private JLabel    quantityLabel    = new JLabel("Quantity:", JLabel.LEFT);
@@ -119,17 +117,6 @@ public class ClubEventPanel3
     gb.setWidth(3);
     gb.setTopInset(4);
     gb.add(costJTextField);
-
-		// Panel Layout for Purchase
-    purchaseLabel.setLabelFor(purchaseJTextField);
-    gb.setColumnWeight(0.0);
-    gb.setWidth(1);
-    gb.setTopInset(8);
-    gb.add(purchaseLabel);
-    purchaseJTextField.setToolTipText("Instructions on how to purchase tickets to the event, if any.");
-    gb.setWidth(3);
-    gb.setTopInset(4);
-    gb.add(purchaseJTextField);
 
 		// Panel Layout for Tickets
     ticketsLabel.setLabelFor(ticketsJTextField);
@@ -285,11 +272,6 @@ public class ClubEventPanel3
     } else {
       costJTextField.setText ("");
     }
-    if (clubEvent.hasPurchase()) {
-      purchaseJTextField.setText (clubEvent.getPurchase().toString());
-    } else {
-      purchaseJTextField.setText ("");
-    }
     if (clubEvent.hasTickets()) {
       ticketsJTextField.setText (clubEvent.getTickets().toString());
     } else {
@@ -363,11 +345,6 @@ public class ClubEventPanel3
       modified = true;
     }
 
-    if (! clubEvent.getPurchaseAsString().equals (purchaseJTextField.getText())) {
-      clubEvent.setPurchase(purchaseJTextField.getText());
-      modified = true;
-    }
-
     if (! clubEvent.getTicketsAsString().equals (ticketsJTextField.getText())) {
       clubEvent.setTickets(ticketsJTextField.getText());
       modified = true;
@@ -438,15 +415,6 @@ public class ClubEventPanel3
    */
   public JTextField getCostJTextField () {
     return costJTextField;
-  }
-
-  /**
-    Returns the purchase for this club event.
- 
-    @return The purchase for this club event.
-   */
-  public JTextField getPurchaseJTextField () {
-    return purchaseJTextField;
   }
 
   /**

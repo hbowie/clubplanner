@@ -222,8 +222,6 @@ public class ClubPlanner
     textMergeScript.setSortModule(textMergeSort);
     textMergeScript.setTemplateModule(textMergeTemplate);
     
-    File templateLibrary = new File (appFolder.getPath(),  "templates");
-    textMergeTemplate.setTemplateLibrary(templateLibrary);
     publishWindow = new PublishWindow ("Publish");
     textMergeScript.setTabs(publishWindow.getTabs());
     filterTabIndex = 0;
@@ -233,7 +231,7 @@ public class ClubPlanner
     templateTabIndex = 2;
     textMergeTemplate.setTabs(publishWindow.getTabs());
     textMergeScript.selectEasyTab();
-    textMergeScript.setMenus(mainMenuBar, "Publish");
+    textMergeScript.setMenus(mainMenuBar, "Scripts");
     
     windowMenuManager.add(publishWindow);
     
@@ -640,6 +638,10 @@ public class ClubPlanner
       }
     }
     return saved;
+  }
+  
+  private void export() {
+    
   }
   
   /**
@@ -1508,6 +1510,9 @@ public class ClubPlanner
     fileSaveMenuItem = new javax.swing.JMenuItem();
     fileSaveAllMenuItem = new javax.swing.JMenuItem();
     fileSaveAsMenuItem = new javax.swing.JMenuItem();
+    jSeparator6 = new javax.swing.JPopupMenu.Separator();
+    fileExportMenu = new javax.swing.JMenu();
+    fileExportTabDelimMenuItem = new javax.swing.JMenuItem();
     jSeparator2 = new javax.swing.JPopupMenu.Separator();
     filePublishMenuItem = new javax.swing.JMenuItem();
     jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -1794,10 +1799,23 @@ public class ClubPlanner
     }
   });
   fileMenu.add(fileSaveAsMenuItem);
+  fileMenu.add(jSeparator6);
+
+  fileExportMenu.setText("Export");
+
+  fileExportTabDelimMenuItem.setText("Export to Tab-Delimited...");
+  fileExportTabDelimMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      fileExportTabDelimMenuItemActionPerformed(evt);
+    }
+  });
+  fileExportMenu.add(fileExportTabDelimMenuItem);
+
+  fileMenu.add(fileExportMenu);
   fileMenu.add(jSeparator2);
 
   filePublishMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-  filePublishMenuItem.setText("Publish...");
+  filePublishMenuItem.setText("TextMerge...");
   filePublishMenuItem.addActionListener(new java.awt.event.ActionListener() {
     public void actionPerformed(java.awt.event.ActionEvent evt) {
       filePublishMenuItemActionPerformed(evt);
@@ -2114,6 +2132,10 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     startNewYear();
   }//GEN-LAST:event_fileStartNewYearMenuItemActionPerformed
 
+  private void fileExportTabDelimMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileExportTabDelimMenuItemActionPerformed
+    export();
+  }//GEN-LAST:event_fileExportTabDelimMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -2175,6 +2197,8 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenuItem eventNextMenuItem;
   private javax.swing.JMenuItem eventPriorMenuItem;
   private javax.swing.JMenuItem fileBackupMenuItem;
+  private javax.swing.JMenu fileExportMenu;
+  private javax.swing.JMenuItem fileExportTabDelimMenuItem;
   private javax.swing.JMenu fileMenu;
   private javax.swing.JMenuItem fileOpenMenuItem;
   private javax.swing.JMenu fileOpenRecentMenu;
@@ -2199,6 +2223,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JPopupMenu.Separator jSeparator3;
   private javax.swing.JPopupMenu.Separator jSeparator4;
   private javax.swing.JPopupMenu.Separator jSeparator5;
+  private javax.swing.JPopupMenu.Separator jSeparator6;
   private javax.swing.JSeparator jSeparator7;
   private javax.swing.JSeparator jSeparator8;
   private javax.swing.JButton lastButton;

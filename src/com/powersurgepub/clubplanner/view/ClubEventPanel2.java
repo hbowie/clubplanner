@@ -52,6 +52,9 @@ public class ClubEventPanel2
   private JLabel    blurbLabel    = new JLabel("Blurb:", JLabel.LEFT);
   private JScrollPane blurbScrollPane = new javax.swing.JScrollPane();
   private JTextArea blurbJTextArea = new JTextArea();
+  private JLabel    purchaseLabel    = new JLabel("Purchase:", JLabel.LEFT);
+  private JScrollPane purchaseScrollPane = new javax.swing.JScrollPane();
+  private JTextArea purchaseJTextArea = new JTextArea();
   private JLabel    whyLabel    = new JLabel("Why:", JLabel.LEFT);
   private JScrollPane whyScrollPane = new javax.swing.JScrollPane();
   private JTextArea whyJTextArea = new JTextArea();
@@ -125,6 +128,22 @@ public class ClubEventPanel2
     gb.setTopInset(4);
     gb.add(blurbScrollPane);
 
+		// Panel Layout for Purchase
+    purchaseLabel.setLabelFor(purchaseJTextArea);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(purchaseLabel);
+    purchaseJTextArea.setColumns(20);
+    purchaseJTextArea.setLineWrap(true);
+    purchaseJTextArea.setRows(4);
+    purchaseJTextArea.setWrapStyleWord(true);
+    purchaseJTextArea.setToolTipText("Instructions on how to purchase tickets to the event, if any.");
+    purchaseScrollPane.setViewportView(purchaseJTextArea);
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(purchaseScrollPane);
+
 		// Panel Layout for Why
     whyLabel.setLabelFor(whyJTextArea);
     gb.setColumnWeight(0.0);
@@ -188,6 +207,12 @@ public class ClubEventPanel2
       blurbJTextArea.setText ("");
     }
     blurbJTextArea.setCaretPosition(0);
+    if (clubEvent.hasPurchase()) {
+      purchaseJTextArea.setText (clubEvent.getPurchase().toString());
+    } else {
+      purchaseJTextArea.setText ("");
+    }
+    purchaseJTextArea.setCaretPosition(0);
     if (clubEvent.hasWhy()) {
       whyJTextArea.setText (clubEvent.getWhy().toString());
     } else {
@@ -221,6 +246,11 @@ public class ClubEventPanel2
 
     if (! clubEvent.getBlurbAsString().equals (blurbJTextArea.getText())) {
       clubEvent.setBlurb(blurbJTextArea.getText());
+      modified = true;
+    }
+
+    if (! clubEvent.getPurchaseAsString().equals (purchaseJTextArea.getText())) {
+      clubEvent.setPurchase(purchaseJTextArea.getText());
       modified = true;
     }
 
@@ -263,6 +293,15 @@ public class ClubEventPanel2
    */
   public JTextArea getBlurbJTextArea () {
     return blurbJTextArea;
+  }
+
+  /**
+    Returns the purchase for this club event.
+ 
+    @return The purchase for this club event.
+   */
+  public JTextArea getPurchaseJTextArea () {
+    return purchaseJTextArea;
   }
 
   /**

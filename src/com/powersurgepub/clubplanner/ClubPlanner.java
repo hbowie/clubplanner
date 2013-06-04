@@ -22,7 +22,9 @@ package com.powersurgepub.clubplanner;
   import com.powersurgepub.linktweaker.*;
   import com.powersurgepub.psfiles.*;
   import com.powersurgepub.psdatalib.clubplanner.*;
+  import com.powersurgepub.psdatalib.psdata.*;
   import com.powersurgepub.psdatalib.pstags.*;
+  import com.powersurgepub.psdatalib.tabdelim.*;
   import com.powersurgepub.psdatalib.textmerge.*;
   import com.powersurgepub.psdatalib.ui.*;
   import com.powersurgepub.psutils.*;
@@ -640,8 +642,51 @@ public class ClubPlanner
     return saved;
   }
   
-  private void export() {
-    
+  /**
+   Export the list of events in tab-delimited format.
+   */
+  private void exportTabDelim() {
+    boolean modOK = modIfChanged();
+    int exported = 0;
+    if (modOK) {
+      fileChooser.setDialogTitle ("Export to Tab-Delimited");
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      File selectedFile = fileChooser.showSaveDialog (this);
+      if (selectedFile != null) {
+        TabDelimFile tabs = new TabDelimFile(selectedFile);
+        try {
+          tabs.openForOutput(ClubEvent.getRecDef());
+          for (int i = 0; i < clubEventList.size(); i++) {
+            ClubEvent nextClubEvent = clubEventList.get(i);
+            if (nextClubEvent != null) {
+              tabs.nextRecordOut(nextClubEvent.getDataRec());
+              exported++;
+            }
+          }
+          tabs.close();
+          JOptionPane.showMessageDialog(this,
+              String.valueOf(exported) + " Club Events exported successfully to "
+                + selectedFile.toString(),
+              "Export Results",
+              JOptionPane.INFORMATION_MESSAGE,
+              Home.getShared().getIcon());
+          logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
+              + " Club Events exported in tab-delimited format to " 
+              + selectedFile.toString(),
+              false);
+          statusBar.setStatus(String.valueOf(exported) 
+            + " Club Events exported");
+        } catch (java.io.IOException e) {
+          logger.recordEvent (LogEvent.MEDIUM,
+            "Problem exporting Club Events to " + selectedFile.toString(),
+              false);
+            trouble.report ("I/O error attempting to export club events to " 
+                + selectedFile.toString(),
+              "I/O Error");
+            statusBar.setStatus("Trouble exporting Club Events");
+        } // end if I/O error
+      } // end if user selected an output file
+    } // end if were able to save the last modified record
   }
   
   /**
@@ -2133,7 +2178,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   }//GEN-LAST:event_fileStartNewYearMenuItemActionPerformed
 
   private void fileExportTabDelimMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileExportTabDelimMenuItemActionPerformed
-    export();
+    exportTabDelim();
   }//GEN-LAST:event_fileExportTabDelimMenuItemActionPerformed
 
   /**

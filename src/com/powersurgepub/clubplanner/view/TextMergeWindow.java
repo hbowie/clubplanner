@@ -16,6 +16,7 @@
 
 package com.powersurgepub.clubplanner.view;
 
+  import com.powersurgepub.clubplanner.*;
   import com.powersurgepub.psutils.*;
   import javax.swing.*;
 
@@ -24,19 +25,23 @@ package com.powersurgepub.clubplanner.view;
 
  @author Herb Bowie
  */
-public class PublishWindow 
+public class TextMergeWindow 
   extends javax.swing.JFrame
     implements WindowToManage {
+  
+  private   ClubPlanner clubPlanner = null;
 
   /**
-   Creates new form PublishWindow
+   Creates new form TextMergeWindow
    */
-  public PublishWindow() {
+  public TextMergeWindow(ClubPlanner clubPlanner) {
+    this.clubPlanner = clubPlanner;
     initComponents();
   }
   
-  public PublishWindow (String title) {
+  public TextMergeWindow (ClubPlanner clubPlanner, String title) {
     super (title);
+    this.clubPlanner = clubPlanner;
     initComponents();
   }
   
@@ -56,6 +61,15 @@ public class PublishWindow
 
     jTabbedPane1 = new javax.swing.JTabbedPane();
 
+    setTitle("TextMerge");
+    addWindowListener(new java.awt.event.WindowAdapter() {
+      public void windowClosing(java.awt.event.WindowEvent evt) {
+        formWindowClosing(evt);
+      }
+      public void windowActivated(java.awt.event.WindowEvent evt) {
+        formWindowActivated(evt);
+      }
+    });
     getContentPane().setLayout(new java.awt.GridBagLayout());
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
@@ -67,6 +81,14 @@ public class PublishWindow
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
+
+  private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+    clubPlanner.saveTextMergeWindowPosition();
+  }//GEN-LAST:event_formWindowClosing
+
+  private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+    clubPlanner.positionTextMergeWindow();
+  }//GEN-LAST:event_formWindowActivated
 
 
   // Variables declaration - do not modify//GEN-BEGIN:variables

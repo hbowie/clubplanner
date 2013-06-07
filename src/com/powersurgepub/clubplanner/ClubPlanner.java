@@ -64,6 +64,15 @@ public class ClubPlanner
   public  static final String             FIND = "Find";
   public  static final String             FIND_AGAIN = "Again";
   
+  public  static final String             TEXT_MERGE_WINDOW_X_OFFSET = "tmw-x";
+  public  static final String             TEXT_MERGE_WINDOW_Y_OFFSET = "tmw-y";
+  public  static final String             TEXT_MERGE_WINDOW_WIDTH = "tmw-width";
+  public  static final String             TEXT_MERGE_WINDOW_HEIGHT = "tmw-height";
+  public  static final int                TEXT_MERGE_WINDOW_DEFAULT_X = 120;
+  public  static final int                TEXT_MERGE_WINDOW_DEFAULT_Y = 120;
+  public  static final int                TEXT_MERGE_WINDOW_DEFAULT_WIDTH = 640;
+  public  static final int                TEXT_MERGE_WINDOW_DEFAULT_HEIGHT = 480;
+  
   private             Appster appster;
   private             Home home;
   private             ProgramVersion      programVersion;
@@ -124,7 +133,7 @@ public class ClubPlanner
   private             TextMergeFilter     textMergeFilter;
   private             TextMergeSort       textMergeSort;
   private             TextMergeTemplate   textMergeTemplate;
-  private             PublishWindow       publishWindow = null;
+  private             TextMergeWindow     textMergeWindow = null;
   private             int                 filterTabIndex = 0;
   private             int                 sortTabIndex = 1;
   private             int                 templateTabIndex = 2;
@@ -214,7 +223,7 @@ public class ClubPlanner
       false,   // saxon used
       "2012"); // copyRightYearFrom));
     
-    // Set up Publish Window
+    // Set up TextMerge Window
     textMergeScript = new TextMergeScript(clubEventList);
     textMergeScript.allowAutoplay(false);
     textMergeFilter = new TextMergeFilter(clubEventList, textMergeScript);
@@ -224,18 +233,20 @@ public class ClubPlanner
     textMergeScript.setSortModule(textMergeSort);
     textMergeScript.setTemplateModule(textMergeTemplate);
     
-    publishWindow = new PublishWindow ("Publish");
-    textMergeScript.setTabs(publishWindow.getTabs());
+    textMergeWindow = new TextMergeWindow (this, "TextMerge");
+    textMergeScript.setTabs(textMergeWindow.getTabs());
     filterTabIndex = 0;
-    textMergeFilter.setTabs(publishWindow.getTabs());
+    textMergeFilter.setTabs(textMergeWindow.getTabs());
     sortTabIndex = 1;
-    textMergeSort.setTabs(publishWindow.getTabs(), false);
+    textMergeSort.setTabs(textMergeWindow.getTabs(), false);
     templateTabIndex = 2;
-    textMergeTemplate.setTabs(publishWindow.getTabs());
+    textMergeTemplate.setTabs(textMergeWindow.getTabs());
     textMergeScript.selectEasyTab();
     textMergeScript.setMenus(mainMenuBar, "Scripts");
     
-    windowMenuManager.add(publishWindow);
+    windowMenuManager.add(textMergeWindow);
+    
+    positionTextMergeWindow();
     
     linkTweaker = new LinkTweaker(this, prefsWindow.getPrefsTabs());
     
@@ -275,61 +286,41 @@ public class ClubPlanner
     }
   }
   
-  private void auxWindowCalcs() {
-    if (publishWindow != null) {
-      if (mainSplitPane.getOrientation() == JSplitPane.HORIZONTAL_SPLIT) {
-        int lawx = 
-            this.getX() 
-              + mainSplitPane.getDividerLocation() 
-              + mainSplitPane.getDividerSize();
-
-        int lawy =
-            this.getY()
-              + mainSplitPane.getY()
-              + navToolBar.getHeight();
-
-        int laww =
-            this.getWidth()
-              - mainSplitPane.getDividerLocation()
-              - mainSplitPane.getDividerSize();
-
-        int lawh =
-            this.getHeight()
-              - mainSplitPane.getY()
-              - navToolBar.getHeight()
-              - statusBar.getHeight();
-
-        publishWindow.setBounds(lawx, lawy, laww, lawh);
-      } else {
-        int lawx = 
-            this.getX() 
-              // + mainSplitPane.getDividerLocation() 
-              // + mainSplitPane.getDividerSize()
-            ;
-
-        int lawy =
-            this.getY()
-              + mainSplitPane.getY()
-              + navToolBar.getHeight()
-              + mainSplitPane.getDividerLocation() 
-              + mainSplitPane.getDividerSize();
-
-        int laww =
-            this.getWidth()
-              // - mainSplitPane.getDividerLocation()
-              // - mainSplitPane.getDividerSize()
-            ;
-
-        int lawh =
-            this.getHeight()
-              - mainSplitPane.getY()
-              - navToolBar.getHeight()
-              - statusBar.getHeight()
-              - mainSplitPane.getDividerLocation()
-              - mainSplitPane.getDividerSize();
-
-        publishWindow.setBounds(lawx, lawy, laww, lawh); 
-      }
+  /**
+   Position the Text Merge Window relative to the main window. 
+  */
+  public void positionTextMergeWindow() {
+    if (textMergeWindow != null) {
+      textMergeWindow.setBounds (
+          this.getX()
+            + userPrefs.getPrefAsInt (
+              TEXT_MERGE_WINDOW_X_OFFSET, 
+              TEXT_MERGE_WINDOW_DEFAULT_X),
+          this.getY()
+            + userPrefs.getPrefAsInt (
+              TEXT_MERGE_WINDOW_Y_OFFSET, 
+              TEXT_MERGE_WINDOW_DEFAULT_Y),
+          userPrefs.getPrefAsInt (
+            TEXT_MERGE_WINDOW_WIDTH, 
+            TEXT_MERGE_WINDOW_DEFAULT_WIDTH),
+          userPrefs.getPrefAsInt (
+            TEXT_MERGE_WINDOW_HEIGHT, 
+            TEXT_MERGE_WINDOW_DEFAULT_HEIGHT));
+    }
+  }
+  
+  /**
+   Save the user's preferred position for the Text Merge window, relative to
+   the main window. 
+  */
+  public void saveTextMergeWindowPosition() {
+    if (textMergeWindow != null) {
+      userPrefs.setPref (TEXT_MERGE_WINDOW_X_OFFSET, 
+          textMergeWindow.getX() - this.getX());
+      userPrefs.setPref (TEXT_MERGE_WINDOW_Y_OFFSET, 
+          textMergeWindow.getY() - this.getY());
+      userPrefs.setPref (TEXT_MERGE_WINDOW_WIDTH, textMergeWindow.getWidth());
+      userPrefs.setPref (TEXT_MERGE_WINDOW_HEIGHT, textMergeWindow.getHeight());
     }
   }
   
@@ -425,6 +416,8 @@ public class ClubPlanner
     userPrefs.setPref (CommonPrefs.PREFS_TOP, this.getY());
     userPrefs.setPref (CommonPrefs.PREFS_WIDTH, this.getWidth());
     userPrefs.setPref (CommonPrefs.PREFS_HEIGHT, this.getHeight());
+    
+    saveTextMergeWindowPosition();
     
     if (goodEventsFile()) {
       // userPrefs.setPref (FavoritesPrefs.LAST_FILE, eventsFile.toString());
@@ -994,7 +987,7 @@ public class ClubPlanner
       currentDirectory = file.getParentFile();
       FileName fileName = new FileName (file);
       statusBar.setFileName(fileName);
-      // publishWindow.openSource(currentDirectory);
+      // textMergeWindow.openSource(currentDirectory);
     }
   }
   
@@ -1559,7 +1552,7 @@ public class ClubPlanner
     fileExportMenu = new javax.swing.JMenu();
     fileExportTabDelimMenuItem = new javax.swing.JMenuItem();
     jSeparator2 = new javax.swing.JPopupMenu.Separator();
-    filePublishMenuItem = new javax.swing.JMenuItem();
+    fileTextMergeMenuItem = new javax.swing.JMenuItem();
     jSeparator4 = new javax.swing.JPopupMenu.Separator();
     fileBackupMenuItem = new javax.swing.JMenuItem();
     jSeparator5 = new javax.swing.JPopupMenu.Separator();
@@ -1584,14 +1577,6 @@ public class ClubPlanner
     helpReduceWindowSizeMenuItem = new javax.swing.JMenuItem();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-    addComponentListener(new java.awt.event.ComponentAdapter() {
-      public void componentResized(java.awt.event.ComponentEvent evt) {
-        formComponentResized(evt);
-      }
-      public void componentMoved(java.awt.event.ComponentEvent evt) {
-        formComponentMoved(evt);
-      }
-    });
 
     navToolBar.setRollover(true);
 
@@ -1741,11 +1726,6 @@ public class ClubPlanner
     getContentPane().add(navToolBar, java.awt.BorderLayout.NORTH);
 
     mainSplitPane.setDividerLocation(120);
-    mainSplitPane.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-      public void propertyChange(java.beans.PropertyChangeEvent evt) {
-        mainSplitPanePropertyChange(evt);
-      }
-    });
 
     listPanel.setLayout(new java.awt.BorderLayout());
 
@@ -1859,14 +1839,18 @@ public class ClubPlanner
   fileMenu.add(fileExportMenu);
   fileMenu.add(jSeparator2);
 
-  filePublishMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-  filePublishMenuItem.setText("TextMerge...");
-  filePublishMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  fileTextMergeMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_T, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+  fileTextMergeMenuItem.setText("TextMerge...");
+  fileTextMergeMenuItem.setToolTipText("Refine and publish your list of events using the Sort, Filter, Template and Script tabs ");
+  fileTextMergeMenuItem.setActionCommand("TextMerge");
+  fileTextMergeMenuItem.addActionListener(new java.awt.event.ActionListener() {
     public void actionPerformed(java.awt.event.ActionEvent evt) {
-      filePublishMenuItemActionPerformed(evt);
+      fileTextMergeMenuItemActionPerformed(evt);
     }
   });
-  fileMenu.add(filePublishMenuItem);
+  fileMenu.add(fileTextMergeMenuItem);
+  fileTextMergeMenuItem.getAccessibleContext().setAccessibleName("TextMerge");
+
   fileMenu.add(jSeparator4);
 
   fileBackupMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -2157,21 +2141,9 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     reload();
   }//GEN-LAST:event_fileReloadMenuItemActionPerformed
 
-  private void formComponentMoved(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentMoved
-    auxWindowCalcs();
-  }//GEN-LAST:event_formComponentMoved
-
-  private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
-    auxWindowCalcs();
-  }//GEN-LAST:event_formComponentResized
-
-  private void mainSplitPanePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_mainSplitPanePropertyChange
-    auxWindowCalcs();
-  }//GEN-LAST:event_mainSplitPanePropertyChange
-
-  private void filePublishMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filePublishMenuItemActionPerformed
-    windowMenuManager.makeVisible(publishWindow);
-  }//GEN-LAST:event_filePublishMenuItemActionPerformed
+  private void fileTextMergeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileTextMergeMenuItemActionPerformed
+    windowMenuManager.makeVisible(textMergeWindow);
+  }//GEN-LAST:event_fileTextMergeMenuItemActionPerformed
 
   private void fileStartNewYearMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileStartNewYearMenuItemActionPerformed
     startNewYear();
@@ -2227,7 +2199,6 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
       public void run() {
         ClubPlanner clubPlanner = new ClubPlanner();
         clubPlanner.setVisible(true);
-        clubPlanner.auxWindowCalcs();
       }
     });
   }
@@ -2247,12 +2218,12 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenu fileMenu;
   private javax.swing.JMenuItem fileOpenMenuItem;
   private javax.swing.JMenu fileOpenRecentMenu;
-  private javax.swing.JMenuItem filePublishMenuItem;
   private javax.swing.JMenuItem fileReloadMenuItem;
   private javax.swing.JMenuItem fileSaveAllMenuItem;
   private javax.swing.JMenuItem fileSaveAsMenuItem;
   private javax.swing.JMenuItem fileSaveMenuItem;
   private javax.swing.JMenuItem fileStartNewYearMenuItem;
+  private javax.swing.JMenuItem fileTextMergeMenuItem;
   private javax.swing.JButton findButton;
   private javax.swing.JTextField findText;
   private javax.swing.JButton firstButton;

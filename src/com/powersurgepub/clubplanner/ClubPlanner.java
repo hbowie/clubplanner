@@ -26,6 +26,7 @@ package com.powersurgepub.clubplanner;
   import com.powersurgepub.psdatalib.pstags.*;
   import com.powersurgepub.psdatalib.tabdelim.*;
   import com.powersurgepub.psdatalib.textmerge.*;
+  import com.powersurgepub.psdatalib.txbio.*;
   import com.powersurgepub.psdatalib.ui.*;
   import com.powersurgepub.psutils.*;
   import com.powersurgepub.xos2.*;
@@ -636,6 +637,120 @@ public class ClubPlanner
   }
   
   /**
+   Import meeting minutes. 
+  */
+  private void importMinutes() {
+    boolean modOK = modIfChanged();
+    int imported = 0;
+    if (modOK) {
+      textMergeScript.clearSortAndFilterSettings();
+      fileChooser.setDialogTitle ("Import Meeting Minutes");
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      File selectedFile = fileChooser.showOpenDialog (this);
+      if (selectedFile != null
+          && selectedFile.exists()
+          && selectedFile.isFile()
+          && selectedFile.canRead()) {
+        ClubEventReader reader = new ClubEventReader
+            (selectedFile, ClubEventReader.PLANNER_TYPE);
+        reader.setClubEventCalc(clubEventCalc);
+        try {
+          reader.openForInput();
+          ClubEvent minutesEvent = reader.nextClubEvent();
+          System.out.println("ClubPlanner.importMinutes");
+          while (minutesEvent != null) {
+            System.out.println("  What: " + minutesEvent.getWhat());
+            int foundAt = clubEventList.findByUniqueKey(minutesEvent);
+            System.out.println("    Found at: " + String.valueOf(foundAt));
+            if (foundAt >= 0) {
+              // We found an existing event -- let's update it
+              ClubEvent listEvent = clubEventList.get(foundAt);
+              position.setClubEvent(listEvent);
+              position.setIndex(foundAt);
+              System.out.println("    Found what: " + listEvent.getWhat());
+              if (minutesEvent.hasWhen() 
+                  && minutesEvent.getWhen().length() > 0
+                  && (! minutesEvent.getWhen().equals(listEvent.getWhen()))) {
+                listEvent.setWhen(minutesEvent.getWhen());
+              }
+              if (minutesEvent.hasWhere() 
+                  && minutesEvent.getWhere().length() > 0
+                  && (! minutesEvent.getWhere().equals(listEvent.getWhere()))) {
+                listEvent.setWhere(minutesEvent.getWhere());
+              }
+              if (minutesEvent.hasWho() 
+                  && minutesEvent.getWho().length() > 0
+                  && (minutesEvent.getWho().equals(listEvent.getWho()))) {
+                listEvent.setWho(minutesEvent.getWho());
+              }
+              if (minutesEvent.sizeEventNoteList() > 0) {
+                EventNote minutesNote = minutesEvent.getEventNote(0);
+                if (minutesNote != null
+                    && minutesNote.hasNote()
+                    && minutesNote.getNote().length() > 0) {
+                  StringBuilder workNotes = new StringBuilder();
+                  workNotes.append (clubEventCalc.calcNoteHeaderLine(minutesNote));
+                  workNotes.append (GlobalConstants.LINE_FEED);
+                  workNotes.append (GlobalConstants.LINE_FEED);
+                  workNotes.append (minutesNote.getNote());
+                  workNotes.append (GlobalConstants.LINE_FEED);
+                  workNotes.append(listEvent.getNotes());
+                  listEvent.setNotes(workNotes.toString());
+                }
+              }
+              
+              currentFileModified = true;
+              String newLocalPath = listEvent.getLocalPath();
+              clubEventCalc.calcAll(listEvent);
+              clubEventList.modify(position);
+              writer = new ClubEventWriter();
+              String oldDiskLocation = listEvent.getDiskLocation();
+              boolean saved = writer.save(eventsFile, listEvent, true, false);
+              if (saved) {
+                String newDiskLocation = listEvent.getDiskLocation();
+                if (! newDiskLocation.equals(oldDiskLocation)) {
+                  File oldDiskFile = new File (oldDiskLocation);
+                  oldDiskFile.delete();
+                }
+              } else {
+                trouble.report(this, "Trouble saving imports to disk", "I/O Error");
+              }
+            } else {
+              // Add a new event
+            }
+
+            imported++;
+            minutesEvent = reader.nextClubEvent();
+          }
+          JOptionPane.showMessageDialog(this,
+              String.valueOf(imported) + " agenda items imported successfully from "
+                + selectedFile.toString(),
+              "Import Results",
+              JOptionPane.INFORMATION_MESSAGE,
+              Home.getShared().getIcon());
+          logger.recordEvent (LogEvent.NORMAL, String.valueOf(imported) 
+              + " Agenda Items imported from " 
+              + selectedFile.toString(),
+              false);
+          statusBar.setStatus(String.valueOf(imported) 
+            + " Agenda Items imported");
+        } catch (java.io.IOException e) {
+          logger.recordEvent (LogEvent.MEDIUM,
+            "Problem importing minutes from " + selectedFile.toString(),
+              false);
+            trouble.report ("I/O error attempting to import minutes from " 
+                + selectedFile.toString(),
+              "I/O Error");
+            statusBar.setStatus("Trouble importing minutes");
+        } // end if I/O error
+        reader.close();
+        clubEventList.fireTableDataChanged();
+        
+      } // end if user selected an input file
+    } // end if were able to save the last modified record
+  }
+  
+  /**
    Export the list of events in tab-delimited format.
    */
   private void exportTabDelim() {
@@ -658,7 +773,8 @@ public class ClubPlanner
           }
           tabs.close();
           JOptionPane.showMessageDialog(this,
-              String.valueOf(exported) + " Club Events exported successfully to "
+              String.valueOf(exported) + " Club Events exported successfully to"
+                + GlobalConstants.LINE_FEED
                 + selectedFile.toString(),
               "Export Results",
               JOptionPane.INFORMATION_MESSAGE,
@@ -680,6 +796,147 @@ public class ClubPlanner
         } // end if I/O error
       } // end if user selected an output file
     } // end if were able to save the last modified record
+  }
+  
+ /**
+   Export the list of events in tab-delimited format.
+   */
+  private void exportMinutes() {
+    boolean modOK = modIfChanged();
+    int exported = 0;
+    if (modOK) {
+      fileChooser.setDialogTitle ("Export to Minutes");
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      File selectedFile = fileChooser.showSaveDialog (this);
+      if (selectedFile != null) {
+        MarkupWriter writer 
+            = new MarkupWriter(selectedFile, MarkupWriter.MARKDOWN_FORMAT);
+        boolean ok = writer.openForOutput();
+        if (ok) {
+          int lastSeq = -1;
+          for (int i = 0; i < clubEventList.size(); i++) {
+            ClubEvent nextClubEvent = clubEventList.get(i);
+            if (nextClubEvent != null
+                && nextClubEvent.getStatusAsString().contains("Current")) {
+              String what = nextClubEvent.getWhat();
+              if (exported == 0) {
+                writer.writeHeading (1, "Minutes for " + what, "");
+              }
+              String seqStr = nextClubEvent.getSeq();
+              int seq = Integer.parseInt(seqStr);
+              String seqTitle = "";
+              switch (seq) {
+                case 1:
+                  seqTitle = "Open Meeting";
+                  break;
+                case 2:
+                  seqTitle = "Finance";
+                  break;
+                case 4:
+                  seqTitle = "Recent Events";
+                  break;
+                case 5:
+                  seqTitle = "Upcomng";
+                  break;
+                case 8:
+                  seqTitle = "Communication";
+                  break;
+                case 9:
+                  seqTitle = "Close Meeting";
+                  break;
+              }
+              String category = nextClubEvent.getCategory();
+              if (seq != lastSeq) {
+                writer.writeHeading (2, seqTitle, "");
+                lastSeq = seq;
+              }
+              String ymd = nextClubEvent.getYmd();
+              String when = nextClubEvent.getWhen();
+              StringBuilder h3 = new StringBuilder();
+              if (ymd != null && ymd.length() > 7) {
+                h3.append(when);
+                h3.append(" -- ");
+              }
+              if (category != null && category.length() > 0) {
+                h3.append(category);
+                h3.append(": ");
+              }
+              h3.append(what);
+              writer.writeHeading(3, h3.toString(), "");
+              
+              // Print Who
+              exportMinutesField 
+                  (writer, 
+                  "Who", 
+                  nextClubEvent.getWho());
+              
+              // Print Where
+              exportMinutesField 
+                  (writer, 
+                  "Where", 
+                  nextClubEvent.getWhere());
+              
+              // Print Finance Projection
+              exportMinutesField 
+                  (writer, 
+                  "Finance Projection", 
+                  nextClubEvent.getFinanceProjection());
+              
+              // Print Finance Projection
+              exportMinutesField 
+                  (writer, 
+                  "Over/Under", 
+                  nextClubEvent.getOverUnder());
+              
+              // Print Discussion
+              exportMinutesField 
+                  (writer, "For Discussion", nextClubEvent.getDiscuss());
+              
+              if (nextClubEvent.sizeEventNoteList() > 0) {
+                EventNote note = nextClubEvent.getEventNote(0);
+                String via = note.getNoteVia();
+                if (via != null && via.equalsIgnoreCase("Minutes")) {
+                  writer.writeLine("Minutes: ");
+                  writer.writeLine(note.getNote());
+                }
+              }
+              exported++;
+            }
+          }
+          writer.close();
+          JOptionPane.showMessageDialog(this,
+              String.valueOf(exported) + " Club Events exported successfully to"
+                + GlobalConstants.LINE_FEED
+                + selectedFile.toString(),
+              "Export Results",
+              JOptionPane.INFORMATION_MESSAGE,
+              Home.getShared().getIcon());
+          logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
+              + " Club Events exported as minutes to " 
+              + selectedFile.toString(),
+              false);
+          statusBar.setStatus(String.valueOf(exported) 
+            + " Club Events exported");
+        } 
+        if (! ok) {
+          logger.recordEvent (LogEvent.MEDIUM,
+            "Problem exporting Club Events as minutes to " + selectedFile.toString(),
+              false);
+            trouble.report ("I/O error attempting to export club events to " 
+                + selectedFile.toString(),
+              "I/O Error");
+            statusBar.setStatus("Trouble exporting Club Events");
+        } // end if I/O error
+      } // end if user selected an output file
+    } // end if were able to save the last modified record
+  } // end export to minutes
+  
+  private void exportMinutesField 
+      (MarkupWriter writer, String label, String data) {
+
+    if (data != null && data.length() > 0) {
+        writer.writeParagraph(label + ": " + data, "", false);
+    }
   }
   
   /**
@@ -1165,7 +1422,7 @@ public class ClubPlanner
 						modified = true;
 					}
 				} // end while this item has more categories
-			} // end if we the find category is not blank
+			} // end if we the findBySortKey category is not blank
 			if (modified) {
 				mods++;
 				// setUnsavedChanges (true);
@@ -1377,7 +1634,7 @@ public class ClubPlanner
           statusBar.setStatus(notFoundMessage);
           foundClubEvent = null;
         }
-      } // end if we've got a find string
+      } // end if we've got a findBySortKey string
     }
     return found;
   } // end method findURL
@@ -1450,7 +1707,7 @@ public class ClubPlanner
       boolean modOK = modIfChanged();
       if (modOK) {
         ClubEvent branch = (ClubEvent)node.getTaggable();
-        int branchIndex = clubEventList.find (branch);
+        int branchIndex = clubEventList.findBySortKey (branch);
         if (branchIndex >= 0) {
           position = clubEventList.positionUsingListIndex (branchIndex);
           position.setTagsNode (node);
@@ -1549,8 +1806,11 @@ public class ClubPlanner
     fileSaveAllMenuItem = new javax.swing.JMenuItem();
     fileSaveAsMenuItem = new javax.swing.JMenuItem();
     jSeparator6 = new javax.swing.JPopupMenu.Separator();
+    fileImportMenu = new javax.swing.JMenu();
+    importMinutesMenuItem = new javax.swing.JMenuItem();
     fileExportMenu = new javax.swing.JMenu();
     fileExportTabDelimMenuItem = new javax.swing.JMenuItem();
+    exportMinutesMenuItem = new javax.swing.JMenuItem();
     jSeparator2 = new javax.swing.JPopupMenu.Separator();
     fileTextMergeMenuItem = new javax.swing.JMenuItem();
     jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -1826,15 +2086,35 @@ public class ClubPlanner
   fileMenu.add(fileSaveAsMenuItem);
   fileMenu.add(jSeparator6);
 
+  fileImportMenu.setText("Import");
+
+  importMinutesMenuItem.setText("Minutes");
+  importMinutesMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      importMinutesMenuItemActionPerformed(evt);
+    }
+  });
+  fileImportMenu.add(importMinutesMenuItem);
+
+  fileMenu.add(fileImportMenu);
+
   fileExportMenu.setText("Export");
 
-  fileExportTabDelimMenuItem.setText("Export to Tab-Delimited...");
+  fileExportTabDelimMenuItem.setText("Tab-Delimited");
   fileExportTabDelimMenuItem.addActionListener(new java.awt.event.ActionListener() {
     public void actionPerformed(java.awt.event.ActionEvent evt) {
       fileExportTabDelimMenuItemActionPerformed(evt);
     }
   });
   fileExportMenu.add(fileExportTabDelimMenuItem);
+
+  exportMinutesMenuItem.setText("Minutes");
+  exportMinutesMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      exportMinutesMenuItemActionPerformed(evt);
+    }
+  });
+  fileExportMenu.add(exportMinutesMenuItem);
 
   fileMenu.add(fileExportMenu);
   fileMenu.add(jSeparator2);
@@ -2153,6 +2433,14 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     exportTabDelim();
   }//GEN-LAST:event_fileExportTabDelimMenuItemActionPerformed
 
+  private void importMinutesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importMinutesMenuItemActionPerformed
+    importMinutes();
+  }//GEN-LAST:event_importMinutesMenuItemActionPerformed
+
+  private void exportMinutesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportMinutesMenuItemActionPerformed
+    exportMinutes();
+  }//GEN-LAST:event_exportMinutesMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -2212,9 +2500,11 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenuItem eventNewMenuItem;
   private javax.swing.JMenuItem eventNextMenuItem;
   private javax.swing.JMenuItem eventPriorMenuItem;
+  private javax.swing.JMenuItem exportMinutesMenuItem;
   private javax.swing.JMenuItem fileBackupMenuItem;
   private javax.swing.JMenu fileExportMenu;
   private javax.swing.JMenuItem fileExportTabDelimMenuItem;
+  private javax.swing.JMenu fileImportMenu;
   private javax.swing.JMenu fileMenu;
   private javax.swing.JMenuItem fileOpenMenuItem;
   private javax.swing.JMenu fileOpenRecentMenu;
@@ -2231,6 +2521,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenu helpMenu;
   private javax.swing.JMenuItem helpReduceWindowSizeMenuItem;
   private javax.swing.JMenuItem helpSoftwareUpdatesMenuItem;
+  private javax.swing.JMenuItem importMinutesMenuItem;
   private javax.swing.JTable itemTable;
   private javax.swing.JScrollPane itemTableScrollPane;
   private javax.swing.JTabbedPane itemTabs;

@@ -72,14 +72,15 @@
   public =$fieldclass$= get=$field&cuul$= () {
     return =$field&clul$=;
   }
-<?if =$asclass$= ?>
+<?if =$asclass$= eq BigDecimal?>
   /**
     Returns the =$field&c lll$= as a =$asclass$= object.
    
     @return The =$field&c lll$= for this =$itemclass&c lll$= as a =$asclass$=.
    */
   public =$asclass$= get=$field&cuul$=As=$asclass$= () {
-    return =$ascalc$=(=$field&clul$=);
+    CalcParser parser = new CalcParser(=$field&clul$=);
+    return parser.getResult();
   }
 <?endif?>
 <?loop?>

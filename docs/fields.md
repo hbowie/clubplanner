@@ -133,3 +133,22 @@ Medium by which note was communicated.
 
 **Note**:
 Note itself.
+
+### EventTransaction Item
+
+#### EventTransaction - Panel 1
+
+**Date**:
+The date on which the financial transaction occurred.
+
+**Income/Expense**:
+Identified whether this is an income or an expense item.
+
+**From/To**:
+The person or company from which we received money, or to whom we paid money.
+
+**Paid For**:
+A description of the item.
+
+**Amount**:
+The amount of the transaction.

@@ -332,7 +332,7 @@ public class =$itemclass$=List
     =$itemclass$=Positioned position = new =$itemclass$=Positioned();
     position.set=$itemclass$= ((=$itemclass$=)node.getTaggable());
     position.setTagsNode (node);
-    findInternal (position.get=$itemclass$=());
+    findInternalBySortKey (position.get=$itemclass$=());
     position.setIndex (findIndex);
     position.setNavigator (=$itemclass$=Positioned.NAVIGATE_USING_TREE);
     return position;
@@ -384,7 +384,7 @@ public class =$itemclass$=List
         // (more efficient if an input file happens to be pre-sorted).
         proxyList.add (=$itemclass&clul$=Proxy);
       } else {
-        findInternal (=$itemclass&clul$=);
+        findInternalBySortKey (=$itemclass&clul$=);
         proxyList.add (findIndex, =$itemclass&clul$=Proxy);
       }
     }
@@ -412,7 +412,7 @@ public class =$itemclass$=List
    @return A position for the next URL following the one just removed.
    */
   public =$itemclass$=Positioned remove (=$itemclass$=Positioned position) {
-    int oldIndex = find (position.get=$itemclass$=());
+    int oldIndex = findBySortKey (position.get=$itemclass$=());
     =$itemclass$=Positioned newPosition = position;
     if (findMatch) {
       newPosition = next (position);
@@ -434,8 +434,8 @@ public class =$itemclass$=List
     return newPosition;
   }
 
-  public int find (=$itemclass$= find=$itemclass$=) {
-    findInternal (find=$itemclass$=);
+  public int findBySortKey (=$itemclass$= find=$itemclass$=) {
+    findInternalBySortKey (find=$itemclass$=);
     if (findMatch) {
       return findIndex;
     } else {
@@ -449,7 +449,7 @@ public class =$itemclass$=List
 
    @param find=$itemclass$= URL we are looking for.
    */
-  private void findInternal (=$itemclass$= find=$itemclass$=) {
+  private void findInternalBySortKey (=$itemclass$= find=$itemclass$=) {
     int low = 0;
     int high = size() - 1;
     findIndex = 0;
@@ -479,7 +479,9 @@ public class =$itemclass$=List
         }
       }
     } // end while looking for right position
-  } // end find method
+  } // end findBySortKey method
+  
+<?include "../includes/=$itemclass$=-master-list-findByUniqueKey.java"?>
  
   public =$itemclass$=Positioned first (=$itemclass$=Positioned position) {
     if (position.navigateUsingList()) {

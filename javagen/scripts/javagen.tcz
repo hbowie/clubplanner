@@ -10,6 +10,8 @@ template	open	file		#PATH#../templates/compare-methods.java
 template	generate			
 template	open	file		#PATH#../templates/haskey-method.java
 template	generate			
+template	open	file		#PATH#../templates/master-list-findByUniqueKey.java
+template	generate			
 input	set		normalization	0
 input	open	xls		#PATH#../fields.xls
 sort	add	Ascending	Item Class	

@@ -657,17 +657,13 @@ public class ClubPlanner
         try {
           reader.openForInput();
           ClubEvent minutesEvent = reader.nextClubEvent();
-          System.out.println("ClubPlanner.importMinutes");
           while (minutesEvent != null) {
-            System.out.println("  What: " + minutesEvent.getWhat());
             int foundAt = clubEventList.findByUniqueKey(minutesEvent);
-            System.out.println("    Found at: " + String.valueOf(foundAt));
             if (foundAt >= 0) {
               // We found an existing event -- let's update it
               ClubEvent listEvent = clubEventList.get(foundAt);
               position.setClubEvent(listEvent);
               position.setIndex(foundAt);
-              System.out.println("    Found what: " + listEvent.getWhat());
               if (minutesEvent.hasWhen() 
                   && minutesEvent.getWhen().length() > 0
                   && (! minutesEvent.getWhen().equals(listEvent.getWhen()))) {

@@ -15,6 +15,14 @@
  
 <?endif?>
 <?if =$itemtype$= = "Detail" ?>
+
+  /**
+   Allocate a new array list.  
+  */
+  public void new=$itemclass&cuul$=List () {
+    =$itemclass&clul$=List = new ArrayList();
+  }
+  
   /**
    Adds a new =$itemclass&cuul$= to the end of the internal detail list. 
   

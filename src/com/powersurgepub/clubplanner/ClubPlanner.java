@@ -1475,6 +1475,9 @@ public class ClubPlanner
       else
       if (position.isNewClubEvent()) {
         clubEventCalc.calcAll(clubEvent);
+        if (clubEventCalc.ifOpYearFromFolder()) {
+          clubEvent.setYear(clubEventCalc.getOpYearFromFolder());
+        }
         addClubEvent (clubEvent);
       } else {
         clubEventCalc.calcAll(clubEvent);

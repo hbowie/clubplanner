@@ -1,8 +1,6 @@
-Club Planner User Guide
-====================
+# Club Planner User Guide
 
-Table of Contents
------------------
+## Table of Contents
 
 <div id="toc-div">
 
@@ -57,7 +55,7 @@ Table of Contents
 
 </div>
 
-<h2 id="intro">Introduction</h2>
+## Introduction
 
 Club Planner is a desktop application for planning and communicating the activities of a club (such as an alumni club). 
 
@@ -65,15 +63,15 @@ I wrote the application for use by the [University of Michigan Club of Seattle][
 
 Although this is an app that runs on a user's desktop, it is designed to store its data in a folder that can be easily shared with others through a service such as [Dropbox][]. 
 
-<h2 id="starting">Getting Started</h2>
+## Getting Started
 
-<h3 id="sysrqmts">System Requirements</h3> 
+### System Requirements
 
 Club Planner is written in Java and can run on any reasonably modern operating system, including Mac OS X, Windows and Linux. Club Planner requires a Java Runtime Environment (JRE), also known as a Java Virtual Machine (JVM). The version of this JRE/JVM must be at least 6. Visit [www.java.com][java] to download a recent version for most operating systems. Installation happens a bit differently under Mac OS X, but generally will occur fairly automatically when you try to launch a Java app for the first time. 
 
 Because Club Planner may be run on multiple platforms, it may look slightly different on different operating systems, and will obey slightly different conventions (using the CMD key on a Mac, vs. an ALT key on a PC, for example).
 
-<h3 id="rights">Rights</h3>
+### Rights
 
 Club Planner Copyright &copy; 2012 - 2013 Herb Bowie
 
@@ -99,7 +97,7 @@ Club Planner also incorporates or adapts the following open source software libr
 	
 * pegdown &#8212; Copyright 2010-2011 Mathias Doenitz, used under the terms of the [Apache License, Version 2.0][apache].
 
-<h3 id="install">Installation</h3>
+### Installation
 
 This application is distributed in two different forms. Both can be downloaded from [PowerSurgePub.com][downloads].
 
@@ -107,13 +105,13 @@ The first form is a zip archive. This form can be used on either a Windows machi
 
 The second form of distribution is a Mac OS X disk image. This form can only be used on Mac OS X (and is the recommended distribution package for the Mac). Once downloaded and mounted (via a double-click if it doesn't mount automatically), you will see a folder containing a complete self-contained application bundle. To install the app, drag the application into your Applications folder. Launch the app by double-clicking on the application.  
 
-<h3 id="events">Events</h3>
+### Events
 
 *Club Planner* tracks information about your club's planned, current, and past events. 
 
 Other agenda items to be discussed by your club may be entered as if they were events, in order to build complete meeting agendas. 
 
-<h3 id="files">Files and Folders</h3>
+### Files and Folders
 
 Club Planner assumes that your club records are stored electronically, using something like the following nested folder structure. 
 
@@ -135,39 +133,39 @@ Note that all of these folders above the *Events* folder may contain other folde
 
 The only folder naming convention that is required is the inclusion of the club operating year in the name of the folder above the Events folder. By storing the operating year in this folder name, event info can easily be duplicated and transferred from one operating year to the next, based on the assumption that many of your club's events will recur on a fairly predictable annual cycle. 
 
-<h3 id="createnew">Creating a New Events Folder</h3>
+### Creating a New Events Folder
 
 The first time you launch Club Planner, or after selecting <em>Open</em> from the <em>File</em> menu, you will be presented with a series of Open dialogs that will ask you to specify the folder containing Club Records, the folder for the desired Operating Year, and the Events folder. There is no default location for these folder. You can create the necessary folders outside of Club Planner, before launching it, or can create the new folders from within the Open dialogs. Again, it is recommended that the folder containing Club Records be a shared [Dropbox][] folder.  
 
-<h3 id="backups">Backing Up</h3>
+### Up
 
 The File menu contains a **Backup** command. When backing up, you will be prompted to select a backup folder. This should be the folder that contains all of your Club Planner backups. After selecting this folder, Club Planner will automatically create a subfolder containing a copy of your Events folder, with the backup date and time appended to the folder name. 
 
-<h2 id="ui">Overall User Interface</h2>
+### Overall User Interface
 
-<h3 id="tabs-and-windows">Tabs and Windows</h3>
+### Tabs and Windows
 
 The Club Planner user interface consists of a number of **windows**. The main window shows a split pane. On the left/top you will see your current club events, either in a List or grouped by Tags. On the right/bottom you will see the currently selected event. 
 
 Opening the Preferences window will allow you to modify a number of the operating characteristics of the program. The Preferences window can be found under the Club Planner menu on the Mac, and under Tools / Options on other operating systems.
 
-<h3 id="tool-bar">Tool Bar</h3>
+### Tool Bar
 
 The Club Planner interface also contains a **Tool Bar** containing a number of **Buttons**: the "OK" button saves your changes after adding/editing a event; the "+" and "-" buttons allow you to add a new event or delete an existing one, respectively. The next four buttons move you to the first event in your collection, the next event, the prior event or the last event, again respectively.  
 
 The following text box allows you to enter a text string you wish to search for. The following button, initially labeled **Find**, causes the first event containing that text string to be found and displayed. After the first event is found, this button will be relabeled **Again**, and will then allow you to continue forward through the list of found events.
 
-<h3 id="list">The List</h3>
+### The List
 
 On the first half of the main screen, you'll see two tabs. The first of these displays the **List**. This is just a simple list of all your events. Click on an event to select that event for display on the other half of the main screen.
 
-<h3 id="tags">Tags</h3>
+### Tags
 
 The second Tab on the first half of the main screen displays the **Tags**. This is an indented list of all your status tags, with events appearing under as many tags as have been assigned to them, and with events with no tags displaying at the very top. Click to the left of a tag to expand it, showing events and/or sub-tags contained within it.
 
 Note that tags that were once used, but that are used no more, will stick around until you close the Club Planner file and re-open it. If you wish, you may accelerate this process by selecting **Reload** from the **File** menu.
 
-<h3 id="menus">Menus and Keyboard Shortcuts</h3>
+### Menus and Keyboard Shortcuts
 
 There are also a number of **Menus** listed across the top. If a command has a keyboard shortcut, then it will be listed as part of the command's menu item. 
 
@@ -429,9 +427,9 @@ Following is a list of all keyboard shortcuts. The command key is used in conjun
 </table>
 
 
-<h2 id="data">Data Stored by Club Planner</h2>
+## Data Stored by Club Planner
 
-<h3 id="basics">Basics</h3>
+### Basics
 
 The following basic event data is available for viewing and editing on this first tab. 
 
@@ -550,7 +548,7 @@ This tab allows the user to view and edit the various numbers associated with an
 
 **News Image**: A URL pointing to an image suitable for use in our newsletter. This is usually wide and short, to fit in the e-new format. 
 
-<h3 id="notes">Notes</h3>
+### Notes
 
 **Notes**: One or more blocks of text with information about the event. This field can contain multiple paragraphs, separated by blank lines. [Markdown][] formatting will be applied to this section.
 
@@ -566,7 +564,7 @@ Note that each such header line contains the following elements:
 * The means by which the information was communicated. 
 
 
-<h2 id="toolbar">The Tool Bar</h2>
+## The Tool Bar
 
 A toolbar with multiple buttons appears at the top of the user interface.
 
@@ -580,7 +578,7 @@ A toolbar with multiple buttons appears at the top of the user interface.
 * **Launch** -- Launch the current URL in your Web browser. (This may also be accomplished by clicking the arrow that appears just to the left of the URL itself.)
 * **Find** -- Looks for the text entered in the field just to the left of this button, and displays the first URL containing this text in any field, ignoring case. After finding the first occurrence, this button's text changes to **Again**, to allow you to search again for the next URL containing the specified text. 
 
-<h2 id="publish">Publish</h2>
+## Publish
 
 A large part of the power of Club Planner lies in its ability to publish the event information you've collected in a variety of different formats, for different purposes. For example, web pages, calendar entries, board meeting agendas, minutes, and e-mail newsletters can all be published using Club Planner. 
 
@@ -588,11 +586,11 @@ Club Planner uses the [PSTextMerge][pstm] engine for its publish function. Open 
 
 Note that filtering and sorting functions within the Publish window will affect the list of events visible in the main window. 
 
-<h2 id="prefs">Preferences</h2>
+## Preferences
 
 The following preference tabs are available.
 
-<h3 id="general_prefs">General Prefs</h3>
+### General Prefs
 
 * **SplitPane: Horizontal Split?** --  Check the box to have the **List** and **Tags** appear on the left of the main screen, rather than the top.
 
@@ -608,7 +606,7 @@ The following preference tabs are available.
 
 * **Menu Location** -- If running on a Mac, you may wish to have the menus appear at the top of the screen, rather than at the top of the window.
 
-<h2 id="help">Help</h2>
+## Help
 
 The following commands are available. Note that the first two commands open local documentation installed with your application, while the next group of commands will access the Internet and access the latest program documentation, where applicable. 
 

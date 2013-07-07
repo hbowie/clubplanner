@@ -2,58 +2,6 @@
 
 ## Table of Contents
 
-<div id="toc-div">
-
-<ul>
-
-<li><a href="#intro">Introduction</a></li>
-
-<li><a href="#starting">Getting Started</a>
-	<ul>
-		<li><a href="#sysrqmts">System Requirements</a></li>
-		<li><a href="#rights">Rights</a></li>
-		<li><a href="#install">Installation</a></li>
-		<li><a href="#events">Events</a></li>
-		<li><a href="#files">Files and Folders</a></li>
-		<li><a href="#createnew">Creating a New Events Folder</a></li>
-		<li><a href="#backups">Backing Up</a></li>
-	</ul>
-</li>
-
-<li><a href="#ui">Overall User Interface</a>
-	<ul>
-		<li><a href="#tabs-and-windows">Tabs and Windows</a></li>
-		<li><a href="#tool-bar">Tool Bar</a></li>
-		<li><a href="#list">The List</a></li>
-		<li><a href="#tags">Tags</a></li>
-		<li><a href="#menus">Menus and Keyboard Shortcuts</a></li>
-		<li><a href="#gen-prefs">Customizing the Look and Feel</a></li>
-	</ul>
-</li>
-
-<li><a href="#data">Data Stored by Club Planner</a>
-	<ul>
-		<li><a href="#basics">Basics</a></li>
-		<li><a href="#text">Text</a></li>
-		<li><a href="#numbers">Numbers</a></li>
-		<li><a href="#links">Links</a></li>
-		<li><a href="#notes">Notes</a></li>
-	</ul>
-</li>
-
-<li><a href="#publish">Publish</a></li>
-
-<li><a href="#prefs">Preferences</a>
-	<ul>
-		<li><a href="#general_prefs">General Prefs</a></li>
-	</ul>
-</li>
-
-<li><a href="#help">Help</a></li>
-
-</ul>
-
-</div>
 
 ## Introduction
 
@@ -111,37 +59,8 @@ The second form of distribution is a Mac OS X disk image. This form can only be 
 
 Other agenda items to be discussed by your club may be entered as if they were events, in order to build complete meeting agendas. 
 
-### Files and Folders
 
-Club Planner assumes that your club records are stored electronically, using something like the following nested folder structure. 
-
-- *Dropbox* -- This would be your Dropbox folder, automatically synced to the cloud and to your other devices. 
-    - *Name of Club* -- This would be the folder containing all of your club records. This would be the folder you would share with other club members using a service such as [Dropbox][].
-        - *Operating Year* -- This would be a folder containing all of your club's records for a particular operating year. If your operating year is aligned with a calendar year, then this folder name should contain a single 4-digit year (usually following a brief form of the club's name). If your operating year spans two years, then this folder name should contain two 4-digit years, separated by a dash. 
-            - *Events* -- This would be the folder containing information about your events. The contents of this folder will be maintained by Club Planner. 
-            
-For example, the U-M Seattle club's folders look like this. 
-
-- *Dropbox*
-    - *UM Seattle*
-        - *UM Seattle 2013 - 2014*
-            - *Events*
-            
-The *Events* folder would then contain one folder for each category of event. Each of those folders would then contain one file for each event. These are plain text files, and may be viewed and even edited using any text editor. 
-
-Note that all of these folders above the *Events* folder may contain other folders and files, unrelated to Club Planner. 
-
-The only folder naming convention that is required is the inclusion of the club operating year in the name of the folder above the Events folder. By storing the operating year in this folder name, event info can easily be duplicated and transferred from one operating year to the next, based on the assumption that many of your club's events will recur on a fairly predictable annual cycle. 
-
-### Creating a New Events Folder
-
-The first time you launch Club Planner, or after selecting <em>Open</em> from the <em>File</em> menu, you will be presented with a series of Open dialogs that will ask you to specify the folder containing Club Records, the folder for the desired Operating Year, and the Events folder. There is no default location for these folder. You can create the necessary folders outside of Club Planner, before launching it, or can create the new folders from within the Open dialogs. Again, it is recommended that the folder containing Club Records be a shared [Dropbox][] folder.  
-
-### Up
-
-The File menu contains a **Backup** command. When backing up, you will be prompted to select a backup folder. This should be the folder that contains all of your Club Planner backups. After selecting this folder, Club Planner will automatically create a subfolder containing a copy of your Events folder, with the backup date and time appended to the folder name. 
-
-### Overall User Interface
+## Overall User Interface
 
 ### Tabs and Windows
 
@@ -294,6 +213,18 @@ Following is a list of all keyboard shortcuts. The command key is used in conjun
 
   <tr>
     <td class="graybox">
+      L
+    </td>
+    <td class="graybox">
+      Event
+    </td>
+    <td class="graybox">
+      Later
+    </td>
+  </tr>
+
+  <tr>
+    <td class="graybox">
       N
     </td>
     <td class="graybox">
@@ -425,6 +356,45 @@ Following is a list of all keyboard shortcuts. The command key is used in conjun
   </tr>
 
 </table>
+
+
+## The File Menu
+
+### Files and Folders
+
+Club Planner assumes that your club records are stored electronically, using something like the following nested folder structure. 
+
+- *Dropbox* -- This would be your Dropbox folder, automatically synced to the cloud and to your other devices. 
+    - *Name of Club* -- This would be the folder containing all of your club records. This would be the folder you would share with other club members using a service such as [Dropbox][].
+        - *Operating Year* -- This would be a folder containing all of your club's records for a particular operating year. If your operating year is aligned with a calendar year, then this folder name should contain a single 4-digit year (usually following a brief form of the club's name). If your operating year spans two years, then this folder name should contain two 4-digit years, separated by a dash. 
+            - *Events* -- This would be the folder containing information about your events. The contents of this folder will be maintained by Club Planner. 
+            
+For example, the U-M Seattle club's folders look like this. 
+
+- *Dropbox*
+    - *UM Seattle*
+        - *UM Seattle 2013 - 2014*
+            - *Events*
+            
+The *Events* folder would then contain one folder for each category of event. Each of those folders would then contain one file for each event. These are plain text files, and may be viewed and even edited using any text editor. 
+
+Note that all of these folders above the *Events* folder may contain other folders and files, unrelated to Club Planner. 
+
+The only folder naming convention that is required is the inclusion of the club operating year in the name of the folder above the Events folder. By storing the operating year in this folder name, event info can easily be duplicated and transferred from one operating year to the next, based on the assumption that many of your club's events will recur on a fairly predictable annual cycle. 
+
+### Creating a New Events Folder
+
+The first time you launch Club Planner, or after selecting <em>Open</em> from the <em>File</em> menu, you will be presented with a series of Open dialogs that will ask you to specify the folder containing Club Records, the folder for the desired Operating Year, and the Events folder. There is no default location for these folder. You can create the necessary folders outside of Club Planner, before launching it, or can create the new folders from within the Open dialogs. Again, it is recommended that the folder containing Club Records be a shared [Dropbox][] folder.  
+
+### Backup
+
+The File menu contains a **Backup** command. When backing up, you will be prompted to select a backup folder. This should be the folder that contains all of your Club Planner backups. After selecting this folder, Club Planner will automatically create a subfolder containing a copy of your Events folder, with the backup date and time appended to the folder name. 
+
+### Start New Year
+
+As one operating year closes, and a new one begins, you may wish to start a new year by transferring events from the current year into the next year (assuming that one year looks much like the last, from a planning perspective). This is the intent of the **Start New Year** command. 
+
+After you specify the new Events folder within the new operating year folder, all events from the current year will be transferred to the new year, with the exception of those with a status of 'Discards'. Events formerly having a status of 'Archive' or 'Next Year' will appear in the new year with a status of 'Current'. 
 
 
 ## Data Stored by Club Planner

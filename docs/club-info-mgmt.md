@@ -6,15 +6,17 @@ by Herb Bowie
 
 I became involved with the board of the [University of Michigan Club of Seattle][umseattle] in 2007, initially as the club's webmaster, and later as its president. 
 
-As a software developer and Information Technology professional, I gradually became interested in the information management challenges associated with the club's operations. Over time, I developed the approach to these challenges that I shall describe in this document. 
+As a software developer and Information Technology professional, I gradually became interested in the information management challenges associated with the club's operations. Over time, I developed the following approach to these challenges. 
 
 ## Digital Records
 
-Digital records of our club's operations are increasingly desirable. It is easier to exchange, store and archive information digitally, rather than using paper. This is especially true for a volunteer organization such as ours that has no shared physical workspace.
+Digital records of our club's operations are increasingly desirable. It is easier to exchange, store and archive information digitally, rather than using paper. This is especially true for a volunteer organization such as ours that has no shared physical workspace. (Click for *[additional details](digital.html).*)
 
 ## Storing Club Information in the "Cloud"
 
 [Cloud storage][cloud] is an especially attractive option for a virtual organization such as ours. [Dropbox][] is a popular service offering this form of storage. Dropbox also offers the ability to share a folder among a number of users. This is an easy and free way to store club information and share it among board members. 
+
+It is also recommended that one or more club leaders have backup copies of these records as well, in addition to their storage in the cloud. 
 
 ## Organizing Information by Operating Year
 

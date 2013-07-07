@@ -201,7 +201,14 @@ public class =$itemclass$=Writer {
     boolean outOK = true;
     for (int i = 0; i < =$itemclass&clul$=List.size() && outOK; i++) {
       =$itemclass$= next=$itemclass$= = =$itemclass&clul$=List.get(i);
-      outOK = save (folder, next=$itemclass$=, primaryLocation, adjustForNewYear);
+      
+      if ((! primaryLocation) 
+          && (adjustForNewYear)
+          && (next=$itemclass$=.getTags().tagFound("Discards"))) {
+            // Drop any discards when starting a new year
+      } else {
+        outOK = save (folder, next=$itemclass$=, primaryLocation, adjustForNewYear);
+      }
     }
     return outOK;
   }
@@ -210,6 +217,12 @@ public class =$itemclass$=Writer {
       boolean primaryLocation, boolean adjustForNewYear) {
     
     boolean outOK = true;
+    
+    if ((! primaryLocation) && (adjustForNewYear)) {
+      =$itemclass&clul$=.getTags().replace("Archive", "Current");
+      =$itemclass&clul$=.getTags().replace("Next Year", "Current");
+    }
+    
     
     File categoryFolder = new File (folder, clubEvent.getCategoryAsString());
     if (! categoryFolder.exists()) {

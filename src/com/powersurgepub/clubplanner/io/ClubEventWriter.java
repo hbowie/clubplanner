@@ -138,7 +138,14 @@ public class ClubEventWriter {
     boolean outOK = true;
     for (int i = 0; i < clubEventList.size() && outOK; i++) {
       ClubEvent nextClubEvent = clubEventList.get(i);
-      outOK = save (folder, nextClubEvent, primaryLocation, adjustForNewYear);
+ 
+      if ((! primaryLocation)
+          && (adjustForNewYear)
+          && (nextClubEvent.getTags().tagFound("Discards"))) {
+            // Drop any discards when starting a new year
+      } else {
+        outOK = save (folder, nextClubEvent, primaryLocation, adjustForNewYear);
+      }
     }
     return outOK;
   }
@@ -147,6 +154,12 @@ public class ClubEventWriter {
       boolean primaryLocation, boolean adjustForNewYear) {
  
     boolean outOK = true;
+ 
+    if ((! primaryLocation) && (adjustForNewYear)) {
+      clubEvent.getTags().replace("Archive", "Current");
+      clubEvent.getTags().replace("Next Year", "Current");
+    }
+ 
  
     File categoryFolder = new File (folder, clubEvent.getCategoryAsString());
     if (! categoryFolder.exists()) {

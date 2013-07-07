@@ -493,14 +493,16 @@ public class ClubPlanner
           JOptionPane.showMessageDialog(this,
             "A Valid Operating Year Folder was not specified",
             "Operating Year Folder Missing",
-            JOptionPane.WARNING_MESSAGE);
+            JOptionPane.WARNING_MESSAGE,
+            Home.getShared().getIcon());
         }
       } else {
         ok = false;
         JOptionPane.showMessageDialog(this,
           "A Valid " + desiredFolder + " was not specified",
           "Invalid Folder Specification",
-          JOptionPane.WARNING_MESSAGE);
+          JOptionPane.WARNING_MESSAGE,
+          Home.getShared().getIcon());
       }
     }
     
@@ -1134,14 +1136,16 @@ public class ClubPlanner
               JOptionPane.showMessageDialog(this,
                 "A Valid " + desiredFolder + " was not specified",
                 "Invalid Folder Specification",
-                JOptionPane.WARNING_MESSAGE);
+                JOptionPane.WARNING_MESSAGE,
+                Home.getShared().getIcon());
             }
           } else {
             ok = false;
             JOptionPane.showMessageDialog(this,
               "A Valid " + desiredFolder + " was not specified",
               "Invalid Folder Specification",
-              JOptionPane.WARNING_MESSAGE);
+              JOptionPane.WARNING_MESSAGE,
+              Home.getShared().getIcon());
           }
         } // end while asking user for new events folder
 
@@ -1293,11 +1297,13 @@ public class ClubPlanner
   private void removeClubEvent () {
     boolean okToDelete = true;
     if (CommonPrefs.getShared().confirmDeletes()) {
-      int userOption = JOptionPane.showConfirmDialog(this, 
+      int userOption = JOptionPane.showConfirmDialog(
+          navToolBar, 
           "Really delete this Event?",
           "Delete Confirmation",
           JOptionPane.YES_NO_OPTION,
-          JOptionPane.QUESTION_MESSAGE);
+          JOptionPane.QUESTION_MESSAGE,
+          Home.getShared().getIcon());
       okToDelete = (userOption == JOptionPane.YES_OPTION);
     }
     if (okToDelete) {
@@ -1362,7 +1368,8 @@ public class ClubPlanner
         String.valueOf (mods)
             + " tags changed",
         "Tags Replacement Results",
-        JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.INFORMATION_MESSAGE,
+        Home.getShared().getIcon());
       display();
     }
 	}
@@ -1426,6 +1433,19 @@ public class ClubPlanner
 		} // end of	 items
 		return mods;
 	}
+  
+  private void moveToFuture() {
+    boolean modOK = modIfChanged();
+    if (modOK) {
+      modified = true;
+      position.getClubEvent().getTags().set("Future");
+      clubEventPanel1.display(position.getClubEvent());
+      modOK = modIfChanged();
+      if (modOK) {
+        positionAndDisplay();
+      }
+    }
+  }
   
   /**
    Check to see if the user has changed anything and take appropriate
@@ -1627,7 +1647,8 @@ public class ClubPlanner
           JOptionPane.showMessageDialog(this,
               notFoundMessage,
               "OK",
-              JOptionPane.WARNING_MESSAGE);
+              JOptionPane.WARNING_MESSAGE,
+              Home.getShared().getIcon());
           noFindInProgress();
           lastTextFound = "";
           statusBar.setStatus(notFoundMessage);
@@ -1692,7 +1713,6 @@ public class ClubPlanner
 
     if (node == null) {
       // nothing selected
-      // System.out.println ("selectBranch selected component = null");
     }
     else
     if (node == position.getTagsNode()) {
@@ -1706,13 +1726,18 @@ public class ClubPlanner
       boolean modOK = modIfChanged();
       if (modOK) {
         ClubEvent branch = (ClubEvent)node.getTaggable();
-        int branchIndex = clubEventList.findBySortKey (branch);
+        int branchIndex = clubEventList.findByUniqueKey (branch);
         if (branchIndex >= 0) {
           position = clubEventList.positionUsingListIndex (branchIndex);
           position.setTagsNode (node);
           positionAndDisplay();
         } else {
-          System.out.println ("Selected a branch from the tree that couldn't be found in the list");
+          System.out.println ("ClubPlanner.selectBranch");
+          System.out.println 
+              ("-- Selected a branch from the tree that couldn't be found in the list");
+          System.out.println ("-- node = " + node.toString());
+          System.out.println ("-- event = " + branch.getWhat());
+          System.out.println ("-- branch index = " + String.valueOf(branchIndex));
         }
       }
     }
@@ -1823,6 +1848,8 @@ public class ClubPlanner
     eventNewMenuItem = new javax.swing.JMenuItem();
     eventDeleteMenuItem = new javax.swing.JMenuItem();
     eventDupeMenuItem = new javax.swing.JMenuItem();
+    jSeparator9 = new javax.swing.JPopupMenu.Separator();
+    eventFutureMenuItem = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JMenu();
     windowMenu = new javax.swing.JMenu();
     helpMenu = new javax.swing.JMenu();
@@ -1985,6 +2012,12 @@ public class ClubPlanner
     getContentPane().add(navToolBar, java.awt.BorderLayout.NORTH);
 
     mainSplitPane.setDividerLocation(120);
+
+    collectionTabs.addChangeListener(new javax.swing.event.ChangeListener() {
+      public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        collectionTabsStateChanged(evt);
+      }
+    });
 
     listPanel.setLayout(new java.awt.BorderLayout());
 
@@ -2202,6 +2235,18 @@ eventDeleteMenuItem.addActionListener(new java.awt.event.ActionListener() {
     }
   });
   eventMenu.add(eventDupeMenuItem);
+  eventMenu.add(jSeparator9);
+
+  eventFutureMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_L,
+    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+eventFutureMenuItem.setText("Later");
+eventFutureMenuItem.setToolTipText("Set the event's status to Future");
+eventFutureMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  public void actionPerformed(java.awt.event.ActionEvent evt) {
+    eventFutureMenuItemActionPerformed(evt);
+  }
+  });
+  eventMenu.add(eventFutureMenuItem);
 
   mainMenuBar.add(eventMenu);
 
@@ -2409,7 +2454,10 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
 
   private void fileSaveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileSaveMenuItemActionPerformed
     modified = true;
-    modIfChanged();
+    boolean modOK = modIfChanged();
+    if (modOK) {
+      positionAndDisplay();
+    }
   }//GEN-LAST:event_fileSaveMenuItemActionPerformed
 
   private void fileSaveAllMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileSaveAllMenuItemActionPerformed
@@ -2439,6 +2487,20 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private void exportMinutesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportMinutesMenuItemActionPerformed
     exportMinutes();
   }//GEN-LAST:event_exportMinutesMenuItemActionPerformed
+
+  private void eventFutureMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eventFutureMenuItemActionPerformed
+    moveToFuture();
+  }//GEN-LAST:event_eventFutureMenuItemActionPerformed
+
+  private void collectionTabsStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_collectionTabsStateChanged
+    if (collectionTabs.getSelectedIndex() == 0) {
+      position.setNavigator(ClubEventPositioned.NAVIGATE_USING_LIST);
+    }
+    else
+    if (collectionTabs.getSelectedIndex() == 1) {
+      position.setNavigator(ClubEventPositioned.NAVIGATE_USING_TREE);
+    }
+  }//GEN-LAST:event_collectionTabsStateChanged
 
   /**
    @param args the command line arguments
@@ -2495,6 +2557,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenu editMenu;
   private javax.swing.JMenuItem eventDeleteMenuItem;
   private javax.swing.JMenuItem eventDupeMenuItem;
+  private javax.swing.JMenuItem eventFutureMenuItem;
   private javax.swing.JMenu eventMenu;
   private javax.swing.JMenuItem eventNewMenuItem;
   private javax.swing.JMenuItem eventNextMenuItem;
@@ -2532,6 +2595,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JPopupMenu.Separator jSeparator6;
   private javax.swing.JSeparator jSeparator7;
   private javax.swing.JSeparator jSeparator8;
+  private javax.swing.JPopupMenu.Separator jSeparator9;
   private javax.swing.JButton lastButton;
   private javax.swing.JPanel listPanel;
   private javax.swing.JMenuBar mainMenuBar;

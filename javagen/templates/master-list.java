@@ -419,8 +419,12 @@ public class =$itemclass$=List
       tagsModel.remove (position.get=$itemclass$=());
       tagsList.remove (position.get=$itemclass$=());
       proxyList.remove(oldIndex);
-      =$itemclass$=Proxy =$itemclass&clul$=Proxy = proxyList.get(findIndex);
+      =$itemclass$=Proxy =$itemclass&clul$=Proxy = proxyList.get(oldIndex);
       int listIndex = =$itemclass&clul$=Proxy.getItemIndex();
+      int newIndex = newPosition.getIndex();
+      if (newIndex >= oldIndex) {
+        newPosition.setIndex(newIndex - 1);
+      }
       list.remove(listIndex);
       for (int i = 0; i < proxyList.size(); i++) {
         =$itemclass&clul$=Proxy = proxyList.get(i);

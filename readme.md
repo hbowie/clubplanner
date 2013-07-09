@@ -6,7 +6,7 @@ Club Planner is a [PowerSurge Publishing](http://www.powersurgepub.com) applicat
 Documentation
 -------------
 
-User documentation is available at [docs/clubplanner-user-guide.md](docs/clubplanner-user-guide.md).
+User documentation is available at [docs/user-guide.md](docs/user-guide.md).
 
 Executables
 -----------

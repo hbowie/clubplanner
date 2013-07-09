@@ -2,6 +2,36 @@
 
 ## Table of Contents
 
+<div class="toc">
+
+* [Introduction](#introduction)
+* [Getting Started](#gettingstarted)
+    * [System Requirements](#systemrequirements)
+    * [Rights](#rights)
+    * [Installation](#installation)
+    * [Events](#events)
+* [Overall User Interface](#overalluserinterface)
+    * [Tabs and Windows](#tabsandwindows)
+    * [Tool Bar](#toolbar)
+    * [The List](#thelist)
+    * [Tags](#tags)
+    * [Menus and Keyboard Shortcuts](#menusandkeyboardshortcuts)
+* [The File Menu](#thefilemenu)
+    * [Files and Folders](#filesandfolders)
+    * [Creating a New Events Folder](#creatinganeweventsfolder)
+    * [Backup](#backup)
+    * [Start New Year](#startnewyear)
+* [Data Stored by Club Planner](#datastoredbyclubplanner)
+    * [Basics](#basics)
+    * [Notes](#notes)
+* [The Tool Bar](#thetoolbar)
+* [Publish](#publish)
+* [Preferences](#preferences)
+    * [General Prefs](#generalprefs)
+* [Help](#help)
+
+</div>
+
 
 ## Introduction
 
@@ -10,6 +40,8 @@ Club Planner is a desktop application for planning and communicating the activit
 I wrote the application for use by the [University of Michigan Club of Seattle][umseattle], after several years of involvement with this club and its board. 
 
 Although this is an app that runs on a user's desktop, it is designed to store its data in a folder that can be easily shared with others through a service such as [Dropbox][]. 
+
+See the [Club Information Management](club-info-mgmt) document for background and context surrounding this application. 
 
 ## Getting Started
 
@@ -593,27 +625,24 @@ The following commands are available. Note that the first two commands open loca
 * **Reduce Window Size** -- Restores the main Club Planner window to its default size and location. Note that this command has a shortcut so that it may be executed even when the Club Planner window is not visible. This command may sometimes prove useful if you use multiple monitors, but occasionally in different configurations. On Windows in particular, this sometimes results in Club Planner opening on a monitor that is no longer present, making it difficult to see.
 
 
-[java]:  http://www.java.com/
+[apache]:					http://www.apache.org/licenses/LICENSE-2.0.html
+[club]:           clubplanner.html
+[club-info-mgmt]: http://umseattle.com/opsguide/docs/club-information-management.html
+[downloads]: 			http://www.powersurgepub.com/downloads.html
+[dropbox]:    		http://www.dropbox.com
+[filedir]:        filedir.html
+[gnu]:            http://www.gnu.org/licenses/
+[java]:  					http://www.java.com/
+[markdown]:  			http://daringfireball.net/projects/markdown/
+[Mathias]:   			https://github.com/sirthias
+[metamarkdown]:   metamarkdown.html
+[osd]:				    http://opensource.org/osd
+[parboiled]: 			https://github.com/sirthias/parboiled/blob/master/LICENSE
+[pegdown]:        https://github.com/sirthias/pegdown/blob/master/LICENSE
+[pspub]:     			http://www.powersurgepub.com/
+[pstm]:      			http://www.powersurgepub.com/products/pstextmerge.html
+[pstmug]:    			http://www.powersurgepub.com/products/pstextmerge/opguide.html
+[store]:     			http://www.powersurgepub.com/store.html
+[template]:       template.html
+[umseattle]:      http://www.umseattle.com
 
-[pspub]:     http://www.powersurgepub.com/
-[downloads]: http://www.powersurgepub.com/downloads.html
-[store]:     http://www.powersurgepub.com/store.html
-[pstm]:      http://www.powersurgepub.com/products/pstextmerge.html
-[pstmug]:    http://www.powersurgepub.com/products/pstextmerge/opguide.html
-
-[markdown]:  http://daringfireball.net/projects/markdown/
-[pegdown]:   https://github.com/sirthias/pegdown/blob/master/LICENSE
-[parboiled]: https://github.com/sirthias/parboiled/blob/master/LICENSE
-[Mathias]:   https://github.com/sirthias
-
-[club]:         clubplanner.html
-[filedir]:      filedir.html
-[metamarkdown]: metamarkdown.html
-[template]:     template.html
-
-[osd]:				http://opensource.org/osd
-[gnu]:        http://www.gnu.org/licenses/
-[apache]:			http://www.apache.org/licenses/LICENSE-2.0.html
-
-[umseattle]:  http://www.umseattle.com
-[dropbox]:    http://www.dropbox.com

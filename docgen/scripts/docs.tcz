@@ -1,0 +1,8 @@
+module	action	modifier	object	value
+input	set		normalization	0
+input	set		dirdepth	5
+input	open	mmdown		#PATH#../../docs/
+filter	add	not equal to	File Name	fields.md
+filter	set		params	
+template	open	text		#PATH#../templates/app-template.html
+template	generate			

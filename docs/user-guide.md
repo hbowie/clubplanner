@@ -2,34 +2,94 @@
 
 ## Table of Contents
 
-<div class="toc">
-
-* [Introduction](#introduction)
-* [Getting Started](#gettingstarted)
-    * [System Requirements](#systemrequirements)
-    * [Rights](#rights)
-    * [Installation](#installation)
-    * [Events](#events)
-* [Overall User Interface](#overalluserinterface)
-    * [Tabs and Windows](#tabsandwindows)
-    * [Tool Bar](#toolbar)
-    * [The List](#thelist)
-    * [Tags](#tags)
-    * [Menus and Keyboard Shortcuts](#menusandkeyboardshortcuts)
-* [The File Menu](#thefilemenu)
-    * [Files and Folders](#filesandfolders)
-    * [Creating a New Events Folder](#creatinganeweventsfolder)
-    * [Backup](#backup)
-    * [Start New Year](#startnewyear)
-* [Data Stored by Club Planner](#datastoredbyclubplanner)
-    * [Basics](#basics)
-    * [Notes](#notes)
-* [The Tool Bar](#thetoolbar)
-* [Publish](#publish)
-* [Preferences](#preferences)
-    * [General Prefs](#generalprefs)
-* [Help](#help)
-
+<div class id="toc">
+  <ul>
+    <li>
+      <a href="#introduction">Introduction</a>
+    </li>
+    <li>
+      <a href="#gettingstarted">Getting Started</a>
+      <ul>
+        <li>
+          <a href="#systemrequirements">System Requirements</a>
+        </li>
+        <li>
+          <a href="#rights">Rights</a>
+        </li>
+        <li>
+          <a href="#installation">Installation</a>
+        </li>
+        <li>
+          <a href="#events">Events</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="#overalluserinterface">Overall User Interface</a>
+      <ul>
+        <li>
+          <a href="#tabsandwindows">Tabs and Windows</a>
+        </li>
+        <li>
+          <a href="#toolbar">Tool Bar</a>
+        </li>
+        <li>
+          <a href="#thelist">The List</a>
+        </li>
+        <li>
+          <a href="#tags">Tags</a>
+        </li>
+        <li>
+          <a href="#menusandkeyboardshortcuts">Menus and Keyboard Shortcuts</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="#thefilemenu">The File Menu</a>
+      <ul>
+        <li>
+          <a href="#filesandfolders">Files and Folders</a>
+        </li>
+        <li>
+          <a href="#creatinganeweventsfolder">Creating a New Events Folder</a>
+        </li>
+        <li>
+          <a href="#backup">Backup</a>
+        </li>
+        <li>
+          <a href="#startnewyear">Start New Year</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="#datastoredbyclubplanner">Data Stored by Club Planner</a>
+      <ul>
+        <li>
+          <a href="#basics">Basics</a>
+        </li>
+        <li>
+          <a href="#notes">Notes</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="#thetoolbar">The Tool Bar</a>
+    </li>
+    <li>
+      <a href="#publish">Publish</a>
+    </li>
+    <li>
+      <a href="#preferences">Preferences</a>
+      <ul>
+        <li>
+          <a href="#generalprefs">General Prefs</a>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <a href="#help">Help</a>
+    </li>
+  </ul>
 </div>
 
 

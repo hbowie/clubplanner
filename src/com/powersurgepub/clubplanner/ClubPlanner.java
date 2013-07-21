@@ -607,6 +607,64 @@ public class ClubPlanner
     return saveOK;
   }
   
+  public boolean clearActuals() {
+    
+    boolean saveOK = false;
+    
+    int userOption = JOptionPane.showConfirmDialog(
+        navToolBar, 
+        "Are you sure you want to clear all actuals from the current year?",
+        "Clear Confirmation",
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        Home.getShared().getIcon());
+    boolean okToClear = (userOption == JOptionPane.YES_OPTION);
+      
+    if (okToClear) {
+      saveOK = modIfChanged();
+
+      int numberSaved = 0;
+      int numberDeleted = 0;
+
+      for (int i = 0; i < clubEventList.totalSize() && saveOK; i++) {
+        ClubEvent nextClubEvent = clubEventList.getUnfiltered(i);
+        clubEventCalc.clearActuals(nextClubEvent);
+        clubEventCalc.calcAll(nextClubEvent);
+        writer = new ClubEventWriter();
+        String oldDiskLocation = nextClubEvent.getDiskLocation();
+        saveOK = writer.save(eventsFile, nextClubEvent, true, false);
+        if (saveOK) {
+          numberSaved++;
+          String newDiskLocation = nextClubEvent.getDiskLocation();
+          if (! newDiskLocation.equals(oldDiskLocation)) {
+            File oldDiskFile = new File (oldDiskLocation);
+            oldDiskFile.delete();
+            numberDeleted++;
+          }
+        } else {
+          trouble.report(this, "Trouble saving the item to disk", "I/O Error");
+          saveOK = false;
+        }
+      }
+
+      String saveResult;
+      if (saveOK) {
+        saveResult = "succeeded";
+      } else {
+        saveResult = "failed";
+      }
+      logger.recordEvent(LogEvent.NORMAL, 
+          "Clear Actuals command succeeded, resulting in " 
+            + String.valueOf(numberSaved)
+            + " saves and "
+            + String.valueOf(numberDeleted)
+            + " deletes", false);
+    }
+
+    display();
+    return saveOK;
+  }
+  
   /**
    Prompt the user to save to a different location. 
   
@@ -1841,6 +1899,7 @@ public class ClubPlanner
     fileBackupMenuItem = new javax.swing.JMenuItem();
     jSeparator5 = new javax.swing.JPopupMenu.Separator();
     fileStartNewYearMenuItem = new javax.swing.JMenuItem();
+    clearActualsMenuItem = new javax.swing.JMenuItem();
     eventMenu = new javax.swing.JMenu();
     eventNextMenuItem = new javax.swing.JMenuItem();
     eventPriorMenuItem = new javax.swing.JMenuItem();
@@ -2183,6 +2242,14 @@ public class ClubPlanner
   });
   fileMenu.add(fileStartNewYearMenuItem);
 
+  clearActualsMenuItem.setText("Clear Actuals");
+  clearActualsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      clearActualsMenuItemActionPerformed(evt);
+    }
+  });
+  fileMenu.add(clearActualsMenuItem);
+
   mainMenuBar.add(fileMenu);
 
   eventMenu.setText("Event");
@@ -2502,6 +2569,10 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     }
   }//GEN-LAST:event_collectionTabsStateChanged
 
+  private void clearActualsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearActualsMenuItemActionPerformed
+    clearActuals();
+  }//GEN-LAST:event_clearActualsMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -2552,6 +2623,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     });
   }
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JMenuItem clearActualsMenuItem;
   private javax.swing.JTabbedPane collectionTabs;
   private javax.swing.JButton deleteButton;
   private javax.swing.JMenu editMenu;

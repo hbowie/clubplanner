@@ -20,6 +20,7 @@ package com.powersurgepub.clubplanner;
   import com.powersurgepub.psfiles.*;
   import com.powersurgepub.psutils.*;
   import com.powersurgepub.xos2.*;
+  import java.awt.*;
   import javax.swing.*;
 
 /**
@@ -81,7 +82,7 @@ public class PrefsWindow
   public JTabbedPane getPrefsTabs() {
     return prefsTabs;
   }
-
+  
   /* public FavoritesPrefs getFavoritesPrefs() {
     return favoritesPrefs;
   } */

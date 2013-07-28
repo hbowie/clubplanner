@@ -780,6 +780,7 @@ public class ClubPlanner
           }
           JOptionPane.showMessageDialog(this,
               String.valueOf(imported) + " agenda items imported successfully from "
+                + GlobalConstants.LINE_FEED_STRING
                 + selectedFile.toString(),
               "Import Results",
               JOptionPane.INFORMATION_MESSAGE,
@@ -869,6 +870,7 @@ public class ClubPlanner
             = new MarkupWriter(selectedFile, MarkupWriter.MARKDOWN_FORMAT);
         boolean ok = writer.openForOutput();
         if (ok) {
+          textMergeScript.clearSortAndFilterSettings();
           int lastSeq = -1;
           for (int i = 0; i < clubEventList.size(); i++) {
             ClubEvent nextClubEvent = clubEventList.get(i);
@@ -892,7 +894,7 @@ public class ClubPlanner
                   seqTitle = "Recent Events";
                   break;
                 case 5:
-                  seqTitle = "Upcomng";
+                  seqTitle = "Upcoming";
                   break;
                 case 8:
                   seqTitle = "Communication";

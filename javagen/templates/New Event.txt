@@ -1,0 +1,5 @@
+<?output "../../docs/New Event.txt"?>
+<?nextrec?>
+=$field$=: 									// =$tooltip$=
+<?loop?>
+

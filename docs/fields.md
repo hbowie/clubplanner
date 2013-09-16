@@ -42,6 +42,9 @@ Who is assigned to plan, coordinate and host the event. Can include multiple nam
 **Discuss**:
 Identification of any issues to be discussed at an upcoming board meeting.
 
+**Actions**:
+Identification of any action items to be worked.
+
 #### ClubEvent - Panel 2
 
 **Teaser**:

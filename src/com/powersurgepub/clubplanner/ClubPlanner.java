@@ -890,6 +890,9 @@ public class ClubPlanner
                 case 2:
                   seqTitle = "Finance";
                   break;
+                case 3:
+                  seqTitle = "Board Info";
+                  break;
                 case 4:
                   seqTitle = "Recent Events";
                   break;
@@ -1086,6 +1089,9 @@ public class ClubPlanner
     ClubEventWriter backupWriter = new ClubEventWriter();
     backedUp = backupWriter.save (backupFolder, clubEventList, false, false);
     if (backedUp) {
+      fileSpec = recentFiles.get(0);
+      filePrefs.saveLastBackupDate
+          (fileSpec, recentFiles.getPrefsQualifier(), 0);
       logger.recordEvent (LogEvent.NORMAL,
           "URLs backed up to " + backupFolder.toString(),
             false);

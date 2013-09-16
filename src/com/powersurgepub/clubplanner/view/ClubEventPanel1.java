@@ -68,6 +68,9 @@ public class ClubEventPanel1
   private JLabel    discussLabel    = new JLabel("Discuss:", JLabel.LEFT);
   private JScrollPane discussScrollPane = new javax.swing.JScrollPane();
   private JTextArea discussJTextArea = new JTextArea();
+  private JLabel    actionsLabel    = new JLabel("Actions:", JLabel.LEFT);
+  private JScrollPane actionsScrollPane = new javax.swing.JScrollPane();
+  private JTextArea actionsJTextArea = new JTextArea();
 
   private     JLabel              bottomFiller   = new JLabel("");
 
@@ -225,6 +228,22 @@ public class ClubEventPanel1
     gb.setTopInset(4);
     gb.add(discussScrollPane);
 
+		// Panel Layout for Actions
+    actionsLabel.setLabelFor(actionsJTextArea);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(actionsLabel);
+    actionsJTextArea.setColumns(20);
+    actionsJTextArea.setLineWrap(true);
+    actionsJTextArea.setRows(6);
+    actionsJTextArea.setWrapStyleWord(true);
+    actionsJTextArea.setToolTipText("Action Items to be taken by board members");
+    actionsScrollPane.setViewportView(actionsJTextArea);
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(actionsScrollPane);
+
     gb.setWidth(4);
     gb.setFill(GridBagConstraints.BOTH);
     gb.setColumnWeight(1.0);
@@ -296,6 +315,12 @@ public class ClubEventPanel1
       discussJTextArea.setText ("");
     }
     discussJTextArea.setCaretPosition(0);
+    if (clubEvent.hasActions()) {
+      actionsJTextArea.setText (clubEvent.getActions().toString());
+    } else {
+      actionsJTextArea.setText ("");
+    }
+    actionsJTextArea.setCaretPosition(0);
  
   }
 
@@ -357,6 +382,11 @@ public class ClubEventPanel1
 
     if (! clubEvent.getDiscussAsString().equals (discussJTextArea.getText())) {
       clubEvent.setDiscuss(discussJTextArea.getText());
+      modified = true;
+    }
+
+    if (! clubEvent.getActionsAsString().equals (actionsJTextArea.getText())) {
+      clubEvent.setActions(actionsJTextArea.getText());
       modified = true;
     }
 
@@ -461,6 +491,15 @@ public class ClubEventPanel1
    */
   public JTextArea getDiscussJTextArea () {
     return discussJTextArea;
+  }
+
+  /**
+    Returns the actions for this club event.
+ 
+    @return The actions for this club event.
+   */
+  public JTextArea getActionsJTextArea () {
+    return actionsJTextArea;
   }
 
 

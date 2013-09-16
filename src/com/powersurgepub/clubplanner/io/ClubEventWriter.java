@@ -256,6 +256,22 @@ public class ClubEventWriter {
     }
     if (outOK) {
       outOK = writeFieldName
+          (ClubEvent.DISCUSS_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getDiscussAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
+          (ClubEvent.ACTIONS_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getActionsAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
           (ClubEvent.WHY_FIELD_NAME);
     }
     if (outOK) {
@@ -405,14 +421,6 @@ public class ClubEventWriter {
     if (outOK) {
       outOK = writeFieldValue
           (clubEvent.getNewsImageAsString());
-    }
-    if (outOK) {
-      outOK = writeFieldName
-          (ClubEvent.DISCUSS_FIELD_NAME);
-    }
-    if (outOK) {
-      outOK = writeFieldValue
-          (clubEvent.getDiscussAsString());
     }
     if (outOK) {
       outOK = writeFieldName

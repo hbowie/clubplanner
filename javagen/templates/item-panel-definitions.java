@@ -46,5 +46,8 @@
   private JScrollPane =$field&clul$=ScrollPane = new javax.swing.JScrollPane();
   private JTextArea =$field&clul$=JTextArea = new JTextArea();
 <?endif?>
+<?if =$panelclass$= == "JCheckBox" ?>  
+  private JCheckBox =$field&clul$=JCheckBox = new JCheckBox();
+<?endif?>
 <?endif?>
 <?loop?>

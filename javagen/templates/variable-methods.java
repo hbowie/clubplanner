@@ -41,6 +41,18 @@
     setModified (true);
   }
 <?endif?>
+<?if =$fieldclass$= = "Boolean" ?>
+
+  /**
+     Sets the =$field&c lll$= for this =$itemclass&c lll$=.
+ 
+     @param  =$field&clul$= The =$field&c lll$= for this =$itemclass&c lll$=.
+   */
+  public void set=$field&cuul$= (String =$field&clul$=) {
+    this.=$field&clul$= = new Boolean(=$field&clul$=);
+    setModified (true);
+  }
+<?endif?>
 
   /**
     Returns the =$field&c lll$= for this =$itemclass&c lll$= as a string.
@@ -63,6 +75,32 @@
   public boolean has=$field&cuul$= () {
     return (=$field&clul$= != null);
   }
+<?if =$fieldclass$= = "Tags" ?>
+
+  /**
+    Determines if the =$field&c lll$= for this =$itemclass&c lll$= 
+    is null or is empty.
+   
+    @return True if the =$field&c lll$= for this =$itemclass&c lll$= 
+    is not null and not empty.
+   */
+  public boolean has=$field&cuul$=WithData () {
+    return (=$field&clul$= != null && =$field&clul$=.length() > 0);
+  }
+<?endif?>
+<?if =$fieldclass$= = "String" ?>
+
+  /**
+    Determines if the =$field&c lll$= for this =$itemclass&c lll$= 
+    is null or is empty.
+   
+    @return True if the =$field&c lll$= for this =$itemclass&c lll$= 
+    is not null and not empty.
+   */
+  public boolean has=$field&cuul$=WithData () {
+    return (=$field&clul$= != null && =$field&clul$=.length() > 0);
+  }
+<?endif?>
 
   /**
     Returns the =$field&c lll$= for this =$itemclass&c lll$=.

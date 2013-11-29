@@ -121,6 +121,19 @@ A URL pointing to an image suitable for use in our newsletter.
 **Notes**:
 One or more blocks of text with information about the event. This field can contain multiple paragraphs, separated by blank lines. Each block of text should be preceded by a line similar to the following example: -- AAUM on Feb 21 via email. Note that each such header line contains the following elements: Two hyphens and a space; identification of the source of the note; the date on which the information was communicated; the means by which the information was communicated.
 
+### EventAction Item
+
+#### EventAction - Panel 1
+
+**Numbered**:
+Is this a numbered list?
+
+**Actionee**:
+The person(s) repsponsible to take the indicated action
+
+**Action**:
+The action to be taken.
+
 ### EventNote Item
 
 #### EventNote - Panel 1

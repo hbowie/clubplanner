@@ -28,6 +28,8 @@ package com.powersurgepub.clubplanner;
   import com.powersurgepub.psdatalib.textmerge.*;
   import com.powersurgepub.psdatalib.txbio.*;
   import com.powersurgepub.psdatalib.ui.*;
+  import com.powersurgepub.psmkdown.*;
+  import com.powersurgepub.pstextio.*;
   import com.powersurgepub.psutils.*;
   import com.powersurgepub.xos2.*;
   import java.awt.*;
@@ -56,7 +58,8 @@ public class ClubPlanner
       AppToBackup, 
       FileSpecOpener,
       XHandler,
-      LinkTweakerApp
+      LinkTweakerApp,
+      MarkdownLineReader
     { 
   
   public static final String              PROGRAM_NAME    = "Club Planner";
@@ -138,6 +141,8 @@ public class ClubPlanner
   private             int                 filterTabIndex = 0;
   private             int                 sortTabIndex = 1;
   private             int                 templateTabIndex = 2;
+  
+  private             StringLineReader    markdownReader = null;
 
   /**
    Creates new form ClubPlanner
@@ -853,6 +858,279 @@ public class ClubPlanner
         } // end if I/O error
       } // end if user selected an output file
     } // end if were able to save the last modified record
+  }
+  
+  /**
+   Export a meeting agenda in outline (OPML) format. .
+   */
+  private void exportOutline() {
+    boolean modOK = modIfChanged();
+    boolean sectionOpen = false;
+    int exported = 0;
+    if (modOK) {
+      fileChooser.setDialogTitle ("Export Agenda to OPML");
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      File selectedFile = fileChooser.showSaveDialog (this);
+      if (selectedFile != null) {
+        MarkupWriter writer 
+            = new MarkupWriter(selectedFile, MarkupWriter.OPML_FORMAT);
+        boolean ok = writer.openForOutput();
+        if (ok) {
+          textMergeScript.clearSortAndFilterSettings();
+          int lastSeq = -1;
+          for (int i = 0; i < clubEventList.size(); i++) {
+            ClubEvent nextClubEvent = clubEventList.get(i);
+            if (nextClubEvent != null
+                && nextClubEvent.getStatusAsString().contains("Current")) {
+              String what = nextClubEvent.getWhat();
+              if (exported == 0) {
+                writer.startHead();
+                writer.writeTitle("Minutes for " + what);
+                writer.endHead();
+                writer.startBody();
+              }
+              String seqStr = nextClubEvent.getSeq();
+              int seq = Integer.parseInt(seqStr);
+              String seqTitle = "";
+              switch (seq) {
+                case 1:
+                  seqTitle = "Open Meeting";
+                  break;
+                case 2:
+                  seqTitle = "Finance";
+                  break;
+                case 3:
+                  seqTitle = "Board Info";
+                  break;
+                case 4:
+                  seqTitle = "Recent Events";
+                  break;
+                case 5:
+                  seqTitle = "Upcoming";
+                  break;
+                case 8:
+                  seqTitle = "Communication";
+                  break;
+                case 9:
+                  seqTitle = "Close Meeting";
+                  break;
+              }
+              String category = nextClubEvent.getCategory();
+              
+              // Start a new outline section for each type of agenda item
+              if (seq != lastSeq) {
+                if (sectionOpen) {
+                  writer.endOutline();
+                }
+                writer.startOutline(seqTitle);
+                sectionOpen = true;
+                lastSeq = seq;
+              }
+              
+              // Start a new outline item for each event
+              writer.startOutline(what);
+              String ymd = nextClubEvent.getYmd();
+              String when = nextClubEvent.getWhen();
+              if (nextClubEvent.hasWhoWithData()) {
+                writer.writeOutline("Who: " + nextClubEvent.getWho());
+              }
+              if (nextClubEvent.hasWhenWithData()) {
+                writer.writeOutline("When: " + nextClubEvent.getWhen());
+              }
+              if (nextClubEvent.hasItemTypeWithData()) {
+                writer.writeOutline("Item Type: " + nextClubEvent.getItemType());
+              }
+              if (nextClubEvent.hasCategoryWithData()) {
+                writer.writeOutline("Category: " + nextClubEvent.getCategory());
+              }
+              if (nextClubEvent.hasStatusWithData()) {
+                writer.writeOutline("Status: " + nextClubEvent.getStatusAsString());
+              }
+              if (nextClubEvent.hasDiscussWithData()) {
+                writer.writeOutline("To Discuss: " + nextClubEvent.getDiscuss());
+              }
+              
+              // Action Items
+              if (nextClubEvent.hasActionsWithData()) {
+                writer.startOutline("Action Items");
+                for (int j = 0; j < nextClubEvent.sizeEventActionList(); j++) {
+                  EventAction action = nextClubEvent.getEventAction(j);
+                  TextBuilder actionText = new TextBuilder();
+                  String actionee = action.getActionee();
+                  if (actionee != null && actionee.length() > 0) {
+                    actionText.append(actionee + ": ");
+                  }
+                  actionText.append(action.getAction());
+                  writer.writeOutline(actionText.toString());
+                }
+                writer.endOutline();
+              }
+              
+              // Numbers
+              if (nextClubEvent.hasOverUnderWithData()
+                  || nextClubEvent.hasFinanceProjectionWithData()) {
+                writer.startOutline("Numbers");
+
+                if (nextClubEvent.hasCost()) {
+                  writer.writeOutline("Cost per Person: " 
+                      + nextClubEvent.getCost());
+                }
+                if (nextClubEvent.hasTickets()) {
+                  writer.writeOutline("To Receive Tickets: " 
+                      + nextClubEvent.getTickets());
+                }
+                if (nextClubEvent.hasQuantity()) {
+                  writer.writeOutline("Quantity available: " 
+                      + nextClubEvent.getQuantity());
+                }
+                if (nextClubEvent.hasPlannedAttendance()) {
+                  writer.writeOutline("Planned Attendance: " 
+                      + nextClubEvent.getPlannedAttendance());
+                }
+                if (nextClubEvent.hasActualAttendance()) {
+                  writer.writeOutline("Actual Attendance: " 
+                      + nextClubEvent.getActualAttendance());
+                }
+                if (nextClubEvent.hasPlannedIncome()) {
+                  writer.writeOutline("Planned Income: " 
+                      + nextClubEvent.getPlannedIncome());
+                }
+                if (nextClubEvent.hasActualIncome()) {
+                  writer.writeOutline("Actual Income: " 
+                      + nextClubEvent.getActualIncome());
+                }
+                if (nextClubEvent.hasPlannedExpense()) {
+                  writer.writeOutline("Planned Expense: " 
+                      + nextClubEvent.getPlannedExpense());
+                }
+                if (nextClubEvent.hasActualExpense()) {
+                  writer.writeOutline("Actual Expense: " 
+                      + nextClubEvent.getActualExpense());
+                }
+                writer.writeOutline("Over/Under: " 
+                    + nextClubEvent.getOverUnder());
+                writer.writeOutline("Projection: " 
+                    + nextClubEvent.getFinanceProjection());
+
+                writer.endOutline();
+              }
+              
+              // Notes
+              if (nextClubEvent.hasNotesWithData()) {
+                writer.startOutline("Notes");
+                for (int n = 0; n < nextClubEvent.sizeEventNoteList(); n++) {
+                  EventNote note = nextClubEvent.getEventNote(n);
+                  TextBuilder noteText = new TextBuilder();
+                  writer.startOutline(ClubEventCalc.calcNoteHeaderLine(note));
+                  markdownReader = new StringLineReader(note.getNote());
+                  MarkdownInitialParser mdParser
+                      = new MarkdownInitialParser(this);
+                  MarkdownLine mdLine = mdParser.getNextLine();
+                  while (mdLine != null) {
+                    writer.writeOutline(mdLine.getLine());
+                    mdLine = mdParser.getNextLine();
+                  }
+                  writer.endOutline();
+                }
+                writer.endOutline();
+              }
+              
+              /*
+              StringBuilder h3 = new StringBuilder();
+              if (ymd != null && ymd.length() > 7) {
+                h3.append(when);
+                h3.append(" -- ");
+              }
+              if (category != null && category.length() > 0) {
+                h3.append(category);
+                h3.append(": ");
+              }
+              h3.append(what);
+              writer.writeHeading(3, h3.toString(), "");
+              
+              // Print Who
+              exportMinutesField 
+                  (writer, 
+                  "Who", 
+                  nextClubEvent.getWho());
+              
+              // Print Where
+              exportMinutesField 
+                  (writer, 
+                  "Where", 
+                  nextClubEvent.getWhere());
+              
+              // Print Finance Projection
+              exportMinutesField 
+                  (writer, 
+                  "Finance Projection", 
+                  nextClubEvent.getFinanceProjection());
+              
+              // Print Finance Projection
+              exportMinutesField 
+                  (writer, 
+                  "Over/Under", 
+                  nextClubEvent.getOverUnder());
+              
+              // Print Discussion
+              exportMinutesField 
+                  (writer, "For Discussion", nextClubEvent.getDiscuss());
+              
+              if (nextClubEvent.sizeEventNoteList() > 0) {
+                EventNote note = nextClubEvent.getEventNote(0);
+                String via = note.getNoteVia();
+                if (via != null && via.equalsIgnoreCase("Minutes")) {
+                  writer.writeLine("Minutes: ");
+                  writer.writeLine(note.getNote());
+                }
+              } */
+              writer.endOutline();
+              exported++;
+            } // end if next event not null
+          } // end for each item in list
+          if (sectionOpen) {
+            writer.endOutline();
+          }
+          writer.endBody();
+          writer.close();
+          JOptionPane.showMessageDialog(this,
+              String.valueOf(exported) + " Club Events exported successfully to"
+                + GlobalConstants.LINE_FEED
+                + selectedFile.toString(),
+              "Export Results",
+              JOptionPane.INFORMATION_MESSAGE,
+              Home.getShared().getIcon());
+          logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
+              + " Club Events exported as minutes to " 
+              + selectedFile.toString(),
+              false);
+          statusBar.setStatus(String.valueOf(exported) 
+            + " Club Events exported");
+        } 
+        if (! ok) {
+          logger.recordEvent (LogEvent.MEDIUM,
+            "Problem exporting Club Events as minutes to " + selectedFile.toString(),
+              false);
+            trouble.report ("I/O error attempting to export club events to " 
+                + selectedFile.toString(),
+              "I/O Error");
+            statusBar.setStatus("Trouble exporting Club Events");
+        } // end if I/O error
+      } // end if user selected an output file
+    } // end if were able to save the last modified record
+  }
+  
+  /**
+   Obtains the next line of raw markdown source. 
+  
+   @return The next markdown input line, or null when no more input is available.
+   */
+  public String getMarkdownInputLine() {
+    if (markdownReader == null) {
+      return null;
+    } else {
+      return markdownReader.readLine();
+    }
   }
   
  /**
@@ -1901,6 +2179,7 @@ public class ClubPlanner
     fileExportMenu = new javax.swing.JMenu();
     fileExportTabDelimMenuItem = new javax.swing.JMenuItem();
     exportMinutesMenuItem = new javax.swing.JMenuItem();
+    exportOutlineMenuItem = new javax.swing.JMenuItem();
     jSeparator2 = new javax.swing.JPopupMenu.Separator();
     fileTextMergeMenuItem = new javax.swing.JMenuItem();
     jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -2214,6 +2493,14 @@ public class ClubPlanner
     }
   });
   fileExportMenu.add(exportMinutesMenuItem);
+
+  exportOutlineMenuItem.setText("Agenda Outline");
+  exportOutlineMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      exportOutlineMenuItemActionPerformed(evt);
+    }
+  });
+  fileExportMenu.add(exportOutlineMenuItem);
 
   fileMenu.add(fileExportMenu);
   fileMenu.add(jSeparator2);
@@ -2581,6 +2868,10 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     clearActuals();
   }//GEN-LAST:event_clearActualsMenuItemActionPerformed
 
+  private void exportOutlineMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportOutlineMenuItemActionPerformed
+    exportOutline();
+  }//GEN-LAST:event_exportOutlineMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -2643,6 +2934,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenuItem eventNextMenuItem;
   private javax.swing.JMenuItem eventPriorMenuItem;
   private javax.swing.JMenuItem exportMinutesMenuItem;
+  private javax.swing.JMenuItem exportOutlineMenuItem;
   private javax.swing.JMenuItem fileBackupMenuItem;
   private javax.swing.JMenu fileExportMenu;
   private javax.swing.JMenuItem fileExportTabDelimMenuItem;

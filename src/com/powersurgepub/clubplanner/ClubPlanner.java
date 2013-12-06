@@ -222,7 +222,6 @@ public class ClubPlanner
     
     aboutWindow = new AboutWindow (
       false,   // loadFromDisk
-      true,    // browserLauncher2Used
       true,    // jxlUsed
       true,    // pegdownUsed
       false,   // xerces used

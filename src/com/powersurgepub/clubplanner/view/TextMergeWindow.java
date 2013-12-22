@@ -83,11 +83,11 @@ public class TextMergeWindow
   }// </editor-fold>//GEN-END:initComponents
 
   private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-    clubPlanner.saveTextMergeWindowPosition();
+    
   }//GEN-LAST:event_formWindowClosing
 
   private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-    clubPlanner.positionTextMergeWindow();
+
   }//GEN-LAST:event_formWindowActivated
 
 

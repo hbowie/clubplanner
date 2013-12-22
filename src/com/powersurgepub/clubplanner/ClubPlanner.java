@@ -68,12 +68,8 @@ public class ClubPlanner
   public  static final String             FIND = "Find";
   public  static final String             FIND_AGAIN = "Again";
   
-  public  static final String             TEXT_MERGE_WINDOW_X_OFFSET = "tmw-x";
-  public  static final String             TEXT_MERGE_WINDOW_Y_OFFSET = "tmw-y";
-  public  static final String             TEXT_MERGE_WINDOW_WIDTH = "tmw-width";
-  public  static final String             TEXT_MERGE_WINDOW_HEIGHT = "tmw-height";
-  public  static final int                TEXT_MERGE_WINDOW_DEFAULT_X = 120;
-  public  static final int                TEXT_MERGE_WINDOW_DEFAULT_Y = 120;
+  public  static final int                TEXT_MERGE_WINDOW_DEFAULT_X = 60;
+  public  static final int                TEXT_MERGE_WINDOW_DEFAULT_Y = 60;
   public  static final int                TEXT_MERGE_WINDOW_DEFAULT_WIDTH = 640;
   public  static final int                TEXT_MERGE_WINDOW_DEFAULT_HEIGHT = 480;
   
@@ -297,35 +293,11 @@ public class ClubPlanner
   public void positionTextMergeWindow() {
     if (textMergeWindow != null) {
       textMergeWindow.setBounds (
-          this.getX()
-            + userPrefs.getPrefAsInt (
-              TEXT_MERGE_WINDOW_X_OFFSET, 
-              TEXT_MERGE_WINDOW_DEFAULT_X),
-          this.getY()
-            + userPrefs.getPrefAsInt (
-              TEXT_MERGE_WINDOW_Y_OFFSET, 
-              TEXT_MERGE_WINDOW_DEFAULT_Y),
-          userPrefs.getPrefAsInt (
-            TEXT_MERGE_WINDOW_WIDTH, 
-            TEXT_MERGE_WINDOW_DEFAULT_WIDTH),
-          userPrefs.getPrefAsInt (
-            TEXT_MERGE_WINDOW_HEIGHT, 
-            TEXT_MERGE_WINDOW_DEFAULT_HEIGHT));
-    }
-  }
-  
-  /**
-   Save the user's preferred position for the Text Merge window, relative to
-   the main window. 
-  */
-  public void saveTextMergeWindowPosition() {
-    if (textMergeWindow != null) {
-      userPrefs.setPref (TEXT_MERGE_WINDOW_X_OFFSET, 
-          textMergeWindow.getX() - this.getX());
-      userPrefs.setPref (TEXT_MERGE_WINDOW_Y_OFFSET, 
-          textMergeWindow.getY() - this.getY());
-      userPrefs.setPref (TEXT_MERGE_WINDOW_WIDTH, textMergeWindow.getWidth());
-      userPrefs.setPref (TEXT_MERGE_WINDOW_HEIGHT, textMergeWindow.getHeight());
+          this.getX() + TEXT_MERGE_WINDOW_DEFAULT_X,
+          this.getY() + TEXT_MERGE_WINDOW_DEFAULT_Y,
+          TEXT_MERGE_WINDOW_DEFAULT_WIDTH,
+          TEXT_MERGE_WINDOW_DEFAULT_HEIGHT);
+      WindowMenuManager.locateCenter(this, textMergeWindow);
     }
   }
   
@@ -421,8 +393,6 @@ public class ClubPlanner
     userPrefs.setPref (CommonPrefs.PREFS_TOP, this.getY());
     userPrefs.setPref (CommonPrefs.PREFS_WIDTH, this.getWidth());
     userPrefs.setPref (CommonPrefs.PREFS_HEIGHT, this.getHeight());
-    
-    saveTextMergeWindowPosition();
     
     if (goodEventsFile()) {
       // userPrefs.setPref (FavoritesPrefs.LAST_FILE, eventsFile.toString());
@@ -1561,6 +1531,7 @@ public class ClubPlanner
     textMergeSort.setPSList(clubEventList);
     textMergeTemplate.setPSList(clubEventList);
     textMergeScript.setPSList(clubEventList);
+    textMergeScript.selectEasyTab();
   }
   
   /**
@@ -2774,6 +2745,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
 
   private void helpReduceWindowSizeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpReduceWindowSizeMenuItemActionPerformed
     setBounds(100, 100, 800, 600);
+    positionTextMergeWindow();
     // pack();
   }//GEN-LAST:event_helpReduceWindowSizeMenuItemActionPerformed
 

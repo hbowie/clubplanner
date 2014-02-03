@@ -63,7 +63,7 @@ public class ClubPlanner
     { 
   
   public static final String              PROGRAM_NAME    = "Club Planner";
-  public static final String              PROGRAM_VERSION = "0.50";
+  public static final String              PROGRAM_VERSION = "0.90";
   
   public  static final String             FIND = "Find";
   public  static final String             FIND_AGAIN = "Again";
@@ -1596,6 +1596,7 @@ public class ClubPlanner
       ClubEvent clubEvent = position.getClubEvent();
       ClubEvent newClubEvent = clubEvent.duplicate();
       newClubEvent.setWhat(clubEvent.getWhat() + " copy");
+      newClubEvent.setId("");
       position = new ClubEventPositioned();
       position.setIndex (clubEventList.size());
       position.setClubEvent(newClubEvent);

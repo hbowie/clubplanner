@@ -92,6 +92,8 @@ public class ClubPlanner
   
   private             AboutWindow         aboutWindow;
   
+  private             FinanceWindow       financeWindow;
+  
   private             UserPrefs           userPrefs;
   private             PrefsWindow         prefsWindow;
   private             RecentFiles         recentFiles;
@@ -246,6 +248,10 @@ public class ClubPlanner
     textMergeScript.setMenus(mainMenuBar, "Scripts");
     
     windowMenuManager.add(textMergeWindow);
+    
+    financeWindow = new FinanceWindow();
+    WindowMenuManager.locateCenter(this, financeWindow);
+    windowMenuManager.add(financeWindow);
     
     positionTextMergeWindow();
     
@@ -496,6 +502,7 @@ public class ClubPlanner
     boolean ok = loader.load(clubEventList);
     if (ok) {
       statusBar.setStatus(String.valueOf(loader.getEventsLoaded()) + " Club Events Loaded");
+      calcFinanceTotals();
     } else {
       statusBar.setStatus("Trouble loading Club Events");
     }
@@ -536,6 +543,18 @@ public class ClubPlanner
       position = clubEventList.first(position);
       positionAndDisplay();
     }
+  }
+  
+  /**
+   Calculate the totals to be displayed in the Finance Window. 
+   */
+  private void calcFinanceTotals() {
+    System.out.println("calcFinanceTotals");
+    financeWindow.clear();
+    for (int i = 0; i < clubEventList.totalSize(); i++) {
+      financeWindow.calcPlus(clubEventList.getUnfiltered(i));
+    }
+    financeWindow.display();
   }
   
   public boolean saveAll() {
@@ -674,6 +693,7 @@ public class ClubPlanner
    Import meeting minutes. 
   */
   private void importMinutes() {
+    System.out.println("ClubPlanner.importMinutes");
     boolean modOK = modIfChanged();
     int imported = 0;
     if (modOK) {
@@ -692,10 +712,13 @@ public class ClubPlanner
           reader.openForInput();
           ClubEvent minutesEvent = reader.nextClubEvent();
           while (minutesEvent != null) {
+            System.out.println("  ");
+            System.out.println("  Minutes entry for " + minutesEvent.getWhat());
             int foundAt = clubEventList.findByUniqueKey(minutesEvent);
             if (foundAt >= 0) {
               // We found an existing event -- let's update it
               ClubEvent listEvent = clubEventList.get(foundAt);
+              System.out.println("    Found matching event: " + listEvent.getWhat());
               position.setClubEvent(listEvent);
               position.setIndex(foundAt);
               if (minutesEvent.hasWhen() 
@@ -726,6 +749,7 @@ public class ClubPlanner
                   workNotes.append (GlobalConstants.LINE_FEED);
                   workNotes.append(listEvent.getNotes());
                   listEvent.setNotes(workNotes.toString());
+                  System.out.println("      Updating notes");
                 }
               }
               
@@ -739,6 +763,8 @@ public class ClubPlanner
               if (saved) {
                 String newDiskLocation = listEvent.getDiskLocation();
                 if (! newDiskLocation.equals(oldDiskLocation)) {
+                  System.out.println("      new disk location: " + newDiskLocation);
+                  System.out.println("      deleting old disk location: " + oldDiskLocation);
                   File oldDiskFile = new File (oldDiskLocation);
                   oldDiskFile.delete();
                 }
@@ -1776,6 +1802,7 @@ public class ClubPlanner
     ClubEvent clubEvent = position.getClubEvent();
     if (clubEventPanel1.modIfChanged(clubEvent)) {
       modified = true;
+      itemLabel.setText(clubEvent.getWhat());
     } 
     if (clubEventPanel2.modIfChanged(clubEvent)) {
       modified = true;
@@ -2068,6 +2095,7 @@ public class ClubPlanner
       reload (clubEvent);
     }
     localPath = clubEvent.getLocalPath();
+    itemLabel.setText(clubEvent.getWhat());
     clubEventPanel1.display(clubEvent);
     clubEventPanel2.display(clubEvent);
     clubEventPanel3.display(clubEvent);
@@ -2115,6 +2143,7 @@ public class ClubPlanner
   @SuppressWarnings("unchecked")
   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
   private void initComponents() {
+    java.awt.GridBagConstraints gridBagConstraints;
 
     navToolBar = new javax.swing.JToolBar();
     okButton = new javax.swing.JButton();
@@ -2134,6 +2163,8 @@ public class ClubPlanner
     treePanel = new javax.swing.JPanel();
     treeScrollPane = new javax.swing.JScrollPane();
     tagsTree = new javax.swing.JTree();
+    itemPanel = new javax.swing.JPanel();
+    itemLabel = new javax.swing.JLabel();
     itemTabs = new javax.swing.JTabbedPane();
     mainMenuBar = new javax.swing.JMenuBar();
     fileMenu = new javax.swing.JMenu();
@@ -2378,7 +2409,28 @@ public class ClubPlanner
     collectionTabs.addTab("Categories", treePanel);
 
     mainSplitPane.setLeftComponent(collectionTabs);
-    mainSplitPane.setRightComponent(itemTabs);
+
+    itemPanel.setLayout(new java.awt.GridBagLayout());
+
+    itemLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    itemLabel.setText("Item Title");
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 0;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+    itemPanel.add(itemLabel, gridBagConstraints);
+    gridBagConstraints = new java.awt.GridBagConstraints();
+    gridBagConstraints.gridx = 0;
+    gridBagConstraints.gridy = 1;
+    gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+    gridBagConstraints.weightx = 1.0;
+    gridBagConstraints.weighty = 1.0;
+    gridBagConstraints.insets = new java.awt.Insets(4, 4, 4, 4);
+    itemPanel.add(itemTabs, gridBagConstraints);
+
+    mainSplitPane.setRightComponent(itemPanel);
 
     getContentPane().add(mainSplitPane, java.awt.BorderLayout.CENTER);
 
@@ -2928,6 +2980,8 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenuItem helpReduceWindowSizeMenuItem;
   private javax.swing.JMenuItem helpSoftwareUpdatesMenuItem;
   private javax.swing.JMenuItem importMinutesMenuItem;
+  private javax.swing.JLabel itemLabel;
+  private javax.swing.JPanel itemPanel;
   private javax.swing.JTable itemTable;
   private javax.swing.JScrollPane itemTableScrollPane;
   private javax.swing.JTabbedPane itemTabs;

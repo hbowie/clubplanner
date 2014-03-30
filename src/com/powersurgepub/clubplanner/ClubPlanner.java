@@ -693,7 +693,7 @@ public class ClubPlanner
    Import meeting minutes. 
   */
   private void importMinutes() {
-    System.out.println("ClubPlanner.importMinutes");
+
     boolean modOK = modIfChanged();
     int imported = 0;
     if (modOK) {
@@ -712,13 +712,10 @@ public class ClubPlanner
           reader.openForInput();
           ClubEvent minutesEvent = reader.nextClubEvent();
           while (minutesEvent != null) {
-            System.out.println("  ");
-            System.out.println("  Minutes entry for " + minutesEvent.getWhat());
             int foundAt = clubEventList.findByUniqueKey(minutesEvent);
             if (foundAt >= 0) {
               // We found an existing event -- let's update it
               ClubEvent listEvent = clubEventList.get(foundAt);
-              System.out.println("    Found matching event: " + listEvent.getWhat());
               position.setClubEvent(listEvent);
               position.setIndex(foundAt);
               if (minutesEvent.hasWhen() 
@@ -749,7 +746,6 @@ public class ClubPlanner
                   workNotes.append (GlobalConstants.LINE_FEED);
                   workNotes.append(listEvent.getNotes());
                   listEvent.setNotes(workNotes.toString());
-                  System.out.println("      Updating notes");
                 }
               }
               
@@ -763,8 +759,6 @@ public class ClubPlanner
               if (saved) {
                 String newDiskLocation = listEvent.getDiskLocation();
                 if (! newDiskLocation.equals(oldDiskLocation)) {
-                  System.out.println("      new disk location: " + newDiskLocation);
-                  System.out.println("      deleting old disk location: " + oldDiskLocation);
                   File oldDiskFile = new File (oldDiskLocation);
                   oldDiskFile.delete();
                 }
@@ -802,6 +796,7 @@ public class ClubPlanner
         } // end if I/O error
         reader.close();
         clubEventList.fireTableDataChanged();
+        positionAndDisplay();
         
       } // end if user selected an input file
     } // end if were able to save the last modified record
@@ -2064,7 +2059,6 @@ public class ClubPlanner
     }
     else
     if (node.getNodeType() == TagsNode.ITEM) {
-      // System.out.println ("selectBranch selected item = " + node.toString());
       boolean modOK = modIfChanged();
       if (modOK) {
         ClubEvent branch = (ClubEvent)node.getTaggable();

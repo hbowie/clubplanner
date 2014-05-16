@@ -63,7 +63,7 @@ public class ClubPlanner
     { 
   
   public static final String              PROGRAM_NAME    = "Club Planner";
-  public static final String              PROGRAM_VERSION = "0.90";
+  public static final String              PROGRAM_VERSION = "1.00";
   
   public  static final String             FIND = "Find";
   public  static final String             FIND_AGAIN = "Again";

@@ -1,5 +1,12 @@
-Version 0.50 (2013-04-27)
--------------------------
 
-* Initial release of Club Planner.
+## Version 1.00 (2014-05-26)
+
+1. **Initial Release**
+
+    Initial release of Club Planner.
+
+
+
+
+
 

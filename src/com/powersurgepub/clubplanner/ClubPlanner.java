@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 - 2013 Herb Bowie
+ * Copyright 2012 - 2014 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -820,6 +820,95 @@ public class ClubPlanner
             ClubEvent nextClubEvent = clubEventList.get(i);
             if (nextClubEvent != null) {
               tabs.nextRecordOut(nextClubEvent.getDataRec());
+              exported++;
+            }
+          }
+          tabs.close();
+          JOptionPane.showMessageDialog(this,
+              String.valueOf(exported) + " Club Events exported successfully to"
+                + GlobalConstants.LINE_FEED
+                + selectedFile.toString(),
+              "Export Results",
+              JOptionPane.INFORMATION_MESSAGE,
+              Home.getShared().getIcon());
+          logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
+              + " Club Events exported in tab-delimited format to " 
+              + selectedFile.toString(),
+              false);
+          statusBar.setStatus(String.valueOf(exported) 
+            + " Club Events exported");
+        } catch (java.io.IOException e) {
+          logger.recordEvent (LogEvent.MEDIUM,
+            "Problem exporting Club Events to " + selectedFile.toString(),
+              false);
+            trouble.report ("I/O error attempting to export club events to " 
+                + selectedFile.toString(),
+              "I/O Error");
+            statusBar.setStatus("Trouble exporting Club Events");
+        } // end if I/O error
+      } // end if user selected an output file
+    } // end if were able to save the last modified record
+  }
+  
+  /**
+   Export the list of finances in tab-delimited format.
+   */
+  private void exportFinancials() {
+    boolean modOK = modIfChanged();
+    int exported = 0;
+    if (modOK) {
+      fileChooser.setDialogTitle ("Export Financials");
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      File selectedFile = fileChooser.showSaveDialog (this);
+      if (selectedFile != null) {
+        TabDelimFile tabs = new TabDelimFile(selectedFile);
+        RecordDefinition financesDef = new RecordDefinition();
+        RecordDefinition recDef = ClubEvent.getRecDef();
+        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.ITEM_TYPE_COLUMN_NAME)));
+        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.CATEGORY_COLUMN_NAME)));
+        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.STATUS_COLUMN_NAME)));
+        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.YMD_COLUMN_NAME)));
+        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.WHAT_COLUMN_NAME)));
+        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.FINANCE_PROJECTION_COLUMN_NAME)));
+        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.OVER_UNDER_COLUMN_NAME)));
+        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.PLANNED_INCOME_COLUMN_NAME)));
+        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.PLANNED_EXPENSE_COLUMN_NAME)));
+        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.ACTUAL_INCOME_COLUMN_NAME)));
+        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.ACTUAL_EXPENSE_COLUMN_NAME)));
+        try {
+          tabs.openForOutput(financesDef);
+          for (int i = 0; i < clubEventList.size(); i++) {
+            ClubEvent nextClubEvent = clubEventList.get(i);
+            if (nextClubEvent != null
+                && (nextClubEvent.hasPlannedExpenseWithData()
+                ||  nextClubEvent.hasPlannedIncomeWithData()
+                ||  nextClubEvent.hasActualExpenseWithData()
+                ||  nextClubEvent.hasActualIncomeWithData()
+                ||  nextClubEvent.hasFinanceProjectionWithData())) {
+              DataRecord financeRec = new DataRecord();
+              financeRec.addField(financesDef, nextClubEvent.getItemType());
+              financeRec.addField(financesDef, nextClubEvent.getCategory());
+              financeRec.addField(financesDef, nextClubEvent.getStatusAsString());
+              financeRec.addField(financesDef, nextClubEvent.getYmd());
+              financeRec.addField(financesDef, nextClubEvent.getWhat());
+              financeRec.addField(financesDef, nextClubEvent.getFinanceProjection());
+              financeRec.addField(financesDef, nextClubEvent.getOverUnder());
+              financeRec.addField(financesDef, nextClubEvent.getPlannedIncome());
+              financeRec.addField(financesDef, nextClubEvent.getPlannedExpense());
+              financeRec.addField(financesDef, nextClubEvent.getActualIncome());
+              financeRec.addField(financesDef, nextClubEvent.getActualExpense());
+              tabs.nextRecordOut(financeRec);
               exported++;
             }
           }
@@ -2176,6 +2265,7 @@ public class ClubPlanner
     fileExportTabDelimMenuItem = new javax.swing.JMenuItem();
     exportMinutesMenuItem = new javax.swing.JMenuItem();
     exportOutlineMenuItem = new javax.swing.JMenuItem();
+    exportFinancialsMenuItem = new javax.swing.JMenuItem();
     jSeparator2 = new javax.swing.JPopupMenu.Separator();
     fileTextMergeMenuItem = new javax.swing.JMenuItem();
     jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -2518,6 +2608,14 @@ public class ClubPlanner
     }
   });
   fileExportMenu.add(exportOutlineMenuItem);
+
+  exportFinancialsMenuItem.setText("Financials");
+  exportFinancialsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      exportFinancialsMenuItemActionPerformed(evt);
+    }
+  });
+  fileExportMenu.add(exportFinancialsMenuItem);
 
   fileMenu.add(fileExportMenu);
   fileMenu.add(jSeparator2);
@@ -2890,6 +2988,10 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     exportOutline();
   }//GEN-LAST:event_exportOutlineMenuItemActionPerformed
 
+  private void exportFinancialsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportFinancialsMenuItemActionPerformed
+    exportFinancials();
+  }//GEN-LAST:event_exportFinancialsMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -2951,6 +3053,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenuItem eventNewMenuItem;
   private javax.swing.JMenuItem eventNextMenuItem;
   private javax.swing.JMenuItem eventPriorMenuItem;
+  private javax.swing.JMenuItem exportFinancialsMenuItem;
   private javax.swing.JMenuItem exportMinutesMenuItem;
   private javax.swing.JMenuItem exportOutlineMenuItem;
   private javax.swing.JMenuItem fileBackupMenuItem;

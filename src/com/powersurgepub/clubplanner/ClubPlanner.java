@@ -2852,27 +2852,11 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   }//GEN-LAST:event_itemTableMouseClicked
 
   private void helpHistoryMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpHistoryMenuItemActionPerformed
-    File historyFile = new File (appFolder, "versions.html");
-    try {
-      URI historyURI = historyFile.toURI();
-      URL historyURL = historyURI.toURL();
-      appster.openURL(historyURL.toString());
-    }
-    catch (MalformedURLException e) {
-      trouble.report("Trouble opening the Program History", "Program History Problem");
-    }
+    home.openProgramHistory();
   }//GEN-LAST:event_helpHistoryMenuItemActionPerformed
 
   private void userGuideMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userGuideMenuItemActionPerformed
-    File userGuideFile = new File (appFolder, "clubplanner.html");
-    try {
-      URI userGuideURI = userGuideFile.toURI();
-      URL userGuideURL = userGuideURI.toURL();
-      appster.openURL(userGuideURL.toString());
-    }
-    catch (MalformedURLException e) {
-      trouble.report("Trouble opening the User Guide", "User Guide Problem");
-    }
+    home.openUserGuide();
   }//GEN-LAST:event_userGuideMenuItemActionPerformed
 
   private void helpSoftwareUpdatesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpSoftwareUpdatesMenuItemActionPerformed
@@ -2881,7 +2865,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   }//GEN-LAST:event_helpSoftwareUpdatesMenuItemActionPerformed
 
   private void webMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_webMenuItemActionPerformed
-    appster.openURL ("http://www.powersurgepub.com/products/clubplanner.html");
+    home.openHomePage();
   }//GEN-LAST:event_webMenuItemActionPerformed
 
   private void submitFeedbackMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitFeedbackMenuItemActionPerformed

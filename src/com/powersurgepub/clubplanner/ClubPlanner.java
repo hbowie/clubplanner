@@ -1884,6 +1884,8 @@ public class ClubPlanner
     boolean modOK = true;
 
     ClubEvent clubEvent = position.getClubEvent();
+    ClubEvent clubEventBefore = clubEvent.duplicate();
+
     if (clubEventPanel1.modIfChanged(clubEvent)) {
       modified = true;
       itemLabel.setText(clubEvent.getWhat());
@@ -1924,9 +1926,13 @@ public class ClubPlanner
         if (clubEventCalc.ifOpYearFromFolder()) {
           clubEvent.setYear(clubEventCalc.getOpYearFromFolder());
         }
+        financeWindow.calcPlus(clubEvent);
         addClubEvent (clubEvent);
       } else {
+        financeWindow.calcMinus(clubEventBefore);
         clubEventCalc.calcAll(clubEvent);
+        financeWindow.calcPlus(clubEvent);
+        financeWindow.display();
         clubEventList.modify(position);
         writer = new ClubEventWriter();
         String oldDiskLocation = clubEvent.getDiskLocation();

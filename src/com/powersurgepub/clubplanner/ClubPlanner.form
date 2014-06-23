@@ -87,20 +87,12 @@
                 <Property name="text" type="java.lang.String" value="Export"/>
               </Properties>
               <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="fileExportTabDelimMenuItem">
+                <MenuItem class="javax.swing.JMenuItem" name="exportActionItemsMenuItem">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Tab-Delimited"/>
+                    <Property name="text" type="java.lang.String" value="Action Items"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fileExportTabDelimMenuItemActionPerformed"/>
-                  </Events>
-                </MenuItem>
-                <MenuItem class="javax.swing.JMenuItem" name="exportMinutesMenuItem">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Minutes"/>
-                  </Properties>
-                  <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportMinutesMenuItemActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportActionItemsMenuItemActionPerformed"/>
                   </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="exportOutlineMenuItem">
@@ -117,6 +109,22 @@
                   </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportFinancialsMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="exportMinutesMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Minutes"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportMinutesMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="fileExportTabDelimMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Tab-Delimited"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fileExportTabDelimMenuItemActionPerformed"/>
                   </Events>
                 </MenuItem>
               </SubComponents>

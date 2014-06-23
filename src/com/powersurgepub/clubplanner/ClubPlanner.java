@@ -549,7 +549,6 @@ public class ClubPlanner
    Calculate the totals to be displayed in the Finance Window. 
    */
   private void calcFinanceTotals() {
-    System.out.println("calcFinanceTotals");
     financeWindow.clear();
     for (int i = 0; i < clubEventList.totalSize(); i++) {
       financeWindow.calcPlus(clubEventList.getUnfiltered(i));
@@ -849,6 +848,198 @@ public class ClubPlanner
       } // end if user selected an output file
     } // end if were able to save the last modified record
   }
+  
+  /**
+   Export the list of action items in tab-delimited format.
+   */
+  private void exportActionItems() {
+    boolean modOK = modIfChanged();
+    int exported = 0;
+    if (modOK) {
+      fileChooser.setDialogTitle ("Export Action Items");
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      String exportActionItemsFilePath = userPrefs.getPref("action-items-file", "");
+      if (exportActionItemsFilePath != null
+          && exportActionItemsFilePath.length() > 0) {
+        File exportActionItemsFile = new File(exportActionItemsFilePath);
+        fileChooser.setSelectedFile(exportActionItemsFile);
+      }
+      File selectedFile = fileChooser.showSaveDialog (this);
+      if (selectedFile != null) {
+        TabDelimFile tabs = new TabDelimFile(selectedFile);
+        RecordDefinition actionItemsDef = new RecordDefinition();
+        RecordDefinition recDef = ClubEvent.getRecDef();
+        actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.ITEM_TYPE_COLUMN_NAME)));
+        actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.CATEGORY_COLUMN_NAME)));
+        actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.STATUS_COLUMN_NAME)));
+        actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.YMD_COLUMN_NAME)));
+        actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.WHAT_COLUMN_NAME)));
+        actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
+            (ClubEvent.DISCUSS_COLUMN_NAME)));
+        DataFieldDefinition actioneesDef = new DataFieldDefinition("Actionees");
+        actionItemsDef.addColumn(actioneesDef);
+        DataFieldDefinition actioneeDef = new DataFieldDefinition("Actionee");
+        actionItemsDef.addColumn(actioneeDef);
+        DataFieldDefinition actionSeqDef = new DataFieldDefinition("Action Seq");
+        actionItemsDef.addColumn(actionSeqDef);
+        DataFieldDefinition actionDef = new DataFieldDefinition("Action");
+        actionItemsDef.addColumn(actionDef);
+
+        try {
+          tabs.openForOutput(actionItemsDef);
+          for (int i = 0; i < clubEventList.size(); i++) {
+            ClubEvent nextClubEvent = clubEventList.get(i);
+            if (nextClubEvent != null
+                && nextClubEvent.hasActionsWithData()) {
+              String actions = nextClubEvent.getActions();
+              StringLineReader actionsReader = new StringLineReader(actions);
+              int actionSeq = 0;
+              actionsReader.open();
+              String action = actionsReader.readLine().trim();
+              while (actionsReader.isOK() && (! actionsReader.isAtEnd())) {                
+                if (action.length() > 0) {
+                  // One action per line
+                  actionSeq++;
+                  int actionStart = 0;
+
+                  // Find the last character on the line
+                  int actionEnd = action.length();
+                  while (actionEnd > actionStart
+                      && Character.isWhitespace(action.charAt(actionEnd - 1))) {
+                    actionEnd--;
+                  }
+
+                  // A colon should follow names of actionees, 
+                  // and precede the action itself.
+                  int actionColon = action.indexOf(":", actionStart);
+                  if (actionColon < 0) {
+                    actionColon = action.indexOf("-", actionStart);
+                  }
+
+                  // If the actions are numbered, then skip past the numbers
+                  int actionDot = action.indexOf(".", actionStart);
+                  if (actionDot < 0 || (actionColon > 0 && actionDot > actionColon)) {
+                    actionDot = action.indexOf(")", actionStart);
+                  }
+                  if (actionColon > 0 && actionDot > actionColon) {
+                    actionDot = -1;
+                  }
+                  if (actionDot >= 0) {
+                    actionStart = actionDot + 1;
+                  }
+
+                  // Skip any leading white space
+                  while (actionStart < actionEnd
+                      && Character.isWhitespace(action.charAt(actionStart))) {
+                    actionStart++;
+                  }
+
+                  // Let's get the list of actionees
+                  String actionees = "";
+                  if (actionColon >= 0) {
+                    actionees = action.substring(actionStart, actionColon);
+                  }
+                  if (actionees.length() == 0) {
+                    actionees = nextClubEvent.getWho();
+                  }
+
+                  String actionItem = "";
+                  if (actionColon >= 0) {
+                    actionItem = action.substring(actionColon + 1).trim();
+                  } else {
+                    actionItem = action.substring(actionStart);
+                  }
+
+                  // Write out one action item line for each actionee
+                  int actioneeStart = 0;
+                  int actioneeEnd = actionees.length();
+                  String actionee = "";
+                  int actioneesCount = 0;
+                  while (actioneesCount == 0 || actioneeStart < actionees.length()) {
+                    actioneeEnd = actionees.length();
+                    int delimStart = actionees.indexOf(",", actioneeStart);
+                    int delimEnd = delimStart + 1;
+                    if (delimStart < 0) {
+                      delimStart = actionees.indexOf("&", actioneeStart);
+                      delimEnd = delimStart + 1;
+                      if (delimStart < 0) {
+                        delimStart = actionees.indexOf(" and ", actioneeStart);
+                        if (delimStart >= 0) {
+                          delimEnd = delimStart + 5;
+                        }
+                      }
+                    }
+                    if (delimStart > 0) {
+                      actioneeEnd = delimStart;
+                    }
+                    while (actioneeStart < actioneeEnd
+                        && Character.isWhitespace(actionees.charAt(actioneeStart))) {
+                      actioneeStart++;
+                    }
+                    while (actioneeStart < actioneeEnd
+                        && Character.isWhitespace(actionees.charAt(actioneeEnd - 1))) {
+                      actioneeEnd--;
+                    }
+                    actionee = actionees.substring(actioneeStart, actioneeEnd);
+                    if (delimStart >= 0) {
+                      actioneeStart = delimEnd;
+                    } else {
+                      actioneeStart = actionees.length();
+                    }
+                    DataRecord actionItemsRec = new DataRecord();
+                    actionItemsRec.addField(actionItemsDef, nextClubEvent.getItemType());
+                    actionItemsRec.addField(actionItemsDef, nextClubEvent.getCategory());
+                    actionItemsRec.addField(actionItemsDef, nextClubEvent.getStatusAsString());
+                    actionItemsRec.addField(actionItemsDef, nextClubEvent.getYmd());
+                    actionItemsRec.addField(actionItemsDef, nextClubEvent.getWhat());
+                    actionItemsRec.addField(actionItemsDef, nextClubEvent.getDiscuss());
+                    actionItemsRec.addField(actionItemsDef, actionees);
+                    actionItemsRec.addField(actionItemsDef, actionee);
+                    actionItemsRec.addField(actionItemsDef, String.valueOf(actionSeq));
+                    actionItemsRec.addField(actionItemsDef, actionItem);
+                    tabs.nextRecordOut(actionItemsRec);
+                    actioneesCount++;
+                    exported++;
+                  } // End while more actionees
+                } // End if action line is not blank
+                action = actionsReader.readLine();
+              } // End while more action lines
+              actionsReader.close();
+            } // End if club event has actions
+          } // End while more club events
+          tabs.close();
+          JOptionPane.showMessageDialog(this,
+              String.valueOf(exported) + " Action Items exported successfully to"
+                + GlobalConstants.LINE_FEED
+                + selectedFile.toString(),
+              "Export Results",
+              JOptionPane.INFORMATION_MESSAGE,
+              Home.getShared().getIcon());
+          logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
+              + " Action Items exported in tab-delimited format to " 
+              + selectedFile.toString(),
+              false);
+          statusBar.setStatus(String.valueOf(exported) 
+            + " Action Items exported");
+        } catch (java.io.IOException e) {
+          logger.recordEvent (LogEvent.MEDIUM,
+            "Problem exporting Action Items to " + selectedFile.toString(),
+              false);
+            trouble.report ("I/O error attempting to export action items to " 
+                + selectedFile.toString(),
+              "I/O Error");
+            statusBar.setStatus("Trouble exporting Action Items");
+        } // end if I/O error
+        userPrefs.setPref("action-items-file", selectedFile.getAbsolutePath());
+      } // end if user selected an output file
+    } // end if were able to save the last modified record
+  }
+  
   
   /**
    Export the list of finances in tab-delimited format.
@@ -2268,10 +2459,11 @@ public class ClubPlanner
     fileImportMenu = new javax.swing.JMenu();
     importMinutesMenuItem = new javax.swing.JMenuItem();
     fileExportMenu = new javax.swing.JMenu();
-    fileExportTabDelimMenuItem = new javax.swing.JMenuItem();
-    exportMinutesMenuItem = new javax.swing.JMenuItem();
+    exportActionItemsMenuItem = new javax.swing.JMenuItem();
     exportOutlineMenuItem = new javax.swing.JMenuItem();
     exportFinancialsMenuItem = new javax.swing.JMenuItem();
+    exportMinutesMenuItem = new javax.swing.JMenuItem();
+    fileExportTabDelimMenuItem = new javax.swing.JMenuItem();
     jSeparator2 = new javax.swing.JPopupMenu.Separator();
     fileTextMergeMenuItem = new javax.swing.JMenuItem();
     jSeparator4 = new javax.swing.JPopupMenu.Separator();
@@ -2591,21 +2783,13 @@ public class ClubPlanner
 
   fileExportMenu.setText("Export");
 
-  fileExportTabDelimMenuItem.setText("Tab-Delimited");
-  fileExportTabDelimMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  exportActionItemsMenuItem.setText("Action Items");
+  exportActionItemsMenuItem.addActionListener(new java.awt.event.ActionListener() {
     public void actionPerformed(java.awt.event.ActionEvent evt) {
-      fileExportTabDelimMenuItemActionPerformed(evt);
+      exportActionItemsMenuItemActionPerformed(evt);
     }
   });
-  fileExportMenu.add(fileExportTabDelimMenuItem);
-
-  exportMinutesMenuItem.setText("Minutes");
-  exportMinutesMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      exportMinutesMenuItemActionPerformed(evt);
-    }
-  });
-  fileExportMenu.add(exportMinutesMenuItem);
+  fileExportMenu.add(exportActionItemsMenuItem);
 
   exportOutlineMenuItem.setText("Agenda Outline");
   exportOutlineMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -2622,6 +2806,22 @@ public class ClubPlanner
     }
   });
   fileExportMenu.add(exportFinancialsMenuItem);
+
+  exportMinutesMenuItem.setText("Minutes");
+  exportMinutesMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      exportMinutesMenuItemActionPerformed(evt);
+    }
+  });
+  fileExportMenu.add(exportMinutesMenuItem);
+
+  fileExportTabDelimMenuItem.setText("Tab-Delimited");
+  fileExportTabDelimMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      fileExportTabDelimMenuItemActionPerformed(evt);
+    }
+  });
+  fileExportMenu.add(fileExportTabDelimMenuItem);
 
   fileMenu.add(fileExportMenu);
   fileMenu.add(jSeparator2);
@@ -2982,6 +3182,10 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
     exportFinancials();
   }//GEN-LAST:event_exportFinancialsMenuItemActionPerformed
 
+  private void exportActionItemsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportActionItemsMenuItemActionPerformed
+    exportActionItems();
+  }//GEN-LAST:event_exportActionItemsMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -3043,6 +3247,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JMenuItem eventNewMenuItem;
   private javax.swing.JMenuItem eventNextMenuItem;
   private javax.swing.JMenuItem eventPriorMenuItem;
+  private javax.swing.JMenuItem exportActionItemsMenuItem;
   private javax.swing.JMenuItem exportFinancialsMenuItem;
   private javax.swing.JMenuItem exportMinutesMenuItem;
   private javax.swing.JMenuItem exportOutlineMenuItem;

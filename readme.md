@@ -1,12 +1,17 @@
 Introduction
------------- 
+------------
 
-Club Planner is a [PowerSurge Publishing](http://www.powersurgepub.com) application for planning and communicating the activities of a club (such as an alumni club). 
+Club Planner is a desktop application for planning and communicating the activities of a club (such as an alumni club). 
+
+I wrote the application for use by the [University of Michigan Club of Seattle](http://www.umseattle.com), after several years of involvement with this club and its board. 
+
+Although this is an app that runs on a user's desktop, it is designed to store its data in a folder that can be easily shared with others through a service such as [Dropbox](http://www.dropbox.com). 
+
 
 Documentation
 -------------
 
-User documentation is available at [docs/user-guide.md](docs/user-guide.md).
+User documentation is available at [docs/index.md](docs/index.md).
 
 Executables
 -----------
@@ -20,6 +25,7 @@ Source code for Club Planner is available at
 
 	https://github.com/hbowie/clubplanner
 	
+
 Source code for JExcelAPI is available at
 
 	http://sourceforge.net/projects/jexcelapi
@@ -29,27 +35,18 @@ Source code for parboiled is available at
 	https://github.com/sirthias/parboiled
 	
 Source code for pegdown is available at
-  
+ 
 	https://github.com/sirthias/pegdown
-	
+
 Rights
------- 
+------
 
-### Club Planner 
+### Club Planner
 
-Copyright 2012 - 2013 Herb Bowie
+Copyright 2013 - 2014 by Herb Bowie
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
 
-	http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
 
 ### JExcelAPI
 
@@ -66,7 +63,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see 
+along with this program.  If not, see
 
 	http://www.gnu.org/licenses/
 	
@@ -86,8 +83,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 	
-### pegdown 
-
 Copyright 2010-2011 Mathias Doenitz
 
 Based on peg-markdown 2008-2010 John MacFarlane

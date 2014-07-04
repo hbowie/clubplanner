@@ -887,15 +887,22 @@ public class ClubPlanner
         actionItemsDef.addColumn(actioneeDef);
         DataFieldDefinition actionSeqDef = new DataFieldDefinition("Action Seq");
         actionItemsDef.addColumn(actionSeqDef);
+        DataFieldDefinition actionDoneDef = new DataFieldDefinition("Done?");
+        actionItemsDef.addColumn(actionDoneDef);
         DataFieldDefinition actionDef = new DataFieldDefinition("Action");
         actionItemsDef.addColumn(actionDef);
 
+        // Now write out the action items
         try {
           tabs.openForOutput(actionItemsDef);
+          
+          // Check all the events
           for (int i = 0; i < clubEventList.size(); i++) {
             ClubEvent nextClubEvent = clubEventList.get(i);
             if (nextClubEvent != null
                 && nextClubEvent.hasActionsWithData()) {
+              
+              // Now let's get the individual items out of the text field
               String actions = nextClubEvent.getActions();
               StringLineReader actionsReader = new StringLineReader(actions);
               int actionSeq = 0;
@@ -938,6 +945,28 @@ public class ClubPlanner
                       && Character.isWhitespace(action.charAt(actionStart))) {
                     actionStart++;
                   }
+                  
+                  // Now let's see whether the action item has been completed
+                  String done = " ";
+                  if (actionStart < actionEnd
+                      && action.charAt(actionStart) == '(') {
+                    int rightParen = action.indexOf(")", actionStart + 2);
+                    if (rightParen > 0) {
+                      done = action.substring(actionStart + 1, rightParen);
+                      if (done.equalsIgnoreCase("x") 
+                          || done.equalsIgnoreCase("y")
+                          || done.equalsIgnoreCase("yes")
+                          || done.equalsIgnoreCase("t")
+                          || done.equalsIgnoreCase("true")) {
+                        done = "Done";
+                      }
+                      actionStart = rightParen + 1;
+                      while (actionStart < actionEnd
+                          && Character.isWhitespace(action.charAt(actionStart))) {
+                        actionStart++;
+                      } // End skipping past white space
+                    } // End if we found a right paren
+                  } // End if we found a left paren
 
                   // Let's get the list of actionees
                   String actionees = "";
@@ -1001,6 +1030,7 @@ public class ClubPlanner
                     actionItemsRec.addField(actionItemsDef, actionees);
                     actionItemsRec.addField(actionItemsDef, actionee);
                     actionItemsRec.addField(actionItemsDef, String.valueOf(actionSeq));
+                    actionItemsRec.addField(actionItemsDef, done);
                     actionItemsRec.addField(actionItemsDef, actionItem);
                     tabs.nextRecordOut(actionItemsRec);
                     actioneesCount++;
@@ -1679,6 +1709,11 @@ public class ClubPlanner
     return backupFolder;
   }
   
+  /**
+   Help the user start a new operating year. 
+   
+   @return True if everything proceeded smoothly. 
+  */
   public boolean startNewYear() {
     boolean started = false;
     File newEventsFolder = null;
@@ -2688,7 +2723,7 @@ public class ClubPlanner
 
     treePanel.add(treeScrollPane, java.awt.BorderLayout.CENTER);
 
-    collectionTabs.addTab("Categories", treePanel);
+    collectionTabs.addTab("Status", treePanel);
 
     mainSplitPane.setLeftComponent(collectionTabs);
 

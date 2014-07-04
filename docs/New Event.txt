@@ -1,2 +1,0 @@
-What: 									// A brief descriptive title for the event.
-

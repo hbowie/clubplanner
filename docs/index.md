@@ -366,14 +366,14 @@ Club Planner assumes that your club records are stored electronically, using som
     - *Name of Club* -- This would be the folder containing all of your club records. This would be the folder you would share with other club members using a service such as [Dropbox][].
         - *Operating Year* -- This would be a folder containing all of your club's records for a particular operating year. If your operating year is aligned with a calendar year, then this folder name should contain a single 4-digit year (usually following a brief form of the club's name). If your operating year spans two years, then this folder name should contain two 4-digit years, separated by a dash.
             - *Events* -- This would be the folder containing information about your events. The contents of this folder will be maintained by Club Planner.
- 
+
 For example, the U-M Seattle club's folders look like this.
 
 - *Dropbox*
     - *UM Seattle*
         - *UM Seattle 2013 - 2014*
             - *Events*
- 
+
 The *Events* folder would then contain one folder for each category of event. Each of those folders would then contain one file for each event. These are plain text files, and may be viewed and even edited using any text editor.
 
 Note that all of these folders above the *Events* folder may contain other folders and files, unrelated to Club Planner.
@@ -464,7 +464,6 @@ The detailed data for the currently selected Event appears on the second half of
 
 <h2 id="tips-tricks-and-special-functions">Tips, Tricks and Special Functions</h2>
 
-<>if yes eq yes ?>
 
 <h3 id="textmerge-sort">TextMerge Sort</h3>
 
@@ -840,7 +839,7 @@ If a variable may be interpreted as a series of "words," with the words delimite
 For example, if the template file contained the following:
 
 <blockquote>
-	PM37;
+	PM36;
 </blockquote>
 
 And the name variable was equal to:

@@ -173,6 +173,7 @@ public class ClubPlanner
     
     // Connect up to Mac environment as necessary
     xos.setFileMenu (fileMenu);
+    home.setHelpMenu(this, helpMenu);
     xos.setHelpMenu (helpMenu);
     xos.setXHandler (this);
     xos.setMainWindow (this);
@@ -2518,14 +2519,6 @@ public class ClubPlanner
     editMenu = new javax.swing.JMenu();
     windowMenu = new javax.swing.JMenu();
     helpMenu = new javax.swing.JMenu();
-    helpHistoryMenuItem = new javax.swing.JMenuItem();
-    userGuideMenuItem = new javax.swing.JMenuItem();
-    jSeparator7 = new javax.swing.JSeparator();
-    helpSoftwareUpdatesMenuItem = new javax.swing.JMenuItem();
-    webMenuItem = new javax.swing.JMenuItem();
-    submitFeedbackMenuItem = new javax.swing.JMenuItem();
-    jSeparator8 = new javax.swing.JSeparator();
-    helpReduceWindowSizeMenuItem = new javax.swing.JMenuItem();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -2975,59 +2968,6 @@ eventFutureMenuItem.addActionListener(new java.awt.event.ActionListener() {
   mainMenuBar.add(windowMenu);
 
   helpMenu.setText("Help");
-
-  helpHistoryMenuItem.setText("Program History");
-  helpHistoryMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      helpHistoryMenuItemActionPerformed(evt);
-    }
-  });
-  helpMenu.add(helpHistoryMenuItem);
-
-  userGuideMenuItem.setText("User Guide");
-  userGuideMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      userGuideMenuItemActionPerformed(evt);
-    }
-  });
-  helpMenu.add(userGuideMenuItem);
-  helpMenu.add(jSeparator7);
-
-  helpSoftwareUpdatesMenuItem.setText("Check for Updates...");
-  helpSoftwareUpdatesMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      helpSoftwareUpdatesMenuItemActionPerformed(evt);
-    }
-  });
-  helpMenu.add(helpSoftwareUpdatesMenuItem);
-
-  webMenuItem.setText("Club Planner Home Page");
-  webMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      webMenuItemActionPerformed(evt);
-    }
-  });
-  helpMenu.add(webMenuItem);
-
-  submitFeedbackMenuItem.setText("Submit Feedback");
-  submitFeedbackMenuItem.addActionListener(new java.awt.event.ActionListener() {
-    public void actionPerformed(java.awt.event.ActionEvent evt) {
-      submitFeedbackMenuItemActionPerformed(evt);
-    }
-  });
-  helpMenu.add(submitFeedbackMenuItem);
-  helpMenu.add(jSeparator8);
-
-  helpReduceWindowSizeMenuItem.setText("Reduce Window Size");
-  helpReduceWindowSizeMenuItem.setAccelerator (KeyStroke.getKeyStroke (KeyEvent.VK_W,
-    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener() {
-  public void actionPerformed(java.awt.event.ActionEvent evt) {
-    helpReduceWindowSizeMenuItemActionPerformed(evt);
-  }
-  });
-  helpMenu.add(helpReduceWindowSizeMenuItem);
-
   mainMenuBar.add(helpMenu);
 
   setJMenuBar(mainMenuBar);
@@ -3091,33 +3031,6 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private void itemTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableMouseClicked
     selectTableRow();
   }//GEN-LAST:event_itemTableMouseClicked
-
-  private void helpHistoryMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpHistoryMenuItemActionPerformed
-    home.openProgramHistory();
-  }//GEN-LAST:event_helpHistoryMenuItemActionPerformed
-
-  private void userGuideMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userGuideMenuItemActionPerformed
-    home.openUserGuide();
-  }//GEN-LAST:event_userGuideMenuItemActionPerformed
-
-  private void helpSoftwareUpdatesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpSoftwareUpdatesMenuItemActionPerformed
-    programVersion.informUserIfNewer();
-    programVersion.informUserIfLatest();
-  }//GEN-LAST:event_helpSoftwareUpdatesMenuItemActionPerformed
-
-  private void webMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_webMenuItemActionPerformed
-    home.openHomePage();
-  }//GEN-LAST:event_webMenuItemActionPerformed
-
-  private void submitFeedbackMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitFeedbackMenuItemActionPerformed
-    appster.openURL ("mailto:support@powersurgepub.com?subject=Club Planner Feedback");
-  }//GEN-LAST:event_submitFeedbackMenuItemActionPerformed
-
-  private void helpReduceWindowSizeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpReduceWindowSizeMenuItemActionPerformed
-    setBounds(100, 100, 800, 600);
-    positionTextMergeWindow();
-    // pack();
-  }//GEN-LAST:event_helpReduceWindowSizeMenuItemActionPerformed
 
   private void fileBackupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileBackupMenuItemActionPerformed
     if (goodEventsFile()) {
@@ -3302,10 +3215,7 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JButton findButton;
   private javax.swing.JTextField findText;
   private javax.swing.JButton firstButton;
-  private javax.swing.JMenuItem helpHistoryMenuItem;
   private javax.swing.JMenu helpMenu;
-  private javax.swing.JMenuItem helpReduceWindowSizeMenuItem;
-  private javax.swing.JMenuItem helpSoftwareUpdatesMenuItem;
   private javax.swing.JMenuItem importMinutesMenuItem;
   private javax.swing.JLabel itemLabel;
   private javax.swing.JPanel itemPanel;
@@ -3318,8 +3228,6 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JPopupMenu.Separator jSeparator4;
   private javax.swing.JPopupMenu.Separator jSeparator5;
   private javax.swing.JPopupMenu.Separator jSeparator6;
-  private javax.swing.JSeparator jSeparator7;
-  private javax.swing.JSeparator jSeparator8;
   private javax.swing.JPopupMenu.Separator jSeparator9;
   private javax.swing.JButton lastButton;
   private javax.swing.JPanel listPanel;
@@ -3330,12 +3238,9 @@ helpReduceWindowSizeMenuItem.addActionListener(new java.awt.event.ActionListener
   private javax.swing.JButton nextButton;
   private javax.swing.JButton okButton;
   private javax.swing.JButton priorButton;
-  private javax.swing.JMenuItem submitFeedbackMenuItem;
   private javax.swing.JTree tagsTree;
   private javax.swing.JPanel treePanel;
   private javax.swing.JScrollPane treeScrollPane;
-  private javax.swing.JMenuItem userGuideMenuItem;
-  private javax.swing.JMenuItem webMenuItem;
   private javax.swing.JMenu windowMenu;
   // End of variables declaration//GEN-END:variables
 }

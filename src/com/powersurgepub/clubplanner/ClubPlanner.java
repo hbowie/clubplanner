@@ -1081,6 +1081,8 @@ public class ClubPlanner
     if (modOK) {
       fileChooser.setDialogTitle ("Export Financials");
       fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      File suggestion = new File (eventsFile.getParentFile(), "Finance/Club Finances.tab");
+      fileChooser.setFile(suggestion);
       File selectedFile = fileChooser.showSaveDialog (this);
       if (selectedFile != null) {
         TabDelimFile tabs = new TabDelimFile(selectedFile);

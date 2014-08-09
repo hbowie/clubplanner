@@ -29,6 +29,7 @@ package com.powersurgepub.clubplanner;
   import com.powersurgepub.psdatalib.txbio.*;
   import com.powersurgepub.psdatalib.ui.*;
   import com.powersurgepub.psmkdown.*;
+  import com.powersurgepub.pspub.*;
   import com.powersurgepub.pstextio.*;
   import com.powersurgepub.psutils.*;
   import com.powersurgepub.xos2.*;
@@ -59,7 +60,8 @@ public class ClubPlanner
       FileSpecOpener,
       XHandler,
       LinkTweakerApp,
-      MarkdownLineReader
+      MarkdownLineReader,
+      PublishAssistant
     { 
   
   public static final String              PROGRAM_NAME    = "Club Planner";
@@ -141,6 +143,8 @@ public class ClubPlanner
   private             int                 templateTabIndex = 2;
   
   private             StringLineReader    markdownReader = null;
+  
+  private             PublishWindow       publishWindow;
 
   /**
    Creates new form ClubPlanner
@@ -182,6 +186,9 @@ public class ClubPlanner
     // Set up user prefs
     userPrefs = UserPrefs.getShared();
     prefsWindow = new PrefsWindow (this);
+    
+    publishWindow = new PublishWindow(this);
+    publishWindow.setOnSaveOption(false);
     
     filePrefs = new FilePrefs(this);
     filePrefs.loadFromPrefs();
@@ -308,6 +315,11 @@ public class ClubPlanner
     }
   }
   
+  public void setStatusBar (StatusBar statusBar) {
+    this.statusBar = statusBar;
+    publishWindow.setStatusBar(statusBar);
+  }
+  
   public void setListAvailable(boolean listAvailable) {
     this.listAvailable = listAvailable;
   }
@@ -363,6 +375,44 @@ public class ClubPlanner
   
   public void displayPrefs () {
     displayAuxiliaryWindow(prefsWindow);
+  }
+  
+  public void displayPublishWindow() {
+    displayAuxiliaryWindow(publishWindow);
+  }
+  
+  /**
+   Any pre-processing to do before PublishWindow starts its publication
+   process. In particular, make the source data available to the publication
+   script.
+
+   @param publishTo The folder to which we are publishing.
+   */
+  public void prePub(File publishTo) {
+
+  }
+  
+  /**
+   Perform the requested publishing operation.
+   
+   @param operand
+   */
+  public boolean pubOperation(File publishTo, String operand) {
+    boolean operationOK = false;
+    if (operand.equalsIgnoreCase("urlunion")) {
+      // operationOK = publishURLUnion(publishTo);
+    }
+    return operationOK;
+  }
+  
+  /**
+   Any post-processing to be done after PublishWindow has completed its
+   publication process.
+
+   @param publishTo The folder to which we are publishing.
+   */
+  public void postPub(File publishTo) {
+
   }
   
   public void displayAuxiliaryWindow(WindowToManage window) {
@@ -508,6 +558,7 @@ public class ClubPlanner
       statusBar.setStatus("Trouble loading Club Events");
     }
     setClubEventFolder (fileToOpen);
+    publishWindow.openSource(fileToOpen);
     setPSList();
     /*
     readFileContents(eventsFile);
@@ -577,6 +628,7 @@ public class ClubPlanner
           oldDiskFile.delete();
           numberDeleted++;
         }
+        publishWindow.saveSource();
       } else {
         trouble.report(this, "Trouble saving the item to disk", "I/O Error");
         saveOK = false;
@@ -675,6 +727,8 @@ public class ClubPlanner
         saved = writer.save (selectedFile, clubEventList, true, false);
         if (saved) {
           setClubEventFolder (selectedFile);
+          publishWindow.openSource(selectedFile);
+          publishWindow.saveSource();
           logger.recordEvent (LogEvent.NORMAL,
             "Club Events saved to " + selectedFile.toString(),
               false);
@@ -1831,6 +1885,7 @@ public class ClubPlanner
       if (currentFileModified) {
         filePrefs.handleClose();
       }
+      publishWindow.closeSource();
     }
     currentFileModified = false;
   }
@@ -2504,6 +2559,8 @@ public class ClubPlanner
     fileExportTabDelimMenuItem = new javax.swing.JMenuItem();
     jSeparator2 = new javax.swing.JPopupMenu.Separator();
     fileTextMergeMenuItem = new javax.swing.JMenuItem();
+    publishWindowMenuItem = new javax.swing.JMenuItem();
+    publishNowMenuItem = new javax.swing.JMenuItem();
     jSeparator4 = new javax.swing.JPopupMenu.Separator();
     fileBackupMenuItem = new javax.swing.JMenuItem();
     jSeparator5 = new javax.swing.JPopupMenu.Separator();
@@ -2868,6 +2925,22 @@ public class ClubPlanner
   fileMenu.add(fileTextMergeMenuItem);
   fileTextMergeMenuItem.getAccessibleContext().setAccessibleName("TextMerge");
 
+  publishWindowMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_P, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+  publishWindowMenuItem.setText("Publish...");
+  publishWindowMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      publishWindowMenuItemActionPerformed(evt);
+    }
+  });
+  fileMenu.add(publishWindowMenuItem);
+
+  publishNowMenuItem.setText("Publish Now");
+  publishNowMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      publishNowMenuItemActionPerformed(evt);
+    }
+  });
+  fileMenu.add(publishNowMenuItem);
   fileMenu.add(jSeparator4);
 
   fileBackupMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_B, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
@@ -3136,6 +3209,14 @@ eventFutureMenuItem.addActionListener(new java.awt.event.ActionListener() {
     exportActionItems();
   }//GEN-LAST:event_exportActionItemsMenuItemActionPerformed
 
+  private void publishWindowMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_publishWindowMenuItemActionPerformed
+    displayPublishWindow();
+  }//GEN-LAST:event_publishWindowMenuItemActionPerformed
+
+  private void publishNowMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_publishNowMenuItemActionPerformed
+    publishWindow.publishNow();
+  }//GEN-LAST:event_publishNowMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -3240,6 +3321,8 @@ eventFutureMenuItem.addActionListener(new java.awt.event.ActionListener() {
   private javax.swing.JButton nextButton;
   private javax.swing.JButton okButton;
   private javax.swing.JButton priorButton;
+  private javax.swing.JMenuItem publishNowMenuItem;
+  private javax.swing.JMenuItem publishWindowMenuItem;
   private javax.swing.JTree tagsTree;
   private javax.swing.JPanel treePanel;
   private javax.swing.JScrollPane treeScrollPane;

@@ -6,7 +6,7 @@
 <?set masterItemClass = =$itemclass$= ?>
 <?output "../../src/com/powersurgepub/clubplanner/model/=$itemclass$=Positioned.java"?>
 /*
- * Copyright 2012 - 2013 Herb Bowie
+ * Copyright 2012 - 2014 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

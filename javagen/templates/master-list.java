@@ -6,7 +6,7 @@
 <?set masterItemClass = =$itemclass$= ?>
 <?output "../../src/com/powersurgepub/clubplanner/model/=$itemclass$=List.java"?>
 /*
- * Copyright 2012 - 2013 Herb Bowie
+ * Copyright 2012 - 2014 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -418,9 +418,9 @@ public class =$itemclass$=List
       newPosition = next (position);
       tagsModel.remove (position.get=$itemclass$=());
       tagsList.remove (position.get=$itemclass$=());
-      proxyList.remove(oldIndex);
+      =$itemclass$=Proxy proxyRemoved = proxyList.remove(oldIndex);
       =$itemclass$=Proxy =$itemclass&clul$=Proxy = proxyList.get(oldIndex);
-      int listIndex = =$itemclass&clul$=Proxy.getItemIndex();
+      int listIndex = proxyRemoved.getItemIndex();
       int newIndex = newPosition.getIndex();
       if (newIndex >= oldIndex) {
         newPosition.setIndex(newIndex - 1);

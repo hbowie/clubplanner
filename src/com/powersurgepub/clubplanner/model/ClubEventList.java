@@ -411,9 +411,9 @@ public class ClubEventList
       newPosition = next (position);
       tagsModel.remove (position.getClubEvent());
       tagsList.remove (position.getClubEvent());
-      proxyList.remove(oldIndex);
+      ClubEventProxy proxyRemoved = proxyList.remove(oldIndex);
       ClubEventProxy clubEventProxy = proxyList.get(oldIndex);
-      int listIndex = clubEventProxy.getItemIndex();
+      int listIndex = proxyRemoved.getItemIndex();
       int newIndex = newPosition.getIndex();
       if (newIndex >= oldIndex) {
         newPosition.setIndex(newIndex - 1);

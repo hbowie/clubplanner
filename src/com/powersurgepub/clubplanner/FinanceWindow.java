@@ -71,11 +71,17 @@ public class FinanceWindow
   
   public void display() {
 
-    financeProjectionText.setText
-        (numberFormat.format(financeProjection.doubleValue()));
+    financeProjectionText.setText (getFinanceProjection());
 
-    overUnderText.setText
-        (numberFormat.format(overUnder.doubleValue()));
+    overUnderText.setText (getOverUnder());
+  }
+  
+  public String getFinanceProjection() {
+    return numberFormat.format(financeProjection.doubleValue());
+  }
+  
+  public String getOverUnder() {
+    return numberFormat.format(overUnder.doubleValue());
   }
 
   /**

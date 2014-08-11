@@ -145,6 +145,8 @@ public class ClubPlanner
   private             StringLineReader    markdownReader = null;
   
   private             PublishWindow       publishWindow;
+  
+  private             int                 exported = 0;
 
   /**
    Creates new form ClubPlanner
@@ -375,44 +377,6 @@ public class ClubPlanner
   
   public void displayPrefs () {
     displayAuxiliaryWindow(prefsWindow);
-  }
-  
-  public void displayPublishWindow() {
-    displayAuxiliaryWindow(publishWindow);
-  }
-  
-  /**
-   Any pre-processing to do before PublishWindow starts its publication
-   process. In particular, make the source data available to the publication
-   script.
-
-   @param publishTo The folder to which we are publishing.
-   */
-  public void prePub(File publishTo) {
-
-  }
-  
-  /**
-   Perform the requested publishing operation.
-   
-   @param operand
-   */
-  public boolean pubOperation(File publishTo, String operand) {
-    boolean operationOK = false;
-    if (operand.equalsIgnoreCase("urlunion")) {
-      // operationOK = publishURLUnion(publishTo);
-    }
-    return operationOK;
-  }
-  
-  /**
-   Any post-processing to be done after PublishWindow has completed its
-   publication process.
-
-   @param publishTo The folder to which we are publishing.
-   */
-  public void postPub(File publishTo) {
-
   }
   
   public void displayAuxiliaryWindow(WindowToManage window) {
@@ -856,12 +820,57 @@ public class ClubPlanner
     } // end if were able to save the last modified record
   }
   
+  public void displayPublishWindow() {
+    displayAuxiliaryWindow(publishWindow);
+  }
+  
+  /**
+   Any pre-processing to do before PublishWindow starts its publication
+   process. In particular, make the source data available to the publication
+   script.
+
+   @param publishTo The folder to which we are publishing.
+   */
+  public void prePub(File publishTo) {
+
+  }
+  
+  /**
+   Perform the requested publishing operation.
+   
+   @param operand
+   */
+  public boolean pubOperation(File publishTo, String operand) {
+    boolean operationOK = false;
+    File dataFolder = new File (publishTo, "data");
+    if (operand.equalsIgnoreCase("actions")) {
+      File actionsFile = new File (dataFolder, "actions.tab");
+      operationOK = exportActionItems(actionsFile);
+    }
+    else
+    if (operand.equalsIgnoreCase("finance")) {
+      File financeFile = new File (dataFolder, "finance.tab");
+      operationOK = exportFinancials(financeFile);
+    }
+    return operationOK;
+  }
+  
+  /**
+   Any post-processing to be done after PublishWindow has completed its
+   publication process.
+
+   @param publishTo The folder to which we are publishing.
+   */
+  public void postPub(File publishTo) {
+
+  }
+  
   /**
    Export the list of events in tab-delimited format.
    */
   private void exportTabDelim() {
     boolean modOK = modIfChanged();
-    int exported = 0;
+    exported = 0;
     if (modOK) {
       fileChooser.setDialogTitle ("Export to Tab-Delimited");
       fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -909,7 +918,6 @@ public class ClubPlanner
    */
   private void exportActionItems() {
     boolean modOK = modIfChanged();
-    int exported = 0;
     if (modOK) {
       fileChooser.setDialogTitle ("Export Action Items");
       fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -921,208 +929,219 @@ public class ClubPlanner
       }
       File selectedFile = fileChooser.showSaveDialog (this);
       if (selectedFile != null) {
-        TabDelimFile tabs = new TabDelimFile(selectedFile);
-        RecordDefinition actionItemsDef = new RecordDefinition();
-        RecordDefinition recDef = ClubEvent.getRecDef();
-        actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.ITEM_TYPE_COLUMN_NAME)));
-        actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.CATEGORY_COLUMN_NAME)));
-        actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.STATUS_COLUMN_NAME)));
-        actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.YMD_COLUMN_NAME)));
-        actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.WHAT_COLUMN_NAME)));
-        actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.DISCUSS_COLUMN_NAME)));
-        DataFieldDefinition actioneesDef = new DataFieldDefinition("Actionees");
-        actionItemsDef.addColumn(actioneesDef);
-        DataFieldDefinition actioneeDef = new DataFieldDefinition("Actionee");
-        actionItemsDef.addColumn(actioneeDef);
-        DataFieldDefinition actionSeqDef = new DataFieldDefinition("Action Seq");
-        actionItemsDef.addColumn(actionSeqDef);
-        DataFieldDefinition actionDoneDef = new DataFieldDefinition("Done?");
-        actionItemsDef.addColumn(actionDoneDef);
-        DataFieldDefinition actionDef = new DataFieldDefinition("Action");
-        actionItemsDef.addColumn(actionDef);
+        boolean exportOK = exportActionItems(selectedFile);
+        userPrefs.setPref("action-items-file", selectedFile.getAbsolutePath());
+        if (exportOK) {
+          JOptionPane.showMessageDialog(this,
+            String.valueOf(exported) + " Action Items exported successfully to"
+              + GlobalConstants.LINE_FEED
+              + selectedFile.toString(),
+            "Export Results",
+            JOptionPane.INFORMATION_MESSAGE,
+            Home.getShared().getIcon());
+        } // end if export ok
+      } // end if user selected an output file
+    } // end if were able to save the last modified record
+  }
+  
+  private boolean exportActionItems (File actionsFile) {
+    boolean actionsOK = true;
+    int exported = 0;
+    TabDelimFile tabs = new TabDelimFile(actionsFile);
+    RecordDefinition actionItemsDef = new RecordDefinition();
+    RecordDefinition recDef = ClubEvent.getRecDef();
+    actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.ITEM_TYPE_COLUMN_NAME)));
+    actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.CATEGORY_COLUMN_NAME)));
+    actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.STATUS_COLUMN_NAME)));
+    actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.YMD_COLUMN_NAME)));
+    actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.WHAT_COLUMN_NAME)));
+    actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.DISCUSS_COLUMN_NAME)));
+    DataFieldDefinition actioneesDef = new DataFieldDefinition("Actionees");
+    actionItemsDef.addColumn(actioneesDef);
+    DataFieldDefinition actioneeDef = new DataFieldDefinition("Actionee");
+    actionItemsDef.addColumn(actioneeDef);
+    DataFieldDefinition actionSeqDef = new DataFieldDefinition("Action Seq");
+    actionItemsDef.addColumn(actionSeqDef);
+    DataFieldDefinition actionDoneDef = new DataFieldDefinition("Done?");
+    actionItemsDef.addColumn(actionDoneDef);
+    DataFieldDefinition actionDef = new DataFieldDefinition("Action");
+    actionItemsDef.addColumn(actionDef);
 
-        // Now write out the action items
-        try {
-          tabs.openForOutput(actionItemsDef);
-          
-          // Check all the events
-          for (int i = 0; i < clubEventList.size(); i++) {
-            ClubEvent nextClubEvent = clubEventList.get(i);
-            if (nextClubEvent != null
-                && nextClubEvent.hasActionsWithData()) {
-              
-              // Now let's get the individual items out of the text field
-              String actions = nextClubEvent.getActions();
-              StringLineReader actionsReader = new StringLineReader(actions);
-              int actionSeq = 0;
-              actionsReader.open();
-              String action = actionsReader.readLine().trim();
-              while (actionsReader.isOK() && (! actionsReader.isAtEnd())) {                
-                if (action.length() > 0) {
-                  // One action per line
-                  actionSeq++;
-                  int actionStart = 0;
+    // Now write out the action items
+    try {
+      tabs.openForOutput(actionItemsDef);
 
-                  // Find the last character on the line
-                  int actionEnd = action.length();
-                  while (actionEnd > actionStart
-                      && Character.isWhitespace(action.charAt(actionEnd - 1))) {
-                    actionEnd--;
-                  }
+      // Check all the events
+      for (int i = 0; i < clubEventList.size(); i++) {
+        ClubEvent nextClubEvent = clubEventList.get(i);
+        if (nextClubEvent != null
+            && nextClubEvent.hasActionsWithData()) {
 
-                  // A colon should follow names of actionees, 
-                  // and precede the action itself.
-                  int actionColon = action.indexOf(":", actionStart);
-                  if (actionColon < 0) {
-                    actionColon = action.indexOf("-", actionStart);
-                  }
+          // Now let's get the individual items out of the text field
+          String actions = nextClubEvent.getActions();
+          StringLineReader actionsReader = new StringLineReader(actions);
+          int actionSeq = 0;
+          actionsReader.open();
+          String action = actionsReader.readLine().trim();
+          while (actionsReader.isOK() && (! actionsReader.isAtEnd())) {                
+            if (action.length() > 0) {
+              // One action per line
+              actionSeq++;
+              int actionStart = 0;
 
-                  // If the actions are numbered, then skip past the numbers
-                  int actionDot = action.indexOf(".", actionStart);
-                  if (actionDot < 0 || (actionColon > 0 && actionDot > actionColon)) {
-                    actionDot = action.indexOf(")", actionStart);
-                  }
-                  if (actionColon > 0 && actionDot > actionColon) {
-                    actionDot = -1;
-                  }
-                  if (actionDot >= 0) {
-                    actionStart = actionDot + 1;
-                  }
+              // Find the last character on the line
+              int actionEnd = action.length();
+              while (actionEnd > actionStart
+                  && Character.isWhitespace(action.charAt(actionEnd - 1))) {
+                actionEnd--;
+              }
 
-                  // Skip any leading white space
+              // A colon should follow names of actionees, 
+              // and precede the action itself.
+              int actionColon = action.indexOf(":", actionStart);
+              if (actionColon < 0) {
+                actionColon = action.indexOf("-", actionStart);
+              }
+
+              // If the actions are numbered, then skip past the numbers
+              int actionDot = action.indexOf(".", actionStart);
+              if (actionDot < 0 || (actionColon > 0 && actionDot > actionColon)) {
+                actionDot = action.indexOf(")", actionStart);
+              }
+              if (actionColon > 0 && actionDot > actionColon) {
+                actionDot = -1;
+              }
+              if (actionDot >= 0) {
+                actionStart = actionDot + 1;
+              }
+
+              // Skip any leading white space
+              while (actionStart < actionEnd
+                  && Character.isWhitespace(action.charAt(actionStart))) {
+                actionStart++;
+              }
+
+              // Now let's see whether the action item has been completed
+              String done = " ";
+              if (actionStart < actionEnd
+                  && action.charAt(actionStart) == '(') {
+                int rightParen = action.indexOf(")", actionStart + 2);
+                if (rightParen > 0) {
+                  done = action.substring(actionStart + 1, rightParen);
+                  if (done.equalsIgnoreCase("x") 
+                      || done.equalsIgnoreCase("y")
+                      || done.equalsIgnoreCase("yes")
+                      || done.equalsIgnoreCase("t")
+                      || done.equalsIgnoreCase("true")) {
+                    done = "Done";
+                  }
+                  actionStart = rightParen + 1;
                   while (actionStart < actionEnd
                       && Character.isWhitespace(action.charAt(actionStart))) {
                     actionStart++;
-                  }
-                  
-                  // Now let's see whether the action item has been completed
-                  String done = " ";
-                  if (actionStart < actionEnd
-                      && action.charAt(actionStart) == '(') {
-                    int rightParen = action.indexOf(")", actionStart + 2);
-                    if (rightParen > 0) {
-                      done = action.substring(actionStart + 1, rightParen);
-                      if (done.equalsIgnoreCase("x") 
-                          || done.equalsIgnoreCase("y")
-                          || done.equalsIgnoreCase("yes")
-                          || done.equalsIgnoreCase("t")
-                          || done.equalsIgnoreCase("true")) {
-                        done = "Done";
-                      }
-                      actionStart = rightParen + 1;
-                      while (actionStart < actionEnd
-                          && Character.isWhitespace(action.charAt(actionStart))) {
-                        actionStart++;
-                      } // End skipping past white space
-                    } // End if we found a right paren
-                  } // End if we found a left paren
+                  } // End skipping past white space
+                } // End if we found a right paren
+              } // End if we found a left paren
 
-                  // Let's get the list of actionees
-                  String actionees = "";
-                  if (actionColon >= 0) {
-                    actionees = action.substring(actionStart, actionColon);
-                  }
-                  if (actionees.length() == 0) {
-                    actionees = nextClubEvent.getWho();
-                  }
+              // Let's get the list of actionees
+              String actionees = "";
+              if (actionColon >= 0) {
+                actionees = action.substring(actionStart, actionColon);
+              }
+              if (actionees.length() == 0) {
+                actionees = nextClubEvent.getWho();
+              }
 
-                  String actionItem = "";
-                  if (actionColon >= 0) {
-                    actionItem = action.substring(actionColon + 1).trim();
-                  } else {
-                    actionItem = action.substring(actionStart);
-                  }
+              String actionItem = "";
+              if (actionColon >= 0) {
+                actionItem = action.substring(actionColon + 1).trim();
+              } else {
+                actionItem = action.substring(actionStart);
+              }
 
-                  // Write out one action item line for each actionee
-                  int actioneeStart = 0;
-                  int actioneeEnd = actionees.length();
-                  String actionee = "";
-                  int actioneesCount = 0;
-                  while (actioneesCount == 0 || actioneeStart < actionees.length()) {
-                    actioneeEnd = actionees.length();
-                    int delimStart = actionees.indexOf(",", actioneeStart);
-                    int delimEnd = delimStart + 1;
-                    if (delimStart < 0) {
-                      delimStart = actionees.indexOf("&", actioneeStart);
-                      delimEnd = delimStart + 1;
-                      if (delimStart < 0) {
-                        delimStart = actionees.indexOf(" and ", actioneeStart);
-                        if (delimStart >= 0) {
-                          delimEnd = delimStart + 5;
-                        }
-                      }
-                    }
-                    if (delimStart > 0) {
-                      actioneeEnd = delimStart;
-                    }
-                    while (actioneeStart < actioneeEnd
-                        && Character.isWhitespace(actionees.charAt(actioneeStart))) {
-                      actioneeStart++;
-                    }
-                    while (actioneeStart < actioneeEnd
-                        && Character.isWhitespace(actionees.charAt(actioneeEnd - 1))) {
-                      actioneeEnd--;
-                    }
-                    actionee = actionees.substring(actioneeStart, actioneeEnd);
+              // Write out one action item line for each actionee
+              int actioneeStart = 0;
+              int actioneeEnd = actionees.length();
+              String actionee = "";
+              int actioneesCount = 0;
+              while (actioneesCount == 0 || actioneeStart < actionees.length()) {
+                actioneeEnd = actionees.length();
+                int delimStart = actionees.indexOf(",", actioneeStart);
+                int delimEnd = delimStart + 1;
+                if (delimStart < 0) {
+                  delimStart = actionees.indexOf("&", actioneeStart);
+                  delimEnd = delimStart + 1;
+                  if (delimStart < 0) {
+                    delimStart = actionees.indexOf(" and ", actioneeStart);
                     if (delimStart >= 0) {
-                      actioneeStart = delimEnd;
-                    } else {
-                      actioneeStart = actionees.length();
+                      delimEnd = delimStart + 5;
                     }
-                    DataRecord actionItemsRec = new DataRecord();
-                    actionItemsRec.addField(actionItemsDef, nextClubEvent.getItemType());
-                    actionItemsRec.addField(actionItemsDef, nextClubEvent.getCategory());
-                    actionItemsRec.addField(actionItemsDef, nextClubEvent.getStatusAsString());
-                    actionItemsRec.addField(actionItemsDef, nextClubEvent.getYmd());
-                    actionItemsRec.addField(actionItemsDef, nextClubEvent.getWhat());
-                    actionItemsRec.addField(actionItemsDef, nextClubEvent.getDiscuss());
-                    actionItemsRec.addField(actionItemsDef, actionees);
-                    actionItemsRec.addField(actionItemsDef, actionee);
-                    actionItemsRec.addField(actionItemsDef, String.valueOf(actionSeq));
-                    actionItemsRec.addField(actionItemsDef, done);
-                    actionItemsRec.addField(actionItemsDef, actionItem);
-                    tabs.nextRecordOut(actionItemsRec);
-                    actioneesCount++;
-                    exported++;
-                  } // End while more actionees
-                } // End if action line is not blank
-                action = actionsReader.readLine();
-              } // End while more action lines
-              actionsReader.close();
-            } // End if club event has actions
-          } // End while more club events
-          tabs.close();
-          JOptionPane.showMessageDialog(this,
-              String.valueOf(exported) + " Action Items exported successfully to"
-                + GlobalConstants.LINE_FEED
-                + selectedFile.toString(),
-              "Export Results",
-              JOptionPane.INFORMATION_MESSAGE,
-              Home.getShared().getIcon());
-          logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
-              + " Action Items exported in tab-delimited format to " 
-              + selectedFile.toString(),
-              false);
-          statusBar.setStatus(String.valueOf(exported) 
-            + " Action Items exported");
-        } catch (java.io.IOException e) {
-          logger.recordEvent (LogEvent.MEDIUM,
-            "Problem exporting Action Items to " + selectedFile.toString(),
-              false);
-            trouble.report ("I/O error attempting to export action items to " 
-                + selectedFile.toString(),
-              "I/O Error");
-            statusBar.setStatus("Trouble exporting Action Items");
-        } // end if I/O error
-        userPrefs.setPref("action-items-file", selectedFile.getAbsolutePath());
-      } // end if user selected an output file
-    } // end if were able to save the last modified record
+                  }
+                }
+                if (delimStart > 0) {
+                  actioneeEnd = delimStart;
+                }
+                while (actioneeStart < actioneeEnd
+                    && Character.isWhitespace(actionees.charAt(actioneeStart))) {
+                  actioneeStart++;
+                }
+                while (actioneeStart < actioneeEnd
+                    && Character.isWhitespace(actionees.charAt(actioneeEnd - 1))) {
+                  actioneeEnd--;
+                }
+                actionee = actionees.substring(actioneeStart, actioneeEnd);
+                if (delimStart >= 0) {
+                  actioneeStart = delimEnd;
+                } else {
+                  actioneeStart = actionees.length();
+                }
+                DataRecord actionItemsRec = new DataRecord();
+                actionItemsRec.addField(actionItemsDef, nextClubEvent.getItemType());
+                actionItemsRec.addField(actionItemsDef, nextClubEvent.getCategory());
+                actionItemsRec.addField(actionItemsDef, nextClubEvent.getStatusAsString());
+                actionItemsRec.addField(actionItemsDef, nextClubEvent.getYmd());
+                actionItemsRec.addField(actionItemsDef, nextClubEvent.getWhat());
+                actionItemsRec.addField(actionItemsDef, nextClubEvent.getDiscuss());
+                actionItemsRec.addField(actionItemsDef, actionees);
+                actionItemsRec.addField(actionItemsDef, actionee);
+                actionItemsRec.addField(actionItemsDef, String.valueOf(actionSeq));
+                actionItemsRec.addField(actionItemsDef, done);
+                actionItemsRec.addField(actionItemsDef, actionItem);
+                tabs.nextRecordOut(actionItemsRec);
+                actioneesCount++;
+                exported++;
+              } // End while more actionees
+            } // End if action line is not blank
+            action = actionsReader.readLine();
+          } // End while more action lines
+          actionsReader.close();
+        } // End if club event has actions
+      } // End while more club events
+      tabs.close();
+      logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
+          + " Action Items exported in tab-delimited format to " 
+          + actionsFile.toString(),
+          false);
+      statusBar.setStatus(String.valueOf(exported) 
+        + " Action Items exported");
+    } catch (java.io.IOException e) {
+      actionsOK = false;
+      logger.recordEvent (LogEvent.MEDIUM,
+        "Problem exporting Action Items to " + actionsFile.toString(),
+          false);
+        trouble.report ("I/O error attempting to export action items to " 
+            + actionsFile.toString(),
+          "I/O Error");
+        statusBar.setStatus("Trouble exporting Action Items");
+    } // end if I/O error
+    
+    return actionsOK;
   }
   
   
@@ -1131,7 +1150,6 @@ public class ClubPlanner
    */
   private void exportFinancials() {
     boolean modOK = modIfChanged();
-    int exported = 0;
     if (modOK) {
       fileChooser.setDialogTitle ("Export Financials");
       fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -1139,82 +1157,113 @@ public class ClubPlanner
       fileChooser.setFile(suggestion);
       File selectedFile = fileChooser.showSaveDialog (this);
       if (selectedFile != null) {
-        TabDelimFile tabs = new TabDelimFile(selectedFile);
-        RecordDefinition financesDef = new RecordDefinition();
-        RecordDefinition recDef = ClubEvent.getRecDef();
-        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.ITEM_TYPE_COLUMN_NAME)));
-        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.CATEGORY_COLUMN_NAME)));
-        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.STATUS_COLUMN_NAME)));
-        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.YMD_COLUMN_NAME)));
-        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.WHAT_COLUMN_NAME)));
-        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.FINANCE_PROJECTION_COLUMN_NAME)));
-        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.OVER_UNDER_COLUMN_NAME)));
-        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.PLANNED_INCOME_COLUMN_NAME)));
-        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.PLANNED_EXPENSE_COLUMN_NAME)));
-        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.ACTUAL_INCOME_COLUMN_NAME)));
-        financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
-            (ClubEvent.ACTUAL_EXPENSE_COLUMN_NAME)));
-        try {
-          tabs.openForOutput(financesDef);
-          for (int i = 0; i < clubEventList.size(); i++) {
-            ClubEvent nextClubEvent = clubEventList.get(i);
-            if (nextClubEvent != null
-                && (nextClubEvent.hasPlannedExpenseWithData()
-                ||  nextClubEvent.hasPlannedIncomeWithData()
-                ||  nextClubEvent.hasActualExpenseWithData()
-                ||  nextClubEvent.hasActualIncomeWithData()
-                ||  nextClubEvent.hasFinanceProjectionWithData())) {
-              DataRecord financeRec = new DataRecord();
-              financeRec.addField(financesDef, nextClubEvent.getItemType());
-              financeRec.addField(financesDef, nextClubEvent.getCategory());
-              financeRec.addField(financesDef, nextClubEvent.getStatusAsString());
-              financeRec.addField(financesDef, nextClubEvent.getYmd());
-              financeRec.addField(financesDef, nextClubEvent.getWhat());
-              financeRec.addField(financesDef, nextClubEvent.getFinanceProjection());
-              financeRec.addField(financesDef, nextClubEvent.getOverUnder());
-              financeRec.addField(financesDef, nextClubEvent.getPlannedIncome());
-              financeRec.addField(financesDef, nextClubEvent.getPlannedExpense());
-              financeRec.addField(financesDef, nextClubEvent.getActualIncome());
-              financeRec.addField(financesDef, nextClubEvent.getActualExpense());
-              tabs.nextRecordOut(financeRec);
-              exported++;
-            }
-          }
-          tabs.close();
-          JOptionPane.showMessageDialog(this,
-              String.valueOf(exported) + " Club Events exported successfully to"
-                + GlobalConstants.LINE_FEED
-                + selectedFile.toString(),
-              "Export Results",
-              JOptionPane.INFORMATION_MESSAGE,
-              Home.getShared().getIcon());
-          logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
-              + " Club Events exported in tab-delimited format to " 
+        exportFinancials(selectedFile);
+        JOptionPane.showMessageDialog(this,
+            String.valueOf(exported) + " Club Events exported successfully to"
+              + GlobalConstants.LINE_FEED
               + selectedFile.toString(),
-              false);
-          statusBar.setStatus(String.valueOf(exported) 
-            + " Club Events exported");
-        } catch (java.io.IOException e) {
-          logger.recordEvent (LogEvent.MEDIUM,
-            "Problem exporting Club Events to " + selectedFile.toString(),
-              false);
-            trouble.report ("I/O error attempting to export club events to " 
-                + selectedFile.toString(),
-              "I/O Error");
-            statusBar.setStatus("Trouble exporting Club Events");
-        } // end if I/O error
+            "Export Results",
+            JOptionPane.INFORMATION_MESSAGE,
+            Home.getShared().getIcon());
       } // end if user selected an output file
     } // end if were able to save the last modified record
+  }
+  
+  private boolean exportFinancials (File financeFile) {
+    
+    financeWindow.clear();
+    
+    boolean financialsOK = true;
+    exported = 0;
+    TabDelimFile tabs = new TabDelimFile(financeFile);
+    RecordDefinition financesDef = new RecordDefinition();
+    RecordDefinition recDef = ClubEvent.getRecDef();
+    financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.ITEM_TYPE_COLUMN_NAME)));
+    financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.CATEGORY_COLUMN_NAME)));
+    financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.STATUS_COLUMN_NAME)));
+    financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.YMD_COLUMN_NAME)));
+    financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.WHAT_COLUMN_NAME)));
+    financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.FINANCE_PROJECTION_COLUMN_NAME)));
+    financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.OVER_UNDER_COLUMN_NAME)));
+    financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.PLANNED_INCOME_COLUMN_NAME)));
+    financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.PLANNED_EXPENSE_COLUMN_NAME)));
+    financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.ACTUAL_INCOME_COLUMN_NAME)));
+    financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.ACTUAL_EXPENSE_COLUMN_NAME)));
+    try {
+      tabs.openForOutput(financesDef);
+      for (int i = 0; i < clubEventList.size(); i++) {
+        ClubEvent nextClubEvent = clubEventList.get(i);
+        if (nextClubEvent != null
+            && (nextClubEvent.hasPlannedExpenseWithData()
+            ||  nextClubEvent.hasPlannedIncomeWithData()
+            ||  nextClubEvent.hasActualExpenseWithData()
+            ||  nextClubEvent.hasActualIncomeWithData()
+            ||  nextClubEvent.hasFinanceProjectionWithData())) {
+          financeWindow.calcPlus(nextClubEvent);
+          DataRecord financeRec = new DataRecord();
+          financeRec.addField(financesDef, nextClubEvent.getItemType());
+          financeRec.addField(financesDef, nextClubEvent.getCategory());
+          financeRec.addField(financesDef, nextClubEvent.getStatusAsString());
+          financeRec.addField(financesDef, nextClubEvent.getYmd());
+          financeRec.addField(financesDef, nextClubEvent.getWhat());
+          financeRec.addField(financesDef, nextClubEvent.getFinanceProjection());
+          financeRec.addField(financesDef, nextClubEvent.getOverUnder());
+          financeRec.addField(financesDef, nextClubEvent.getPlannedIncome());
+          financeRec.addField(financesDef, nextClubEvent.getPlannedExpense());
+          financeRec.addField(financesDef, nextClubEvent.getActualIncome());
+          financeRec.addField(financesDef, nextClubEvent.getActualExpense());
+          tabs.nextRecordOut(financeRec);
+          exported++;
+        }
+      }
+      financeWindow.display();
+     
+      // Write Out a totals line
+      DataRecord financeRec = new DataRecord();
+      financeRec.addField(financesDef, "");
+      financeRec.addField(financesDef, "");
+      financeRec.addField(financesDef, "");
+      StringDate totalsDate = clubEventCalc.getStringDate();
+      totalsDate.parse("June 30");
+      financeRec.addField(financesDef, totalsDate.getYMD());
+      financeRec.addField(financesDef, "Projected Totals at Year End");
+      financeRec.addField(financesDef, financeWindow.getFinanceProjection());
+      financeRec.addField(financesDef, financeWindow.getOverUnder());
+      financeRec.addField(financesDef, "");
+      financeRec.addField(financesDef, "");
+      financeRec.addField(financesDef, "");
+      financeRec.addField(financesDef, "");
+      tabs.nextRecordOut(financeRec);
+      exported++;
+      tabs.close();
+      logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
+          + " Club Events exported in tab-delimited format to " 
+          + financeFile.toString(),
+          false);
+      statusBar.setStatus(String.valueOf(exported) 
+        + " Club Events exported");
+    } catch (java.io.IOException e) {
+      financialsOK = false;
+      logger.recordEvent (LogEvent.MEDIUM,
+        "Problem exporting Club Events to " + financeFile.toString(),
+          false);
+        trouble.report ("I/O error attempting to export club events to " 
+            + financeFile.toString(),
+          "I/O Error");
+        statusBar.setStatus("Trouble exporting Club Events");
+    } // end if I/O error
+    return financialsOK;
   }
   
   /**
@@ -2006,9 +2055,15 @@ public class ClubPlanner
   private void removeClubEvent () {
     boolean okToDelete = true;
     if (CommonPrefs.getShared().confirmDeletes()) {
+      String whatToDelete = "New Club Event";
+      if (! position.isNewClubEvent()) {
+        whatToDelete = position.getClubEvent().getWhat();
+      }
       int userOption = JOptionPane.showConfirmDialog(
           navToolBar, 
-          "Really delete this Event?",
+          "Really delete this Event? " 
+            + GlobalConstants.LINE_FEED_STRING 
+            + whatToDelete,
           "Delete Confirmation",
           JOptionPane.YES_NO_OPTION,
           JOptionPane.QUESTION_MESSAGE,
@@ -2030,6 +2085,7 @@ public class ClubPlanner
               JOptionPane.ERROR_MESSAGE);
         }
         position = clubEventList.remove (position);
+        clubEventList.fireTableDataChanged();
         positionAndDisplay();
         currentFileModified = true;
       } // end if new ClubEvent not yet saved

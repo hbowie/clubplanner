@@ -53,6 +53,12 @@
           <a href="#creating-a-new-events-folder">Creating a New Events Folder</a>
         </li>
         <li>
+          <a href="#import-minutes">Import Minutes</a>
+        </li>
+        <li>
+          <a href="#export-minutes">Export Minutes</a>
+        </li>
+        <li>
           <a href="#backup">Backup</a>
         </li>
         <li>
@@ -82,6 +88,9 @@
     <li>
       <a href="#tips-tricks-and-special-functions">Tips, Tricks and Special Functions</a>
       <ul>
+        <li>
+          <a href="#publish">Publish</a>
+        </li>
         <li>
           <a href="#textmerge-sort">TextMerge Sort</a>
         </li>
@@ -113,7 +122,7 @@
       <a href="#file-formats">File Formats</a>
       <ul>
         <li>
-          <a href="#template-files">Template Files</a>
+          <a href="#template-file-format">Template File Format</a>
         </li>
         <li>
           <a href="#script-files">Script Files</a>
@@ -260,13 +269,13 @@ Planned Income
 :    The amount of money we have planned to receive for the event. For this and the following dollar amount fields, multiple dollar figures may be interspersed with descriptive words. $20 x 40 will result in a planned income of $800.00, for example.
 
 Actual Income
-:    Our actual income for the event.
+:    Our actual income for the event. Note that each '+' or '-' sign will signal the start of a new transaction for the Financial Register export file. Keywords 'on', 'for', 'to', 'from', 'via', 'Ck', '#' and 'DC' will be used to break each transaction down into its appropriate fields.
 
 Planned Expense
 :    The amount of money we have planned/budgeted to be spent on the event.
 
 Actual Expense
-:    Our actual expenses for the event.
+:    Our actual expenses for the event. See the description of Actual Income for a description of how the field will be interpreted for extraction into the financial register.
 
 Over/Under
 :    The difference between our actuals and our planned income or expense.
@@ -386,6 +395,16 @@ The only folder naming convention that is required is the inclusion of the club 
 The first time you launch Club Planner, or after selecting **Open** from the **File** menu, you will be presented with a series of Open dialogs that will ask you to specify the folder containing Club Records, the folder for the desired Operating Year, and the Events folder. There is no default location publish
 for these folder. You can create the necessary folders outside of Club Planner, before launching it, or can create the new folders from within the Open dialogs. Again, it is recommended that the folder containing Club Records be a shared [Dropbox][] folder.
 
+<h3 id="import-minutes">Import Minutes</h3>
+
+
+This allows the program to import a minutes file. The data in the minutes file will then be used to update the referenced events. See the [Club Planner Minutes File Format](#club-planner-minutes-file-format) section for information about the file format.
+
+<h3 id="export-minutes">Export Minutes</h3>
+
+
+This allows the program to export a minutes file. The minutes file will be in Markdown format, and can be easily published to a web site. See the [Club Planner Minutes File Format](#club-planner-minutes-file-format) section for information about the file format.
+
 <h3 id="backup">Backup</h3>
 
 
@@ -464,6 +483,52 @@ The detailed data for the currently selected Event appears on the second half of
 
 <h2 id="tips-tricks-and-special-functions">Tips, Tricks and Special Functions</h2>
 
+
+<h3 id="publish">Publish</h3>
+
+
+The publish option allows you to easily publish your Events in a variety of useful formats.
+
+To begin the publication process, select the **Publish...** command from the **File** menu.
+
+You will then see a window with the following fields available to you.
+
+Publish to
+:    You may use the Browse button above and to the right to select a folder on your computer to which you wish to publish your Events. You may also enter or modify the path directly in the text box. When modifying this field, you will be prompted to specify whether you wish to update the existing publication location, or add a new one. By specifying that you wish to add a new one, you may create multiple publications, and then later select the publication of interest by using the drop-down arrow to the right of this field.
+
+Equivalent URL
+:    If the folder to which you are publishing will be addressable from the World-Wide Web, then enter its Web address here.
+
+Templates
+:    This is the address of a folder containing one or more publishing templates. This will default to the location of the templates provided along with the application executable. You may use the Browse button above and to the right to pick a different location, if you have your own templates you wish to use for publishing.
+
+Select
+:    Use the drop-down list to select the template you wish to use.
+
+	**Favorites Plus**: This template will produce the following files and formats.
+
+	1. index.html -- This file is an index file with links to the other files. You can browse this locally by selecting **Browse local index** from the **File** menu.
+	 2. favorites.html -- This file tries to arrange all of the Events you have tagged as "Favorites" into a four-column format that will fit on a single page.
+	 3. bookmark.html -- This file formats your URLs in the time-honored Netscape bookmarks format, suitable for import into almost any Web browser or URL manager.
+	 4. outline.html -- This is a dynamic html file that organizes your URLs within your tags, allowing you to reveal/disclose selected tags.
+
+Apply
+:    Press this button to apply the selected template. This will copy the contents of the template folder to the location specified above as the Publish to location.
+
+Publish Script
+:    Specify the location of the script to be used. The PSTextMerge templating system is the primary scripting language used for publishing. A PSTextMerge script will usually end with a '.tcz' file extension.
+
+Publish when
+:    You may specify publication 'On Close' (whenever you Quit the application or close a data collection), 'On Save' (whenever you save the data collection to disk), or 'On Demand'.
+
+Publish Now
+:    Press this button to publish to the currently displayed location. Note that, if you've specified 'On Demand', then this is the only time that publication will occur.
+
+View
+:    Select the local file location or the equivalent URL location.
+
+View Now
+:    Press this button to view the resulting Web site in your Web browser.
 
 <h3 id="textmerge-sort">TextMerge Sort</h3>
 
@@ -608,7 +673,7 @@ This button processes the template file you have selected, and creates whatever 
 <h4 id="template-file-format">Template File Format</h4>
 
 
-See the [Template File Format specification](#templatefiles) for details.
+See the [Template File Format specification](#template-file-format) for details.
 
 <h3 id="textmerge-script">TextMerge Script</h3>
 
@@ -710,7 +775,7 @@ The following commands are available. Note that the first two commands open loca
 
 The following file formats are used by Club Planner.
 
-<h3 id="template-files">Template Files</h3>
+<h3 id="template-file-format">Template File Format</h3>
 
 
 This section describes the contents of a template file, used for producing formatted output from a table of rows and columns.
@@ -839,7 +904,7 @@ If a variable may be interpreted as a series of "words," with the words delimite
 For example, if the template file contained the following:
 
 <blockquote>
-	AM32;
+	AM34;
 </blockquote>
 
 And the name variable was equal to:
@@ -1537,6 +1602,8 @@ The &#8220;epubin&#8221; and &#8220;epubout&#8221; actions require some addition
         <td class="shaded" align="center">&nbsp;</td>
     </tr>
 </table>
+
+
 
 [java]:       http://www.java.com/
 [pspub]:      http://www.powersurgepub.com/

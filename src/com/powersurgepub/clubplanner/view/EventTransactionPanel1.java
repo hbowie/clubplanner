@@ -99,7 +99,7 @@ public class EventTransactionPanel1
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(dateLabel);
-    dateJTextField.setToolTipText("The date of the financial transaction.");
+    dateJTextField.setToolTipText("The date of the financial transaction, in YMD format.");
     gb.setWidth(1);
     gb.setTopInset(4);
     gb.add(dateJTextField);

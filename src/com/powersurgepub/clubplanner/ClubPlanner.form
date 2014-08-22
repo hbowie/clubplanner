@@ -111,6 +111,14 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportFinancialsMenuItemActionPerformed"/>
                   </Events>
                 </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="fileRegisterMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Financial Register"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fileRegisterMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="exportMinutesMenuItem">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Minutes"/>

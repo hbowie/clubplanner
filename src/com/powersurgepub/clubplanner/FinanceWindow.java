@@ -33,8 +33,13 @@ public class FinanceWindow
   
   private BigDecimal   financeProjection;
   private BigDecimal   overUnder;
+  private BigDecimal   plannedIncome;
+  private BigDecimal   plannedExpense;
+  private BigDecimal   actualIncome;
+  private BigDecimal   actualExpense;
   
-  private NumberFormat numberFormat 
+  
+  private NumberFormat currencyFormat 
       = NumberFormat.getCurrencyInstance(Locale.US);
 
   /**
@@ -50,6 +55,10 @@ public class FinanceWindow
 
     financeProjection = new BigDecimal(0);
     overUnder = new BigDecimal(0);
+    plannedIncome = new BigDecimal(0);
+    plannedExpense = new BigDecimal(0);
+    actualIncome = new BigDecimal(0);
+    actualExpense = new BigDecimal(0);
   }
   
   public void calcPlus(ClubEvent event) {
@@ -59,14 +68,40 @@ public class FinanceWindow
     
     overUnder = overUnder.add
         (event.getOverUnderAsBigDecimal());
+    
+    plannedIncome = plannedIncome.add 
+        (event.getPlannedIncomeAsBigDecimal());
+    
+    plannedExpense = plannedExpense.add 
+        (event.getPlannedExpenseAsBigDecimal());
+    
+    actualIncome = actualIncome.add 
+        (event.getActualIncomeAsBigDecimal());
+    
+    actualExpense = actualExpense.add 
+        (event.getActualExpenseAsBigDecimal());
 
   }
   
   public void calcMinus(ClubEvent event) {
+    
     financeProjection = financeProjection.subtract
         (event.getFinanceProjectionAsBigDecimal());
+    
     overUnder = overUnder.subtract
         (event.getOverUnderAsBigDecimal());
+    
+    plannedIncome = plannedIncome.subtract 
+        (event.getPlannedIncomeAsBigDecimal());
+    
+    plannedExpense = plannedExpense.subtract 
+        (event.getPlannedExpenseAsBigDecimal());
+    
+    actualIncome = actualIncome.subtract 
+        (event.getActualIncomeAsBigDecimal());
+    
+    actualExpense = actualExpense.subtract 
+        (event.getActualExpenseAsBigDecimal());
   }
   
   public void display() {
@@ -77,11 +112,27 @@ public class FinanceWindow
   }
   
   public String getFinanceProjection() {
-    return numberFormat.format(financeProjection.doubleValue());
+    return currencyFormat.format(financeProjection.doubleValue());
   }
   
   public String getOverUnder() {
-    return numberFormat.format(overUnder.doubleValue());
+    return currencyFormat.format(overUnder.doubleValue());
+  }
+  
+  public String getPlannedIncome() {
+    return currencyFormat.format(plannedIncome.doubleValue());
+  }
+  
+  public String getPlannedExpense() {
+    return currencyFormat.format(plannedExpense.doubleValue());
+  }
+  
+  public String getActualIncome() {
+    return currencyFormat.format(actualIncome.doubleValue());
+  }
+  
+  public String getActualExpense() {
+    return currencyFormat.format(actualExpense.doubleValue());
   }
 
   /**

@@ -132,17 +132,6 @@ public class ClubEventWriter {
     return new File (completePath.toString());
   }
  
-  /**
-   Save a list of events to the specified folder. 
-  
-   @param folder          The folder to which we are to save the events. 
-   @param clubEventList   The list of events to be saved. 
-   @param primaryLocation Is this the primary location at which these events 
-                          will reside?
-   @param adjustForNewYear Are we starting a new operating year?
-  
-   @return                 True if everything okey-dokey. 
-   */
   public boolean save (File folder, ClubEventList clubEventList,
       boolean primaryLocation, boolean adjustForNewYear) {
  
@@ -161,25 +150,14 @@ public class ClubEventWriter {
     return outOK;
   }
  
-  /**
-   Save a single event to the specified folder. 
-  
-   @param folder          The folder to which we are to save the events. 
-   @param clubEventList   The list of events to be saved. 
-   @param primaryLocation Is this the primary location at which these events 
-                          will reside?
-   @param adjustForNewYear Are we starting a new operating year?
-  
-   @return                 True if everything okey-dokey. 
-   */
   public boolean save (File folder, ClubEvent clubEvent,
       boolean primaryLocation, boolean adjustForNewYear) {
  
     boolean outOK = true;
  
     if ((! primaryLocation) && (adjustForNewYear)) {
-      clubEvent.getTags().replace("Archive", "Future");
-      clubEvent.getTags().replace("Next Year", "Future");
+      clubEvent.getTags().replace("Archive", "Current");
+      clubEvent.getTags().replace("Next Year", "Current");
     }
  
  

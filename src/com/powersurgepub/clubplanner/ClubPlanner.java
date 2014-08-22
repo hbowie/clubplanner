@@ -36,7 +36,10 @@ package com.powersurgepub.clubplanner;
   import java.awt.*;
   import java.awt.event.*;
   import java.io.*;
+  import java.math.*;
   import java.net.*;
+  import java.text.*;
+  import java.util.*;
   import javax.swing.*;
   import javax.swing.event.*;
   import javax.swing.table.*;
@@ -65,7 +68,7 @@ public class ClubPlanner
     { 
   
   public static final String              PROGRAM_NAME    = "Club Planner";
-  public static final String              PROGRAM_VERSION = "1.00";
+  public static final String              PROGRAM_VERSION = "1.10";
   
   public  static final String             FIND = "Find";
   public  static final String             FIND_AGAIN = "Again";
@@ -74,6 +77,9 @@ public class ClubPlanner
   public  static final int                TEXT_MERGE_WINDOW_DEFAULT_Y = 60;
   public  static final int                TEXT_MERGE_WINDOW_DEFAULT_WIDTH = 640;
   public  static final int                TEXT_MERGE_WINDOW_DEFAULT_HEIGHT = 480;
+  
+  private NumberFormat currencyFormat 
+      = NumberFormat.getCurrencyInstance(Locale.US);
   
   private             Appster appster;
   private             Home home;
@@ -852,6 +858,11 @@ public class ClubPlanner
       File financeFile = new File (dataFolder, "finance.tab");
       operationOK = exportFinancials(financeFile);
     }
+    else
+    if (operand.equalsIgnoreCase("register")) {
+      File registerFile = new File (dataFolder, "register.tab");
+      operationOK = exportFinancialRegister(registerFile);
+    }
     return operationOK;
   }
   
@@ -1240,12 +1251,14 @@ public class ClubPlanner
       financeRec.addField(financesDef, "Projected Totals at Year End");
       financeRec.addField(financesDef, financeWindow.getFinanceProjection());
       financeRec.addField(financesDef, financeWindow.getOverUnder());
-      financeRec.addField(financesDef, "");
-      financeRec.addField(financesDef, "");
-      financeRec.addField(financesDef, "");
-      financeRec.addField(financesDef, "");
+      financeRec.addField(financesDef, financeWindow.getPlannedIncome());
+      financeRec.addField(financesDef, financeWindow.getPlannedExpense());
+      financeRec.addField(financesDef, financeWindow.getActualIncome());
+      financeRec.addField(financesDef, financeWindow.getActualExpense());
       tabs.nextRecordOut(financeRec);
       exported++;
+      
+      // Finish up
       tabs.close();
       logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
           + " Club Events exported in tab-delimited format to " 
@@ -1264,6 +1277,139 @@ public class ClubPlanner
         statusBar.setStatus("Trouble exporting Club Events");
     } // end if I/O error
     return financialsOK;
+  }
+  
+  /**
+   Export a file of financial transactions taken from the actual income 
+   and actual expense fields. 
+   */
+  private void exportFinancialRegister() {
+    boolean modOK = modIfChanged();
+    if (modOK) {
+      fileChooser.setDialogTitle ("Export Financial Register");
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      File suggestion = new File (eventsFile.getParentFile(), "Finance/register.tab");
+      fileChooser.setFile(suggestion);
+      File selectedFile = fileChooser.showSaveDialog (this);
+      if (selectedFile != null) {
+        exportFinancialRegister(selectedFile);
+        JOptionPane.showMessageDialog(this,
+            String.valueOf(exported) + " Financial Transactions exported successfully to"
+              + GlobalConstants.LINE_FEED
+              + selectedFile.toString(),
+            "Export Results",
+            JOptionPane.INFORMATION_MESSAGE,
+            Home.getShared().getIcon());
+      } // end if user selected an output file
+    } // end if were able to save the last modified record
+  }
+  
+  /**
+   Export a file of financial transactions taken from the actual income 
+   and actual expense fields. 
+  
+   @param financialRegisterFile
+  
+   @return True if export succeeded, false if problems. 
+  */
+  private boolean exportFinancialRegister (File financialRegisterFile) {
+    
+    boolean registerOK = true;
+    exported = 0;
+    BigDecimal net = new BigDecimal(0);
+    TabDelimFile tabs = new TabDelimFile(financialRegisterFile);
+    
+    RecordDefinition registerDef = new RecordDefinition();
+    registerDef.addColumn("Tran Date");
+    registerDef.addColumn("Ck #");
+    registerDef.addColumn("Inc/Exp");
+    registerDef.addColumn("From/To");
+    registerDef.addColumn("For");
+    registerDef.addColumn("Amount");
+    registerDef.addColumn("What");
+
+    try {
+      tabs.openForOutput(registerDef);
+      for (int i = 0; i < clubEventList.size(); i++) {
+        ClubEvent nextClubEvent = clubEventList.get(i);
+        if (nextClubEvent != null) {
+          if (nextClubEvent.hasActualIncomeWithData()) {
+            CalcParser income = new CalcParser();
+            income.setStringDate(clubEventCalc.getStringDate());
+            income.setDefaultDate(nextClubEvent.getYmd());
+            income.calc("Income", nextClubEvent.getActualIncome());
+            net = net.add(income.getResult());
+            while (income.hasMoreTransactions()) {
+              CalcTransaction tran = income.nextTransaction();
+              DataRecord registerRec = new DataRecord();
+              registerRec.addField(registerDef, tran.getDate());
+              registerRec.addField(registerDef, tran.getCheckNumber());
+              registerRec.addField(registerDef, "Income");
+              registerRec.addField(registerDef, tran.getFromTo());
+              registerRec.addField(registerDef, tran.getPaidFor());
+              registerRec.addField(registerDef, tran.getAmountAsString());
+              registerRec.addField(registerDef, nextClubEvent.getWhat());
+              tabs.nextRecordOut(registerRec);
+              exported++;
+            } // end while more transactions
+          } // end if we have actual income
+          
+          if (nextClubEvent.hasActualExpenseWithData()) {
+            CalcParser expense = new CalcParser();
+            expense.setStringDate(clubEventCalc.getStringDate());
+            expense.setDefaultDate(nextClubEvent.getYmd());
+            expense.calc("Expense", nextClubEvent.getActualExpense());
+            net = net.subtract(expense.getResult());
+            while (expense.hasMoreTransactions()) {
+              CalcTransaction tran = expense.nextTransaction();
+              DataRecord registerRec = new DataRecord();
+              registerRec.addField(registerDef, tran.getDate());
+              registerRec.addField(registerDef, tran.getCheckNumber());
+              registerRec.addField(registerDef, "Expense");
+              registerRec.addField(registerDef, tran.getFromTo());
+              registerRec.addField(registerDef, tran.getPaidFor());
+              registerRec.addField(registerDef, tran.getAmountAsString());
+              registerRec.addField(registerDef, nextClubEvent.getWhat());
+              tabs.nextRecordOut(registerRec);
+              exported++;
+            } // end while more transactions
+          } // end if we have actual expense
+          
+        } // end if we have a club event
+      }
+      
+      // Write Out a totals line
+      DataRecord registerRec = new DataRecord();
+      StringDate totalsDate = clubEventCalc.getStringDate();
+      registerRec.addField(registerDef, 
+          clubEventCalc.getStringDate().getTodayYMD());
+      registerRec.addField(registerDef, "");
+      registerRec.addField(registerDef, "Net");
+      registerRec.addField(registerDef, "");
+      registerRec.addField(registerDef, currencyFormat.format(net.doubleValue()));
+      registerRec.addField(registerDef, "");
+      registerRec.addField(registerDef, "Net Income and Expense to date");
+      tabs.nextRecordOut(registerRec);
+      exported++;
+     
+      tabs.close();
+      logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
+          + " Check Register transactions exported in tab-delimited format to " 
+          + financialRegisterFile.toString(),
+          false);
+      statusBar.setStatus(String.valueOf(exported) 
+        + " Check Register transactions exported");
+    } catch (java.io.IOException e) {
+      registerOK = false;
+      logger.recordEvent (LogEvent.MEDIUM,
+        "Problem exporting Check Register transactions to " + financialRegisterFile.toString(),
+          false);
+        trouble.report ("I/O error attempting to export Check Register transactions to " 
+            + financialRegisterFile.toString(),
+          "I/O Error");
+        statusBar.setStatus("Trouble exporting Check Register transactions");
+    } // end if I/O error
+    return registerOK;
   }
   
   /**
@@ -2611,6 +2757,7 @@ public class ClubPlanner
     exportActionItemsMenuItem = new javax.swing.JMenuItem();
     exportOutlineMenuItem = new javax.swing.JMenuItem();
     exportFinancialsMenuItem = new javax.swing.JMenuItem();
+    fileRegisterMenuItem = new javax.swing.JMenuItem();
     exportMinutesMenuItem = new javax.swing.JMenuItem();
     fileExportTabDelimMenuItem = new javax.swing.JMenuItem();
     jSeparator2 = new javax.swing.JPopupMenu.Separator();
@@ -2950,6 +3097,14 @@ public class ClubPlanner
   });
   fileExportMenu.add(exportFinancialsMenuItem);
 
+  fileRegisterMenuItem.setText("Financial Register");
+  fileRegisterMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      fileRegisterMenuItemActionPerformed(evt);
+    }
+  });
+  fileExportMenu.add(fileRegisterMenuItem);
+
   exportMinutesMenuItem.setText("Minutes");
   exportMinutesMenuItem.addActionListener(new java.awt.event.ActionListener() {
     public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -3273,6 +3428,10 @@ eventFutureMenuItem.addActionListener(new java.awt.event.ActionListener() {
     publishWindow.publishNow();
   }//GEN-LAST:event_publishNowMenuItemActionPerformed
 
+  private void fileRegisterMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileRegisterMenuItemActionPerformed
+    exportFinancialRegister();
+  }//GEN-LAST:event_fileRegisterMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -3345,6 +3504,7 @@ eventFutureMenuItem.addActionListener(new java.awt.event.ActionListener() {
   private javax.swing.JMenu fileMenu;
   private javax.swing.JMenuItem fileOpenMenuItem;
   private javax.swing.JMenu fileOpenRecentMenu;
+  private javax.swing.JMenuItem fileRegisterMenuItem;
   private javax.swing.JMenuItem fileReloadMenuItem;
   private javax.swing.JMenuItem fileSaveAllMenuItem;
   private javax.swing.JMenuItem fileSaveAsMenuItem;

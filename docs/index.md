@@ -227,7 +227,7 @@ Discuss
 :    Identification of any issues to be discussed at an upcoming board meeting.
 
 Actions
-:    Identification of any action items to be worked.
+:    Identification of any action items to be worked. This field uses Markdown syntax, but also has some special conventions. Create the action items as a numbered list. After the number, place the name(s) of the actionees, followed by a colon. The action to be taken should then follow the colon. Placing an 'x' inside of parentheses, after the number and before the list of actionees, will flag the action as completed.
 
 <h4 id="clubevent--panel-2">ClubEvent - Panel 2</h4>
 
@@ -904,7 +904,7 @@ If a variable may be interpreted as a series of "words," with the words delimite
 For example, if the template file contained the following:
 
 <blockquote>
-	AM34;
+	AM26;
 </blockquote>
 
 And the name variable was equal to:

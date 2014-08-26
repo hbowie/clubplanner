@@ -2510,7 +2510,7 @@ public class ClubPlanner
   }
   
   /**
-    Find the specified text string within the list of URL items. This method may
+    Find the specified text string within the list of Events. This method may
     be called internally, or from the ReplaceWindow. The result will be to 
     position the displays on the item found, or display a message to the user
     that no matching item was found. 
@@ -2519,11 +2519,6 @@ public class ClubPlanner
                           are starting a new search or continuing an 
                           existing one. 
     @param findString  The string we're searching for. 
-    @param checkTitle  Should we check the title of the URL item?
-    @param checkURL    Should we check the URL of the URL item?
-    @param checkTags   Should we check the tags of the URL item?
-    @param checkComments Should we check the comments?
-    @param caseSensitive Should we do a case-sensitive comparison?
     @param showDialogAtEnd Show a dialog to user when no remaining URLs found?
   */
   public boolean findClubEvent (

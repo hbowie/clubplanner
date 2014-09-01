@@ -859,6 +859,11 @@ public class ClubPlanner
       operationOK = exportFinancials(financeFile);
     }
     else
+    if (operand.equalsIgnoreCase("minutes")) {
+      File minutesFile = new File (dataFolder, "minutes.tab");
+      operationOK = exportMinutes(minutesFile);
+    }
+    else
     if (operand.equalsIgnoreCase("register")) {
       File registerFile = new File (dataFolder, "register.tab");
       operationOK = exportFinancialRegister(registerFile);
@@ -957,7 +962,7 @@ public class ClubPlanner
   
   private boolean exportActionItems (File actionsFile) {
     boolean actionsOK = true;
-    int exported = 0;
+    exported = 0;
     TabDelimFile tabs = new TabDelimFile(actionsFile);
     RecordDefinition actionItemsDef = new RecordDefinition();
     RecordDefinition recDef = ClubEvent.getRecDef();
@@ -1418,7 +1423,7 @@ public class ClubPlanner
   private void exportOutline() {
     boolean modOK = modIfChanged();
     boolean sectionOpen = false;
-    int exported = 0;
+    exported = 0;
     if (modOK) {
       fileChooser.setDialogTitle ("Export Agenda to OPML");
       fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -1685,149 +1690,145 @@ public class ClubPlanner
     }
   }
   
+
+  
  /**
    Export the list of events in tab-delimited format.
    */
   private void exportMinutes() {
     boolean modOK = modIfChanged();
-    int exported = 0;
+    exported = 0;
     if (modOK) {
-      fileChooser.setDialogTitle ("Export to Minutes");
+      fileChooser.setDialogTitle ("Export Minutes");
       fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      File suggestion = new File (eventsFile.getParentFile(), "Minutes/minutes.tab");
+      fileChooser.setFile(suggestion);
       File selectedFile = fileChooser.showSaveDialog (this);
       if (selectedFile != null) {
-        MarkupWriter writer 
-            = new MarkupWriter(selectedFile, MarkupWriter.MARKDOWN_FORMAT);
-        boolean ok = writer.openForOutput();
-        if (ok) {
-          textMergeScript.clearSortAndFilterSettings();
-          int lastSeq = -1;
-          for (int i = 0; i < clubEventList.size(); i++) {
-            ClubEvent nextClubEvent = clubEventList.get(i);
-            if (nextClubEvent != null
-                && nextClubEvent.getStatusAsString().contains("Current")) {
-              String what = nextClubEvent.getWhat();
-              if (exported == 0) {
-                writer.writeHeading (1, "Minutes for " + what, "");
-              }
-              String seqStr = nextClubEvent.getSeq();
-              int seq = Integer.parseInt(seqStr);
-              String seqTitle = "";
-              switch (seq) {
-                case 1:
-                  seqTitle = "Open Meeting";
-                  break;
-                case 2:
-                  seqTitle = "Finance";
-                  break;
-                case 3:
-                  seqTitle = "Board Info";
-                  break;
-                case 4:
-                  seqTitle = "Recent Events";
-                  break;
-                case 5:
-                  seqTitle = "Upcoming";
-                  break;
-                case 8:
-                  seqTitle = "Communication";
-                  break;
-                case 9:
-                  seqTitle = "Close Meeting";
-                  break;
-              }
-              String category = nextClubEvent.getCategory();
-              if (seq != lastSeq) {
-                writer.writeHeading (2, seqTitle, "");
-                lastSeq = seq;
-              }
-              String ymd = nextClubEvent.getYmd();
-              String when = nextClubEvent.getWhen();
-              StringBuilder h3 = new StringBuilder();
-              if (ymd != null && ymd.length() > 7) {
-                h3.append(when);
-                h3.append(" -- ");
-              }
-              if (category != null && category.length() > 0) {
-                h3.append(category);
-                h3.append(": ");
-              }
-              h3.append(what);
-              writer.writeHeading(3, h3.toString(), "");
-              
-              // Print Who
-              exportMinutesField 
-                  (writer, 
-                  "Who", 
-                  nextClubEvent.getWho());
-              
-              // Print Where
-              exportMinutesField 
-                  (writer, 
-                  "Where", 
-                  nextClubEvent.getWhere());
-              
-              // Print Finance Projection
-              exportMinutesField 
-                  (writer, 
-                  "Finance Projection", 
-                  nextClubEvent.getFinanceProjection());
-              
-              // Print Finance Projection
-              exportMinutesField 
-                  (writer, 
-                  "Over/Under", 
-                  nextClubEvent.getOverUnder());
-              
-              // Print Discussion
-              exportMinutesField 
-                  (writer, "For Discussion", nextClubEvent.getDiscuss());
-              
-              if (nextClubEvent.sizeEventNoteList() > 0) {
-                EventNote note = nextClubEvent.getEventNote(0);
-                String via = note.getNoteVia();
-                if (via != null && via.equalsIgnoreCase("Minutes")) {
-                  writer.writeLine("Minutes: ");
-                  writer.writeLine(note.getNote());
-                }
-              }
-              exported++;
-            }
-          }
-          writer.close();
+        boolean exportOK = exportMinutes (selectedFile);
+        if (exportOK) {
           JOptionPane.showMessageDialog(this,
-              String.valueOf(exported) + " Club Events exported successfully to"
+              String.valueOf(exported) + " Minutes notes exported successfully to"
                 + GlobalConstants.LINE_FEED
                 + selectedFile.toString(),
               "Export Results",
               JOptionPane.INFORMATION_MESSAGE,
               Home.getShared().getIcon());
           logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
-              + " Club Events exported as minutes to " 
+              + " Minutes notes exported to " 
               + selectedFile.toString(),
               false);
           statusBar.setStatus(String.valueOf(exported) 
-            + " Club Events exported");
-        } 
-        if (! ok) {
+            + " Minutes notes exported");
+        } else {
           logger.recordEvent (LogEvent.MEDIUM,
-            "Problem exporting Club Events as minutes to " + selectedFile.toString(),
+            "Problem exporting Minutes notes to " + selectedFile.toString(),
               false);
-            trouble.report ("I/O error attempting to export club events to " 
+            trouble.report ("I/O error attempting to export Minutes notes to " 
                 + selectedFile.toString(),
               "I/O Error");
-            statusBar.setStatus("Trouble exporting Club Events");
+            statusBar.setStatus("Trouble exporting Minutes notes");
         } // end if I/O error
       } // end if user selected an output file
-    } // end if were able to save the last modified record
+    } // end if we were able to save the last modified record
   } // end export to minutes
   
-  private void exportMinutesField 
-      (MarkupWriter writer, String label, String data) {
+  /**
+   Export minutes notes to a tab-delimited file.
+  
+   @param minutesFile - The file to be created. 
+  
+   @return True if everything went OK; false otherwise.
+  */
+  private boolean exportMinutes (File minutesFile) {
+    
+    boolean minutesOK = true;
+    exported = 0;
+    TabDelimFile tabs = new TabDelimFile(minutesFile);
+    
+    // Build Record Definition for Output
+    RecordDefinition minutesDef = new RecordDefinition();
+    RecordDefinition recDef = ClubEvent.getRecDef();
+    RecordDefinition noteDef = EventNote.getRecDef();
+    minutesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.ITEM_TYPE_COLUMN_NAME)));
+    minutesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.CATEGORY_COLUMN_NAME)));
+    minutesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.STATUS_COLUMN_NAME)));
+    minutesDef.addColumn (recDef.getDef(recDef.getColumnNumber 
+        (ClubEvent.SEQ_COLUMN_NAME)));
+    minutesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.YMD_COLUMN_NAME)));
+    minutesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.WHAT_COLUMN_NAME)));
+    minutesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.WHERE_COLUMN_NAME)));
+    minutesDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.WHO_COLUMN_NAME)));
+    minutesDef.addColumn(noteDef.getDef(noteDef.getColumnNumber
+        (EventNote.NOTE_FROM_COLUMN_NAME)));
+    minutesDef.addColumn(noteDef.getDef(noteDef.getColumnNumber
+        (EventNote.NOTE_FOR_YMD_COLUMN_NAME)));
+    minutesDef.addColumn(noteDef.getDef(noteDef.getColumnNumber
+        (EventNote.NOTE_VIA_COLUMN_NAME)));
+    minutesDef.addColumn(noteDef.getDef(noteDef.getColumnNumber
+        (EventNote.NOTE_COLUMN_NAME)));
+    minutesDef.addColumn(noteDef.getDef(noteDef.getColumnNumber
+        (EventNote.NOTE_AS_HTML_COLUMN_NAME)));
 
-    if (data != null && data.length() > 0) {
-        writer.writeParagraph(label + ": " + data, "", false);
-    }
+    // Now write out the action items
+    try {
+      tabs.openForOutput(minutesDef);
+
+      // Check all the events
+      for (int i = 0; i < clubEventList.size(); i++) {
+        ClubEvent nextClubEvent = clubEventList.get(i);
+        if (nextClubEvent != null
+            && nextClubEvent.hasNotesWithData()) {
+          for (int j = 0; j < nextClubEvent.sizeEventNoteList(); j++) {
+            EventNote note = nextClubEvent.getEventNote(j);
+            String via = note.getNoteVia();
+            if (via != null && via.equalsIgnoreCase("Minutes")) {
+              DataRecord minutesRec = new DataRecord();
+              minutesRec.addField(minutesDef, nextClubEvent.getItemType());
+              minutesRec.addField(minutesDef, nextClubEvent.getCategory());
+              minutesRec.addField(minutesDef, nextClubEvent.getStatusAsString());
+              minutesRec.addField(minutesDef, nextClubEvent.getSeq());
+              minutesRec.addField(minutesDef, nextClubEvent.getYmd());
+              minutesRec.addField(minutesDef, nextClubEvent.getWhat());
+              minutesRec.addField(minutesDef, nextClubEvent.getWhere());
+              minutesRec.addField(minutesDef, nextClubEvent.getWho());
+              minutesRec.addField(minutesDef, note.getNoteFrom());
+              minutesRec.addField(minutesDef, note.getNoteForYmd());
+              minutesRec.addField(minutesDef, note.getNoteVia());
+              minutesRec.addField(minutesDef, note.getNote());
+              minutesRec.addField(minutesDef, note.getNoteAsHtml());
+              tabs.nextRecordOut(minutesRec);
+              exported++;
+            } // End if these are minutes
+          } // End for each note in the event
+        } // End if we have an event with notes
+      } // End while more club events
+      tabs.close();
+      logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
+          + " Minutes Notes exported in tab-delimited format to " 
+          + minutesFile.toString(),
+          false);
+      statusBar.setStatus(String.valueOf(exported) 
+        + " Minutes Notes exported");
+    } catch (java.io.IOException e) {
+      minutesOK = false;
+      logger.recordEvent (LogEvent.MEDIUM,
+        "Problem exporting Action Items to " + minutesFile.toString(),
+          false);
+        trouble.report ("I/O error attempting to export minutes notes to " 
+            + minutesFile.toString(),
+          "I/O Error");
+        statusBar.setStatus("Trouble exporting Minutes Notes");
+    } // end if I/O error
+    
+    return minutesOK;
   }
   
   /**
@@ -3101,6 +3102,7 @@ public class ClubPlanner
   fileExportMenu.add(fileRegisterMenuItem);
 
   exportMinutesMenuItem.setText("Minutes");
+  exportMinutesMenuItem.setToolTipText("Export minutes records to a tab-delimited file");
   exportMinutesMenuItem.addActionListener(new java.awt.event.ActionListener() {
     public void actionPerformed(java.awt.event.ActionEvent evt) {
       exportMinutesMenuItemActionPerformed(evt);

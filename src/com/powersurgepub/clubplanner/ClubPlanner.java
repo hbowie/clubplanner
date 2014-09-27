@@ -68,7 +68,7 @@ public class ClubPlanner
     { 
   
   public static final String              PROGRAM_NAME    = "Club Planner";
-  public static final String              PROGRAM_VERSION = "1.10";
+  public static final String              PROGRAM_VERSION = "1.20";
   
   public  static final String             FIND = "Find";
   public  static final String             FIND_AGAIN = "Again";
@@ -136,7 +136,8 @@ public class ClubPlanner
   private             ClubEventPanel2     clubEventPanel2;
   private             ClubEventPanel3     clubEventPanel3;
   private             ClubEventPanel4     clubEventPanel4;
-  private             ClubEventPanel5     clubEventPanel5;
+  // private             ClubEventPanel5     clubEventPanel5;
+  private             NotesPanel          notesPanel;
   
   // List Manipulation
   private             TextMergeScript     textMergeScript;
@@ -277,12 +278,14 @@ public class ClubPlanner
     clubEventPanel2 = new ClubEventPanel2(this, linkTweaker);
     clubEventPanel3 = new ClubEventPanel3(this, linkTweaker);
     clubEventPanel4 = new ClubEventPanel4(this, linkTweaker);
-    clubEventPanel5 = new ClubEventPanel5(this, linkTweaker);
+    // clubEventPanel5 = new ClubEventPanel5(this, linkTweaker);
+    notesPanel = new NotesPanel(this, linkTweaker);
     itemTabs.add("Basics", clubEventPanel1);
     itemTabs.add("Text", clubEventPanel2);
     itemTabs.add("Numbers", clubEventPanel3);
     itemTabs.add("Links", clubEventPanel4);
-    itemTabs.add("Notes", clubEventPanel5);
+    // itemTabs.add("Notes", clubEventPanel5);
+    itemTabs.add("Notes", notesPanel);
     
     initCollection();
     
@@ -2386,9 +2389,12 @@ public class ClubPlanner
     if (clubEventPanel4.modIfChanged(clubEvent)) {
       modified = true;
     } 
-    if (clubEventPanel5.modIfChanged(clubEvent)) {
+    // if (clubEventPanel5.modIfChanged(clubEvent)) {
+    //   modified = true;
+    // } 
+    if (notesPanel.modIfChanged(clubEvent)) {
       modified = true;
-    } 
+    }
     
     if (modified) {
       currentFileModified = true;
@@ -2671,7 +2677,8 @@ public class ClubPlanner
     clubEventPanel2.display(clubEvent);
     clubEventPanel3.display(clubEvent);
     clubEventPanel4.display(clubEvent);
-    clubEventPanel5.display(clubEvent);
+    // clubEventPanel5.display(clubEvent);
+    notesPanel.display(clubEvent);
     statusBar.setPosition(position.getIndexForDisplay(), clubEventList.size());
     modified = false;
   }

@@ -15,6 +15,15 @@ template	generate
 input	set		normalization	0
 input	open	xls		#PATH#../fields.xls
 sort	add	Ascending	Item Class	
+sort	add	Ascending	Column Sequence	
+sort	add	Ascending	No.	
+sort	add	Ascending	Field	
+sort	set		params	
+template	open	file		#PATH#../templates/master-list-columns.java
+template	generate			
+input	set		normalization	0
+input	open	xls		#PATH#../fields.xls
+sort	add	Ascending	Item Class	
 sort	add	Ascending	No.	
 sort	add	Ascending	Field	
 sort	set		params	

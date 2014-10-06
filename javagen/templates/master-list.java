@@ -91,6 +91,8 @@ public class =$itemclass$=List
   
   /** Path to the original source file (if any). */
   private		 String							dataParent;
+  
+<?include "../includes/=$itemclass$=-master-list-columns.java"?>
  
   /**
    List constructor with no arguments.
@@ -98,7 +100,7 @@ public class =$itemclass$=List
   public =$itemclass$=List () {
     tagsList.registerValue("");
     for (int i = 0; i < getColumnCount(); i++) {
-      recDef.addColumn(getColumnName(i));
+      recDef.addColumn(getColumnName(getC(i)));
     }
     log = Logger.getShared();
   }
@@ -200,11 +202,11 @@ public class =$itemclass$=List
   }
  
   public String getColumnName (int columnIndex) {
-    return =$itemclass$=.getColumnName (columnIndex);
+    return =$itemclass$=.getColumnName (getC(columnIndex));
   }
 
   public Class getColumnClass (int columnIndex) {
-    return =$itemclass$=.getColumnClass (columnIndex);
+    return =$itemclass$=.getColumnClass (getC(columnIndex));
   }
  
   /**
@@ -221,7 +223,7 @@ public class =$itemclass$=List
     boolean found = false;
     int i = 0;
     while (i < getColumnCount() && (! found)) {
-      found = commonName.equals(=$itemclass$=.getCommonName(i));
+      found = commonName.equals(=$itemclass$=.getCommonName(getC(i)));
       if (! found) {
         i++;
       }
@@ -251,7 +253,7 @@ public class =$itemclass$=List
   public List getNames() {
     ArrayList names = new ArrayList();
     for (int i = 0; i < getColumnCount(); i++) {
-      names.add(getColumnName(i));
+      names.add(getColumnName(getC(i)));
     }
     return names;
   }
@@ -287,7 +289,7 @@ public class =$itemclass$=List
     if (item == null) {
       return "";
     } else {
-      Object columnValue = item.getColumnValue(columnIndex);
+      Object columnValue = item.getColumnValue(getC(columnIndex));
       if (columnValue == null) {
         return "";
       } else {
@@ -295,6 +297,22 @@ public class =$itemclass$=List
       }
     }
   } // end method getValueAt
+  
+  public int getColumnWidth (int columnIndex) {
+    return =$itemclass$=.getColumnWidth(getC(columnIndex));
+  }
+  
+  /**
+   Translate the column index used in the table model to the column index
+   used in the master record definition. 
+   */
+  private int getC (int columnIndex) {
+    if (columnIndex < 0 || columnIndex >= columns.length) {
+      return -1;
+    } else {
+      return columns[columnIndex];
+    }
+  }
  
   /**
    Get the item at the specified index in the sorted, filtered list.

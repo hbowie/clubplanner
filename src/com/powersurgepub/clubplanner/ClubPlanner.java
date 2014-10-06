@@ -2100,7 +2100,7 @@ public class ClubPlanner
     int pw = 0;
     for (int i = 0; i < clubEventList.getColumnCount(); i++) { 
       tc = itemTable.getColumnModel().getColumn(i);
-      tc.setPreferredWidth (ClubEvent.getColumnWidth(i) * 9);
+      tc.setPreferredWidth (clubEventList.getColumnWidth(i) * 9);
     }
     
     clubEventPanel1.getStatusTextSelector().setValueList

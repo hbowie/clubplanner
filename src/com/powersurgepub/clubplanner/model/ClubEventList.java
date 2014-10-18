@@ -348,11 +348,14 @@ public class ClubEventList
    used in the master record definition.
    */
   private int getC (int columnIndex) {
+    return columnIndex;
+    /*
     if (columnIndex < 0 || columnIndex >= columns.length) {
       return -1;
     } else {
       return columns[columnIndex];
     }
+    */
   }
  
   /**

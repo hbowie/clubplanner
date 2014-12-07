@@ -16,8 +16,7 @@
 
 package com.powersurgepub.clubplanner;
 
-import com.powersurgepub.psdatalib.psdata.CalcParser;
-import com.powersurgepub.psdatalib.psdata.StringDate;
+  import com.powersurgepub.psdatalib.psdata.*;
   import com.powersurgepub.clubplanner.io.*;
   import com.powersurgepub.clubplanner.model.*;
   import com.powersurgepub.clubplanner.view.*;
@@ -1027,7 +1026,7 @@ public class ClubPlanner
               // and precede the action itself.
               int actionColon = action.indexOf(":", actionStart);
               if (actionColon < 0) {
-                actionColon = action.indexOf("-", actionStart);
+                actionColon = action.indexOf(" - ", actionStart);
               }
 
               // If the actions are numbered, then skip past the numbers

@@ -16,6 +16,7 @@
 
 package com.powersurgepub.clubplanner.view;
 
+import com.powersurgepub.psdatalib.psdata.widgets.LinkLabel;
   import com.powersurgepub.clubplanner.*;
   import com.powersurgepub.clubplanner.model.*;
   import com.powersurgepub.linktweaker.*;

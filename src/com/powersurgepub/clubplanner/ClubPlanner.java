@@ -16,6 +16,7 @@
 
 package com.powersurgepub.clubplanner;
 
+import com.powersurgepub.psdatalib.psdata.values.StringDate;
   import com.powersurgepub.psdatalib.psdata.*;
   import com.powersurgepub.clubplanner.io.*;
   import com.powersurgepub.clubplanner.model.*;

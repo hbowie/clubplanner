@@ -343,6 +343,15 @@ public class ClubEventPanel4
   public JTextArea getNewsImageJTextArea () {
     return newsImageJTextArea;
   }
+  
+  /**
+   Get the current link so that it can be tweaked. 
+  
+   @return The Link to be tweaked. 
+  */
+  public String getLinkToTweak() {
+    return linkJTextArea.getText();
+  }
 
 
   /**
@@ -358,7 +367,7 @@ public class ClubEventPanel4
                       than one. This would be the text used in the label
                       for the link.
   */
-  public void setTweakedLink (String tweakedLink, String linkID) {
+  public void putTweakedLink (String tweakedLink, String linkID) {
     if (linkID.equals(linkLabel.getLabelText())) {
       linkJTextArea.setText (tweakedLink);
     }

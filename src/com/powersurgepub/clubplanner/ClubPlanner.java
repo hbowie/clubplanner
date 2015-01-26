@@ -1913,7 +1913,7 @@ public class ClubPlanner
     } catch (IOException e) {
       backupPath.append(folderForBackups.getAbsolutePath());
     }
-    backupPath.append(xos.getPathSeparator());
+    backupPath.append(File.separator);
     if (clubEventCalc.ifOpYearFromFolder()) {
       backupPath.append(clubEventCalc.getOpYearFolder());
       backupPath.append(" ");
@@ -2704,6 +2704,15 @@ public class ClubPlanner
   }
   
   /**
+   Get the current link so that it can be tweaked. 
+  
+   @return The Link to be tweaked. 
+  */
+  public String getLinkToTweak() {
+    return this.clubEventPanel4.getLinkToTweak();
+  }
+  
+  /**
    Set a link field to a new value after it has been tweaked. 
   
    @param tweakedLink The link after it has been tweaked. 
@@ -2711,8 +2720,8 @@ public class ClubPlanner
                       than one. This would be the text used in the label
                       for the link. 
   */
-  public void setTweakedLink (String tweakedLink, String linkID) {
-    this.clubEventPanel4.setTweakedLink (tweakedLink, linkID);
+  public void putTweakedLink (String tweakedLink, String linkID) {
+    clubEventPanel4.putTweakedLink (tweakedLink, linkID);
   }
   
   /**

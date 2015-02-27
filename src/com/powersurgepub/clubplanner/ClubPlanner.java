@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 - 2014 Herb Bowie
+ * Copyright 2012 - 2015 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.powersurgepub.clubplanner;
 
-import com.powersurgepub.psdatalib.psdata.values.StringDate;
+
   import com.powersurgepub.psdatalib.psdata.*;
   import com.powersurgepub.clubplanner.io.*;
   import com.powersurgepub.clubplanner.model.*;
@@ -25,6 +25,7 @@ import com.powersurgepub.psdatalib.psdata.values.StringDate;
   import com.powersurgepub.psfiles.*;
   import com.powersurgepub.psdatalib.clubplanner.*;
   import com.powersurgepub.psdatalib.psdata.*;
+  import com.powersurgepub.psdatalib.psdata.values.*;
   import com.powersurgepub.psdatalib.pstags.*;
   import com.powersurgepub.psdatalib.tabdelim.*;
   import com.powersurgepub.psdatalib.textmerge.*;
@@ -70,7 +71,7 @@ public class ClubPlanner
     { 
   
   public static final String              PROGRAM_NAME    = "Club Planner";
-  public static final String              PROGRAM_VERSION = "1.20";
+  public static final String              PROGRAM_VERSION = "1.21";
   
   public  static final String             FIND = "Find";
   public  static final String             FIND_AGAIN = "Again";
@@ -294,14 +295,20 @@ public class ClubPlanner
     /*
      Following initialization, to get user's preferred file or folder to open.
      */
+    FileSpec lastFileSpec = filePrefs.getStartupFileSpec();
     String lastFileString = filePrefs.getStartupFilePath();
     if (lastFileString != null
         && lastFileString.length() > 0) {
+      
       File lastFile = new File (lastFileString);
+      String lastTitle = "";
+      if (lastFileSpec != null && lastFileSpec.hasLastTitle()) {
+        lastTitle = lastFileSpec.getLastTitle();
+      }
       if (lastFile.exists()
           && lastFile.isDirectory()
           && lastFile.canRead()) {
-        openFile (lastFile);
+        openFile (lastFile, lastTitle);
       } else {
         openFile();
       }
@@ -357,7 +364,7 @@ public class ClubPlanner
    */
   public void handleOpenFile (FileSpec fileSpec) {
     this.fileSpec = fileSpec;
-    openFile (fileSpec.getFile());
+    openFile (fileSpec.getFile(), "");
   }
   
   /**      
@@ -368,7 +375,7 @@ public class ClubPlanner
                   onto the application icon.
    */
   public void handleOpenFile (File inFile) {
-    openFile (inFile);
+    openFile (inFile, "");
   }
   
   public void handleOpenURI(URI inURI) {
@@ -520,7 +527,7 @@ public class ClubPlanner
     currentFileModified = false;
   } // end method openFile
   
-  private void openFile (File fileToOpen) {
+  private void openFile (File fileToOpen, String titleToSelect) {
     
     initCollection();
     ClubEventListLoader loader = new ClubEventListLoader(fileToOpen);
@@ -542,7 +549,18 @@ public class ClubPlanner
     */
     position = new ClubEventPositioned ();
     // setPreferredCollectionView();
-    position = clubEventList.first(position);
+    int index = -1;
+    if (titleToSelect != null && titleToSelect.length() > 0) {
+      ClubEvent eventToFind = new ClubEvent();
+      eventToFind.setWhat(titleToSelect);
+      index = clubEventList.findByUniqueKey(eventToFind);
+      if (index >= 0) {
+        position = clubEventList.positionUsingListIndex(index);
+      }
+    }
+    if (index < 0) {
+      position = clubEventList.first(position);
+    }
     positionAndDisplay();
   }
   
@@ -2683,6 +2701,9 @@ public class ClubPlanner
     notesPanel.display(clubEvent);
     statusBar.setPosition(position.getIndexForDisplay(), clubEventList.size());
     modified = false;
+    if (fileSpec != null) {
+      fileSpec.setLastTitle(clubEvent.getWhat());
+    }
   }
   
   private void reload (ClubEvent clubEvent) {

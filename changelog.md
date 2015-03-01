@@ -1,4 +1,11 @@
 
+## Version 1.21 (2015-02-24)
+
+1. **Now Remembers Last Event Opened**
+
+    Instead of always positioning itself on the first event, Club Planner now remembers the last event viewed, and attempts to re-position itself on that event when re-opening a folder of events.
+
+
 ## Version 1.10 (2014-08-22)
 
 1. **Added Financial Register Export**

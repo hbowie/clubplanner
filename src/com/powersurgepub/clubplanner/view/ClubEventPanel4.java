@@ -16,11 +16,13 @@
 
 package com.powersurgepub.clubplanner.view;
 
-import com.powersurgepub.psdatalib.psdata.widgets.LinkLabel;
   import com.powersurgepub.clubplanner.*;
   import com.powersurgepub.clubplanner.model.*;
   import com.powersurgepub.linktweaker.*;
   import com.powersurgepub.psdatalib.clubplanner.*;
+  import com.powersurgepub.psdatalib.psdata.*;
+  import com.powersurgepub.psdatalib.psdata.values.*;
+  import com.powersurgepub.psdatalib.psdata.widgets.*;
   import com.powersurgepub.psdatalib.ui.*;
   import java.awt.*;
   import java.util.*;
@@ -343,15 +345,6 @@ public class ClubEventPanel4
   public JTextArea getNewsImageJTextArea () {
     return newsImageJTextArea;
   }
-  
-  /**
-   Get the current link so that it can be tweaked. 
-  
-   @return The Link to be tweaked. 
-  */
-  public String getLinkToTweak() {
-    return linkJTextArea.getText();
-  }
 
 
   /**
@@ -367,7 +360,7 @@ public class ClubEventPanel4
                       than one. This would be the text used in the label
                       for the link.
   */
-  public void putTweakedLink (String tweakedLink, String linkID) {
+  public void setTweakedLink (String tweakedLink, String linkID) {
     if (linkID.equals(linkLabel.getLabelText())) {
       linkJTextArea.setText (tweakedLink);
     }

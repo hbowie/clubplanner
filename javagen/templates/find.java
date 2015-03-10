@@ -30,7 +30,7 @@
     if (get=$field&cuul$=() != null
         && get=$field&cuul$=().length() > 0) {
       fieldStart = StringUtils.indexOfIgnoreCase (findLower, findUpper,
-            get=$field&cuul$=(), 0);
+            get=$field&cuul$=AsString(), 0);
       if (fieldStart >= 0) {
         found = true;
       }

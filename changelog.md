@@ -1,4 +1,11 @@
 
+## Version 1.30 (2015-03-10)
+
+1. **Added Variants of Where and Who Fields**
+
+    The following variants of Where and Who are now available, identified via the following suffixes, containing the appropriate information extracted from the primary field: Name, Address, City, State, Zip, Phone, Email, and MapURL.
+
+
 ## Version 1.21 (2015-02-24)
 
 1. **Now Remembers Last Event Opened**

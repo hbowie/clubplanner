@@ -133,6 +133,22 @@ public class ClubEventList
       36,
       37,
       38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
       -1 };
  
   /**
@@ -348,14 +364,11 @@ public class ClubEventList
    used in the master record definition.
    */
   private int getC (int columnIndex) {
-    return columnIndex;
-    /*
     if (columnIndex < 0 || columnIndex >= columns.length) {
       return -1;
     } else {
       return columns[columnIndex];
     }
-    */
   }
  
   /**

@@ -206,7 +206,20 @@ Seq
 :    The sequence of discussion at a Board meeting.
 
 Status
-:    One or more tags indicating the status of the event.
+:    One or more tags indicating the status of the event. Note that events are organized by these values on the Status tab, as an alternative to the List tab. The following values are suggested.
+
+	* Archive -- A completed/cancelled event that no longer needs further discussion by the board.
+	* Budget -- A pseudo-event used to track planned income/expense for a given Category of events.
+	* Communication
+	* Current -- An event for discussion at our current board meetings, either as one recently completed, or being contemplated for the near future.
+	* Discards -- Ideas that have been abandoned as not worthy of further pursuit.
+	* Future -- An even to be considered at some future time.
+	* Ideas -- Ideas for possible events.
+	* News -- Items to be included in current newsletters.
+	* Next Year
+	* Proposed
+	* Rotate -- A pseudo-event to be occasionally included in club communications, on a rotating basis.
+	* Save
 
 When
 :    An indication of the date and time that the event will be held, in a format emphasizing human readability. This need not be a complete date. It need not and generally should not contain the year, since this can be inferred from the operating year identified in the higher level folder. If an exact date is known, then this field should generally start with a three-character abbreviation for the day of the week. Three-character abbreviations for the month are also recognized and encouraged. Following are perfectly good examples of dates: Apr; Sat May 5; Thu Sun Mar 25 5:30 - 7:30 PM.
@@ -218,10 +231,10 @@ What
 :    A brief descriptive title for the event.
 
 Where
-:    The location of the event, including the name of the venue and its address.
+:    The location of the event, including the name of the venue and its address. The following variants of this field are also available, identified via the following suffixes, containing the appropriate information extracted from this primary field: Name, Address, City, State, Zip, Phone, Email, and MapURL.
 
 Who
-:    Who is assigned to plan, coordinate and host the event. Can include multiple names. Can include email addresses and phone numbers.
+:    Who is assigned to plan, coordinate and host the event. Can include multiple names. Can include email addresses and phone numbers. The following variants of this field are also available, identified via the following suffixes, containing the appropriate information extracted from this primary field: Name, Address, City, State, Zip, Phone, Email, and MapURL.
 
 Discuss
 :    Identification of any issues to be discussed at an upcoming board meeting.

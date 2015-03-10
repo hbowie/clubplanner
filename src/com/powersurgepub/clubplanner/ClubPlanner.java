@@ -71,7 +71,7 @@ public class ClubPlanner
     { 
   
   public static final String              PROGRAM_NAME    = "Club Planner";
-  public static final String              PROGRAM_VERSION = "1.21";
+  public static final String              PROGRAM_VERSION = "1.30";
   
   public  static final String             FIND = "Find";
   public  static final String             FIND_AGAIN = "Again";
@@ -1094,7 +1094,7 @@ public class ClubPlanner
                 actionees = action.substring(actionStart, actionColon);
               }
               if (actionees.length() == 0) {
-                actionees = nextClubEvent.getWho();
+                actionees = nextClubEvent.getWho().getName();
               }
 
               String actionItem = "";
@@ -1820,8 +1820,8 @@ public class ClubPlanner
               minutesRec.addField(minutesDef, nextClubEvent.getSeq());
               minutesRec.addField(minutesDef, nextClubEvent.getYmd());
               minutesRec.addField(minutesDef, nextClubEvent.getWhat());
-              minutesRec.addField(minutesDef, nextClubEvent.getWhere());
-              minutesRec.addField(minutesDef, nextClubEvent.getWho());
+              minutesRec.addField(minutesDef, nextClubEvent.getWhereAsString());
+              minutesRec.addField(minutesDef, nextClubEvent.getWhoAsString());
               minutesRec.addField(minutesDef, note.getNoteFrom());
               minutesRec.addField(minutesDef, note.getNoteForYmd());
               minutesRec.addField(minutesDef, note.getNoteVia());
@@ -2730,7 +2730,7 @@ public class ClubPlanner
    @return The Link to be tweaked. 
   */
   public String getLinkToTweak() {
-    return this.clubEventPanel4.getLinkToTweak();
+    return this.clubEventPanel4.getLinkJTextArea().getText();
   }
   
   /**
@@ -2742,7 +2742,7 @@ public class ClubPlanner
                       for the link. 
   */
   public void putTweakedLink (String tweakedLink, String linkID) {
-    clubEventPanel4.putTweakedLink (tweakedLink, linkID);
+    clubEventPanel4.setTweakedLink (tweakedLink, linkID);
   }
   
   /**

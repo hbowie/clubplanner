@@ -71,7 +71,7 @@ public class ClubPlanner
     { 
   
   public static final String              PROGRAM_NAME    = "Club Planner";
-  public static final String              PROGRAM_VERSION = "1.30";
+  public static final String              PROGRAM_VERSION = "1.31";
   
   public  static final String             FIND = "Find";
   public  static final String             FIND_AGAIN = "Again";
@@ -2420,10 +2420,16 @@ public class ClubPlanner
       currentFileModified = true;
       String newLocalPath = clubEvent.getLocalPath();
       if ((! clubEvent.hasWhat()) || clubEvent.getWhat().length() == 0) {
-        trouble.report (this, 
-            "The What field has been left blank", 
-            "Missing Key Field");
-        modOK = false;
+        Object[] options = {"OK, let me fix it", "Cancel and discard the Event"};
+        int response = JOptionPane.showOptionDialog(this, 
+            "The Event cannot be saved because the What field has been left blank", 
+            "Data Entry Error", 
+            JOptionPane.OK_CANCEL_OPTION, 
+            JOptionPane.WARNING_MESSAGE, 
+            null, 
+            options, 
+            options[0]);
+        modOK = (response == 1);
       } 
       else 
       if ((! newLocalPath.equals(localPath))

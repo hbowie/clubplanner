@@ -1,4 +1,11 @@
 
+## Version 1.31 (2015-03-18)
+
+1. **Fixed Bug Introduced with Where and Who Variants**
+
+    Corrected bug introduced with variants of Who and Where fields.
+
+
 ## Version 1.30 (2015-03-10)
 
 1. **Added Variants of Where and Who Fields**

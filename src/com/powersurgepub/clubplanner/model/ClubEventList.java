@@ -94,14 +94,14 @@ public class ClubEventList
    */
  
  private int[] columns = new int[] {
-      3,
-      6,
-      7,
+      0,
       1,
       2,
+      3,
       4,
-      0,
       5,
+      6,
+      7,
       8,
       9,
       10,

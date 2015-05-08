@@ -16,7 +16,6 @@
 
 package com.powersurgepub.clubplanner;
 
-
   import com.powersurgepub.psdatalib.psdata.*;
   import com.powersurgepub.clubplanner.io.*;
   import com.powersurgepub.clubplanner.model.*;
@@ -1414,8 +1413,8 @@ public class ClubPlanner
       registerRec.addField(registerDef, "");
       registerRec.addField(registerDef, "Net");
       registerRec.addField(registerDef, "");
-      registerRec.addField(registerDef, currencyFormat.format(net.doubleValue()));
       registerRec.addField(registerDef, "");
+      registerRec.addField(registerDef, currencyFormat.format(net.doubleValue()));
       registerRec.addField(registerDef, "Net Income and Expense to date");
       tabs.nextRecordOut(registerRec);
       exported++;

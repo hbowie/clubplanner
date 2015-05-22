@@ -1,5 +1,5 @@
 /*
- * Copyright 1999 - 2013 Herb Bowie
+ * Copyright 1999 - 2015 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -132,6 +132,16 @@ public class ClubEventWriter {
     return new File (completePath.toString());
   }
  
+  /**
+   Save an entire list of events to disk. 
+  
+   @param folder           The destination folder. 
+   @param clubEventList    The list to be saved. 
+   @param primaryLocation  Is this the primary disk location for the events?
+   @param adjustForNewYear Are we rolling over to a new year? 
+  
+   @return True if everything went OK. 
+  */
   public boolean save (File folder, ClubEventList clubEventList,
       boolean primaryLocation, boolean adjustForNewYear) {
  
@@ -150,6 +160,16 @@ public class ClubEventWriter {
     return outOK;
   }
  
+  /**
+   Save one event to disk. 
+  
+   @param folder           The destination folder. 
+   @param clubEvent        The event to be saved. 
+   @param primaryLocation  Is this the primary disk location for the event? 
+   @param adjustForNewYear Are we rolling over to a new year?
+  
+   @return True if everything went OK. 
+  */
   public boolean save (File folder, ClubEvent clubEvent,
       boolean primaryLocation, boolean adjustForNewYear) {
  
@@ -158,6 +178,14 @@ public class ClubEventWriter {
     if ((! primaryLocation) && (adjustForNewYear)) {
       clubEvent.getTags().replace("Archive", "Current");
       clubEvent.getTags().replace("Next Year", "Current");
+      clubEvent.setPriorYrActExp(clubEvent.getActualExpense());
+      clubEvent.setPriorYrActInc(clubEvent.getActualIncome());
+      clubEvent.setPriorYrPlnExp(clubEvent.getPlannedExpense());
+      clubEvent.setPriorYrPlnInc(clubEvent.getPlannedIncome());
+      clubEvent.setActualExpense("");
+      clubEvent.setActualIncome("");
+      clubEvent.setPlannedExpense("");
+      clubEvent.setPlannedIncome("");
     }
  
  
@@ -216,11 +244,11 @@ public class ClubEventWriter {
     }
     if (outOK) {
       outOK = writeFieldName
-          (ClubEvent.STATUS_FIELD_NAME);
+          (ClubEvent.FLAGS_FIELD_NAME);
     }
     if (outOK) {
       outOK = writeFieldValue
-          (clubEvent.getStatusAsString());
+          (clubEvent.getFlagsAsString());
     }
     if (outOK) {
       outOK = writeFieldName
@@ -429,6 +457,46 @@ public class ClubEventWriter {
     if (outOK) {
       outOK = writeFieldValue
           (clubEvent.getNotesAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
+          (ClubEvent.PRIOR_YR_PLN_INC_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getPriorYrPlnIncAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
+          (ClubEvent.PRIOR_YR_ACT_INC_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getPriorYrActIncAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
+          (ClubEvent.PRIOR_YR_PLN_EXP_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getPriorYrPlnExpAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
+          (ClubEvent.PRIOR_YR_ACT_EXP_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getPriorYrActExpAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
+          (ClubEvent.STATE_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getStateAsString());
     }
     return outOK;
   }

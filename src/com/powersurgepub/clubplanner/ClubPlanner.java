@@ -993,7 +993,7 @@ public class ClubPlanner
     actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
         (ClubEvent.CATEGORY_COLUMN_NAME)));
     actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
-        (ClubEvent.STATUS_COLUMN_NAME)));
+        (ClubEvent.FLAGS_COLUMN_NAME)));
     actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
         (ClubEvent.YMD_COLUMN_NAME)));
     actionItemsDef.addColumn (recDef.getDef(recDef.getColumnNumber
@@ -1142,7 +1142,7 @@ public class ClubPlanner
                 DataRecord actionItemsRec = new DataRecord();
                 actionItemsRec.addField(actionItemsDef, nextClubEvent.getItemType());
                 actionItemsRec.addField(actionItemsDef, nextClubEvent.getCategory());
-                actionItemsRec.addField(actionItemsDef, nextClubEvent.getStatusAsString());
+                actionItemsRec.addField(actionItemsDef, nextClubEvent.getFlagsAsString());
                 actionItemsRec.addField(actionItemsDef, nextClubEvent.getYmd());
                 actionItemsRec.addField(actionItemsDef, nextClubEvent.getWhat());
                 actionItemsRec.addField(actionItemsDef, nextClubEvent.getDiscuss());
@@ -1221,7 +1221,7 @@ public class ClubPlanner
     financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
         (ClubEvent.CATEGORY_COLUMN_NAME)));
     financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
-        (ClubEvent.STATUS_COLUMN_NAME)));
+        (ClubEvent.FLAGS_COLUMN_NAME)));
     financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
         (ClubEvent.YMD_COLUMN_NAME)));
     financesDef.addColumn (recDef.getDef(recDef.getColumnNumber
@@ -1252,7 +1252,7 @@ public class ClubPlanner
           DataRecord financeRec = new DataRecord();
           financeRec.addField(financesDef, nextClubEvent.getItemType());
           financeRec.addField(financesDef, nextClubEvent.getCategory());
-          financeRec.addField(financesDef, nextClubEvent.getStatusAsString());
+          financeRec.addField(financesDef, nextClubEvent.getFlagsAsString());
           financeRec.addField(financesDef, nextClubEvent.getYmd());
           financeRec.addField(financesDef, nextClubEvent.getWhat());
           financeRec.addField(financesDef, nextClubEvent.getFinanceProjection());
@@ -1460,7 +1460,7 @@ public class ClubPlanner
           for (int i = 0; i < clubEventList.size(); i++) {
             ClubEvent nextClubEvent = clubEventList.get(i);
             if (nextClubEvent != null
-                && nextClubEvent.getStatusAsString().contains("Current")) {
+                && nextClubEvent.getFlagsAsString().contains("Current")) {
               String what = nextClubEvent.getWhat();
               if (exported == 0) {
                 writer.startHead();
@@ -1522,8 +1522,8 @@ public class ClubPlanner
               if (nextClubEvent.hasCategoryWithData()) {
                 writer.writeOutline("Category: " + nextClubEvent.getCategory());
               }
-              if (nextClubEvent.hasStatusWithData()) {
-                writer.writeOutline("Status: " + nextClubEvent.getStatusAsString());
+              if (nextClubEvent.hasFlagsWithData()) {
+                writer.writeOutline("Flags: " + nextClubEvent.getFlagsAsString());
               }
               if (nextClubEvent.hasDiscussWithData()) {
                 writer.writeOutline("To Discuss: " + nextClubEvent.getDiscuss());
@@ -1777,7 +1777,7 @@ public class ClubPlanner
     minutesDef.addColumn (recDef.getDef(recDef.getColumnNumber
         (ClubEvent.CATEGORY_COLUMN_NAME)));
     minutesDef.addColumn (recDef.getDef(recDef.getColumnNumber
-        (ClubEvent.STATUS_COLUMN_NAME)));
+        (ClubEvent.FLAGS_COLUMN_NAME)));
     minutesDef.addColumn (recDef.getDef(recDef.getColumnNumber 
         (ClubEvent.SEQ_COLUMN_NAME)));
     minutesDef.addColumn (recDef.getDef(recDef.getColumnNumber
@@ -1815,7 +1815,7 @@ public class ClubPlanner
               DataRecord minutesRec = new DataRecord();
               minutesRec.addField(minutesDef, nextClubEvent.getItemType());
               minutesRec.addField(minutesDef, nextClubEvent.getCategory());
-              minutesRec.addField(minutesDef, nextClubEvent.getStatusAsString());
+              minutesRec.addField(minutesDef, nextClubEvent.getFlagsAsString());
               minutesRec.addField(minutesDef, nextClubEvent.getSeq());
               minutesRec.addField(minutesDef, nextClubEvent.getYmd());
               minutesRec.addField(minutesDef, nextClubEvent.getWhat());
@@ -2122,7 +2122,7 @@ public class ClubPlanner
       tc.setPreferredWidth (clubEventList.getColumnWidth(i) * 9);
     }
     
-    clubEventPanel1.getStatusTextSelector().setValueList
+    clubEventPanel1.getFlagsTextSelector().setValueList
         (clubEventList.getTagsList());
     tagsTree.setModel (clubEventList.getTagsModel().getModel());
     tagsTree.getSelectionModel().setSelectionMode
@@ -2193,7 +2193,7 @@ public class ClubPlanner
       position.setIndex (clubEventList.size());
       localPath = "";
       display();
-      clubEventPanel1.getStatusTextSelector().setText (selectedTags);
+      clubEventPanel1.getFlagsTextSelector().setText (selectedTags);
     }
   }
   
@@ -3018,7 +3018,7 @@ public class ClubPlanner
 
     treePanel.add(treeScrollPane, java.awt.BorderLayout.CENTER);
 
-    collectionTabs.addTab("Status", treePanel);
+    collectionTabs.addTab("Flags", treePanel);
 
     mainSplitPane.setLeftComponent(collectionTabs);
 

@@ -75,6 +75,14 @@ public class ClubEventPanel3
   private JLabel overUnderJLabel = new JLabel();
   private JLabel    financeProjectionLabel    = new JLabel("Finance Projection:", JLabel.LEFT);
   private JLabel financeProjectionJLabel = new JLabel();
+  private JLabel    priorYrPlnIncLabel    = new JLabel("Prior Yr Pln Inc:", JLabel.LEFT);
+  private JTextField priorYrPlnIncJTextField = new JTextField();
+  private JLabel    priorYrActIncLabel    = new JLabel("Prior Yr Act Inc:", JLabel.LEFT);
+  private JTextField priorYrActIncJTextField = new JTextField();
+  private JLabel    priorYrPlnExpLabel    = new JLabel("Prior Yr Pln Exp:", JLabel.LEFT);
+  private JTextField priorYrPlnExpJTextField = new JTextField();
+  private JLabel    priorYrActExpLabel    = new JLabel("Prior Yr Act Exp:", JLabel.LEFT);
+  private JTextField priorYrActExpJTextField = new JTextField();
 
   private     JLabel              bottomFiller   = new JLabel("");
 
@@ -168,6 +176,7 @@ public class ClubEventPanel3
 		// Panel Layout for Planned Income
     plannedIncomeLabel.setLabelFor(plannedIncomeJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(plannedIncomeLabel);
@@ -184,6 +193,7 @@ public class ClubEventPanel3
 		// Panel Layout for Actual Income
     actualIncomeLabel.setLabelFor(actualIncomeJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(actualIncomeLabel);
@@ -200,6 +210,7 @@ public class ClubEventPanel3
 		// Panel Layout for Planned Expense
     plannedExpenseLabel.setLabelFor(plannedExpenseJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(plannedExpenseLabel);
@@ -216,6 +227,7 @@ public class ClubEventPanel3
 		// Panel Layout for Actual Expense
     actualExpenseLabel.setLabelFor(actualExpenseJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(actualExpenseLabel);
@@ -250,6 +262,50 @@ public class ClubEventPanel3
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(financeProjectionJLabel);
+
+		// Panel Layout for Prior Yr Pln Inc
+    priorYrPlnIncLabel.setLabelFor(priorYrPlnIncJTextField);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(priorYrPlnIncLabel);
+    priorYrPlnIncJTextField.setToolTipText("Prior Year Planned Income, for reference.");
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(priorYrPlnIncJTextField);
+
+		// Panel Layout for Prior Yr Act Inc
+    priorYrActIncLabel.setLabelFor(priorYrActIncJTextField);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(priorYrActIncLabel);
+    priorYrActIncJTextField.setToolTipText("Prior Year Actual Income, for reference.");
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(priorYrActIncJTextField);
+
+		// Panel Layout for Prior Yr Pln Exp
+    priorYrPlnExpLabel.setLabelFor(priorYrPlnExpJTextField);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(priorYrPlnExpLabel);
+    priorYrPlnExpJTextField.setToolTipText("Prior Year Planned Expense, for reference.");
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(priorYrPlnExpJTextField);
+
+		// Panel Layout for Prior Yr Act Exp
+    priorYrActExpLabel.setLabelFor(priorYrActExpJTextField);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(priorYrActExpLabel);
+    priorYrActExpJTextField.setToolTipText("Prior Year Actual Expense, for reference.");
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(priorYrActExpJTextField);
 
     gb.setWidth(4);
     gb.setFill(GridBagConstraints.BOTH);
@@ -329,6 +385,26 @@ public class ClubEventPanel3
     } else {
       financeProjectionJLabel.setText ("");
     }
+    if (clubEvent.hasPriorYrPlnInc()) {
+      priorYrPlnIncJTextField.setText (clubEvent.getPriorYrPlnInc().toString());
+    } else {
+      priorYrPlnIncJTextField.setText ("");
+    }
+    if (clubEvent.hasPriorYrActInc()) {
+      priorYrActIncJTextField.setText (clubEvent.getPriorYrActInc().toString());
+    } else {
+      priorYrActIncJTextField.setText ("");
+    }
+    if (clubEvent.hasPriorYrPlnExp()) {
+      priorYrPlnExpJTextField.setText (clubEvent.getPriorYrPlnExp().toString());
+    } else {
+      priorYrPlnExpJTextField.setText ("");
+    }
+    if (clubEvent.hasPriorYrActExp()) {
+      priorYrActExpJTextField.setText (clubEvent.getPriorYrActExp().toString());
+    } else {
+      priorYrActExpJTextField.setText ("");
+    }
  
   }
 
@@ -395,6 +471,26 @@ public class ClubEventPanel3
 
     if (! clubEvent.getFinanceProjectionAsString().equals (financeProjectionJLabel.getText())) {
       clubEvent.setFinanceProjection(financeProjectionJLabel.getText());
+      modified = true;
+    }
+
+    if (! clubEvent.getPriorYrPlnIncAsString().equals (priorYrPlnIncJTextField.getText())) {
+      clubEvent.setPriorYrPlnInc(priorYrPlnIncJTextField.getText());
+      modified = true;
+    }
+
+    if (! clubEvent.getPriorYrActIncAsString().equals (priorYrActIncJTextField.getText())) {
+      clubEvent.setPriorYrActInc(priorYrActIncJTextField.getText());
+      modified = true;
+    }
+
+    if (! clubEvent.getPriorYrPlnExpAsString().equals (priorYrPlnExpJTextField.getText())) {
+      clubEvent.setPriorYrPlnExp(priorYrPlnExpJTextField.getText());
+      modified = true;
+    }
+
+    if (! clubEvent.getPriorYrActExpAsString().equals (priorYrActExpJTextField.getText())) {
+      clubEvent.setPriorYrActExp(priorYrActExpJTextField.getText());
       modified = true;
     }
 
@@ -508,6 +604,42 @@ public class ClubEventPanel3
    */
   public JLabel getFinanceProjectionJLabel () {
     return financeProjectionJLabel;
+  }
+
+  /**
+    Returns the prior yr pln inc for this club event.
+ 
+    @return The prior yr pln inc for this club event.
+   */
+  public JTextField getPriorYrPlnIncJTextField () {
+    return priorYrPlnIncJTextField;
+  }
+
+  /**
+    Returns the prior yr act inc for this club event.
+ 
+    @return The prior yr act inc for this club event.
+   */
+  public JTextField getPriorYrActIncJTextField () {
+    return priorYrActIncJTextField;
+  }
+
+  /**
+    Returns the prior yr pln exp for this club event.
+ 
+    @return The prior yr pln exp for this club event.
+   */
+  public JTextField getPriorYrPlnExpJTextField () {
+    return priorYrPlnExpJTextField;
+  }
+
+  /**
+    Returns the prior yr act exp for this club event.
+ 
+    @return The prior yr act exp for this club event.
+   */
+  public JTextField getPriorYrActExpJTextField () {
+    return priorYrActExpJTextField;
   }
 
 

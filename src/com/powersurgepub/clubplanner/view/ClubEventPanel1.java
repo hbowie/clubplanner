@@ -55,8 +55,10 @@ public class ClubEventPanel1
   private PSComboBox categoryPSComboBox = new PSComboBox();
   private JLabel    seqLabel    = new JLabel("Seq:", JLabel.LEFT);
   private JLabel seqJLabel = new JLabel();
-  private JLabel    statusLabel    = new JLabel("Status:", JLabel.LEFT);
-  private TextSelector statusTextSelector = new TextSelector();
+  private JLabel    stateLabel    = new JLabel("State:", JLabel.LEFT);
+  private PSComboBox statePSComboBox = new PSComboBox();
+  private JLabel    flagsLabel    = new JLabel("Flags:", JLabel.LEFT);
+  private TextSelector flagsTextSelector = new TextSelector();
   private JLabel    whenLabel    = new JLabel("When:", JLabel.LEFT);
   private JTextField whenJTextField = new JTextField();
   private JLabel    ymdLabel    = new JLabel("YMD:", JLabel.LEFT);
@@ -144,16 +146,28 @@ public class ClubEventPanel1
     gb.setTopInset(8);
     gb.add(seqJLabel);
 
-		// Panel Layout for Status
-    statusLabel.setLabelFor(statusTextSelector);
+		// Panel Layout for State
+    stateLabel.setLabelFor(statePSComboBox);
+    statePSComboBox.load (ClubEvent.class, "state.txt");
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
     gb.setTopInset(8);
-    gb.add(statusLabel);
-    statusTextSelector.setToolTipText("One or more tags indicating the status of the event.");
-    gb.setWidth(3);
+    gb.add(stateLabel);
+    statePSComboBox.setToolTipText("The state, or status, of the event.");
+    gb.setWidth(1);
     gb.setTopInset(4);
-    gb.add(statusTextSelector);
+    gb.add(statePSComboBox);
+
+		// Panel Layout for Flags
+    flagsLabel.setLabelFor(flagsTextSelector);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(flagsLabel);
+    flagsTextSelector.setToolTipText("One or more tags indicating the status of the event.");
+    gb.setWidth(1);
+    gb.setTopInset(4);
+    gb.add(flagsTextSelector);
 
 		// Panel Layout for When
     whenLabel.setLabelFor(whenJTextField);
@@ -202,6 +216,7 @@ public class ClubEventPanel1
 		// Panel Layout for Who
     whoLabel.setLabelFor(whoJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(whoLabel);
@@ -218,6 +233,7 @@ public class ClubEventPanel1
 		// Panel Layout for Discuss
     discussLabel.setLabelFor(discussJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(discussLabel);
@@ -234,6 +250,7 @@ public class ClubEventPanel1
 		// Panel Layout for Actions
     actionsLabel.setLabelFor(actionsJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(actionsLabel);
@@ -281,10 +298,15 @@ public class ClubEventPanel1
     } else {
       seqJLabel.setText ("");
     }
-    if (clubEvent.hasStatus()) {
-      statusTextSelector.setText (clubEvent.getStatus().toString());
+    if (clubEvent.hasState()) {
+      statePSComboBox.setText (clubEvent.getState().toString());
     } else {
-      statusTextSelector.setText ("");
+      statePSComboBox.setText ("");
+    }
+    if (clubEvent.hasFlags()) {
+      flagsTextSelector.setText (clubEvent.getFlags().toString());
+    } else {
+      flagsTextSelector.setText ("");
     }
     if (clubEvent.hasWhen()) {
       whenJTextField.setText (clubEvent.getWhen().toString());
@@ -353,8 +375,13 @@ public class ClubEventPanel1
       modified = true;
     }
 
-    if (! clubEvent.getStatusAsString().equals (statusTextSelector.getText())) {
-      clubEvent.setStatus(statusTextSelector.getText());
+    if (! clubEvent.getStateAsString().equals (statePSComboBox.getText())) {
+      clubEvent.setState(statePSComboBox.getText());
+      modified = true;
+    }
+
+    if (! clubEvent.getFlagsAsString().equals (flagsTextSelector.getText())) {
+      clubEvent.setFlags(flagsTextSelector.getText());
       modified = true;
     }
 
@@ -434,12 +461,21 @@ public class ClubEventPanel1
   }
 
   /**
-    Returns the status for this club event.
+    Returns the state for this club event.
  
-    @return The status for this club event.
+    @return The state for this club event.
    */
-  public TextSelector getStatusTextSelector () {
-    return statusTextSelector;
+  public PSComboBox getStatePSComboBox () {
+    return statePSComboBox;
+  }
+
+  /**
+    Returns the flags for this club event.
+ 
+    @return The flags for this club event.
+   */
+  public TextSelector getFlagsTextSelector () {
+    return flagsTextSelector;
   }
 
   /**

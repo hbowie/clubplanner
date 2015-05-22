@@ -133,6 +133,7 @@ public class EventTransactionPanel1
 		// Panel Layout for Paid For
     paidForLabel.setLabelFor(paidForJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(paidForLabel);
@@ -149,6 +150,7 @@ public class EventTransactionPanel1
 		// Panel Layout for Amount
     amountLabel.setLabelFor(amountJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(amountLabel);

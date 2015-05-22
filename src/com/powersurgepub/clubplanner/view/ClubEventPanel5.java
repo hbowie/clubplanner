@@ -90,12 +90,13 @@ public class ClubEventPanel5
 		// Panel Layout for Notes
     notesLabel.setLabelFor(notesJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(notesLabel);
     notesJTextArea.setColumns(20);
     notesJTextArea.setLineWrap(true);
-    notesJTextArea.setRows(15);
+    notesJTextArea.setRows(25);
     notesJTextArea.setWrapStyleWord(true);
     notesJTextArea.setToolTipText("One or more blocks of text with information about the event. Each note should be preceded by a line like the following: -- AAUM on Feb 21 via email.");
     notesScrollPane.setViewportView(notesJTextArea);

@@ -102,6 +102,7 @@ public class ClubEventPanel2
 		// Panel Layout for Teaser
     teaserLabel.setLabelFor(teaserJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(teaserLabel);
@@ -118,6 +119,7 @@ public class ClubEventPanel2
 		// Panel Layout for Blurb
     blurbLabel.setLabelFor(blurbJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(blurbLabel);
@@ -134,6 +136,7 @@ public class ClubEventPanel2
 		// Panel Layout for Purchase
     purchaseLabel.setLabelFor(purchaseJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(purchaseLabel);
@@ -150,6 +153,7 @@ public class ClubEventPanel2
 		// Panel Layout for Why
     whyLabel.setLabelFor(whyJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(whyLabel);
@@ -166,6 +170,7 @@ public class ClubEventPanel2
 		// Panel Layout for Recap
     recapLabel.setLabelFor(recapJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(recapLabel);

@@ -130,6 +130,7 @@ public class EventNotePanel1
 		// Panel Layout for Note
     noteLabel.setLabelFor(noteJTextArea);
     gb.setColumnWeight(0.0);
+    // gb.setRowWeight(1.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(noteLabel);

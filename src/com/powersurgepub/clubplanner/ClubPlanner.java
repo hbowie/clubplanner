@@ -80,6 +80,9 @@ public class ClubPlanner
   public  static final int                TEXT_MERGE_WINDOW_DEFAULT_WIDTH = 640;
   public  static final int                TEXT_MERGE_WINDOW_DEFAULT_HEIGHT = 480;
   
+  public  static final String             COMPLETED = "9 - Completed";
+  public  static final String             ARCHIVE   = "Archive";
+  
   private NumberFormat currencyFormat 
       = NumberFormat.getCurrencyInstance(Locale.US);
   
@@ -2381,6 +2384,21 @@ public class ClubPlanner
     }
   }
   
+  private void setStateToCompleted() {
+    boolean ok = modIfChanged();
+    if (ok) {
+      ClubEvent clubEvent = position.getClubEvent();
+      clubEvent.setState(COMPLETED);
+      clubEvent.setFlags(ARCHIVE);
+      clubEventCalc.calcAll(clubEvent);
+      clubEventList.modify(position);
+      writer = new ClubEventWriter();
+      boolean saved = writer.save(eventsFile, clubEvent, true, false);
+      clubEventList.fireTableDataChanged();
+      positionAndDisplay();
+    }
+  }
+  
   /**
    Check to see if the user has changed anything and take appropriate
    actions if so.
@@ -2818,6 +2836,7 @@ public class ClubPlanner
     eventDupeMenuItem = new javax.swing.JMenuItem();
     jSeparator9 = new javax.swing.JPopupMenu.Separator();
     eventFutureMenuItem = new javax.swing.JMenuItem();
+    completedMenuItem = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JMenu();
     windowMenu = new javax.swing.JMenu();
     helpMenu = new javax.swing.JMenu();
@@ -3286,6 +3305,16 @@ eventFutureMenuItem.addActionListener(new java.awt.event.ActionListener() {
   });
   eventMenu.add(eventFutureMenuItem);
 
+  completedMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_K,
+    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+completedMenuItem.setText("Completed");
+completedMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  public void actionPerformed(java.awt.event.ActionEvent evt) {
+    completedMenuItemActionPerformed(evt);
+  }
+  });
+  eventMenu.add(completedMenuItem);
+
   mainMenuBar.add(eventMenu);
 
   editMenu.setText("Edit");
@@ -3473,6 +3502,10 @@ eventFutureMenuItem.addActionListener(new java.awt.event.ActionListener() {
     exportFinancialRegister();
   }//GEN-LAST:event_fileRegisterMenuItemActionPerformed
 
+  private void completedMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_completedMenuItemActionPerformed
+    setStateToCompleted();
+  }//GEN-LAST:event_completedMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -3525,6 +3558,7 @@ eventFutureMenuItem.addActionListener(new java.awt.event.ActionListener() {
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JMenuItem clearActualsMenuItem;
   private javax.swing.JTabbedPane collectionTabs;
+  private javax.swing.JMenuItem completedMenuItem;
   private javax.swing.JButton deleteButton;
   private javax.swing.JMenu editMenu;
   private javax.swing.JMenuItem eventDeleteMenuItem;

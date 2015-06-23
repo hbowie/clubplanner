@@ -29,6 +29,11 @@ package com.powersurgepub.clubplanner.io;
  @author Herb Bowie
  */
 public class ClubEventWriter {
+  
+  public static final String BOARD_MEETING = "Board Meeting";
+  public static final String SUGGESTED = "1 - Suggested";
+  public static final String COMPLETED = "9 - Completed";
+  public static final String CANCELED  = "8 - Canceled";
  
   private     BufferedWriter      outBuffered;
  
@@ -140,12 +145,14 @@ public class ClubEventWriter {
    @param primaryLocation  Is this the primary disk location for the events?
    @param adjustForNewYear Are we rolling over to a new year? 
   
-   @return True if everything went OK. 
+   @return Number of items saved, or -1 if a problem was encountered. 
   */
-  public boolean save (File folder, ClubEventList clubEventList,
+  public int save (File folder, ClubEventList clubEventList,
       boolean primaryLocation, boolean adjustForNewYear) {
  
     boolean outOK = true;
+    int itemsSaved = 0;
+    int boardMeetings = 0;
     for (int i = 0; i < clubEventList.size() && outOK; i++) {
       ClubEvent nextClubEvent = clubEventList.get(i);
  
@@ -153,11 +160,29 @@ public class ClubEventWriter {
           && (adjustForNewYear)
           && (nextClubEvent.getTags().tagFound("Discards"))) {
             // Drop any discards when starting a new year
+      } 
+      else
+      if ((! primaryLocation)
+          && (adjustForNewYear)
+          && nextClubEvent.getWhat().contains(BOARD_MEETING)
+          && (nextClubEvent.getState().equalsIgnoreCase(COMPLETED)
+            || nextClubEvent.getState().equalsIgnoreCase(CANCELED))
+          && (boardMeetings >= 1)) {
+            // We only need to preserve one board meeting as a template
       } else {
         outOK = save (folder, nextClubEvent, primaryLocation, adjustForNewYear);
+        itemsSaved++;
+        if (nextClubEvent.getWhat().contains(BOARD_MEETING)) {
+          boardMeetings++;
+        }
       }
     }
-    return outOK;
+    
+    if (! outOK) {
+      return -1;
+    } else {
+      return itemsSaved;
+    }
   }
  
   /**
@@ -178,6 +203,10 @@ public class ClubEventWriter {
     if ((! primaryLocation) && (adjustForNewYear)) {
       clubEvent.getTags().replace("Archive", "Current");
       clubEvent.getTags().replace("Next Year", "Current");
+      if (clubEvent.getStateAsString().equals("")
+          || clubEvent.getState().equalsIgnoreCase(COMPLETED)) {
+        clubEvent.setState(SUGGESTED);
+      }
       clubEvent.setPriorYrActExp(clubEvent.getActualExpense());
       clubEvent.setPriorYrActInc(clubEvent.getActualIncome());
       clubEvent.setPriorYrPlnExp(clubEvent.getPlannedExpense());
@@ -187,7 +216,6 @@ public class ClubEventWriter {
       clubEvent.setPlannedExpense("");
       clubEvent.setPlannedIncome("");
     }
- 
  
     File categoryFolder = new File (folder, clubEvent.getCategoryAsString());
     if (! categoryFolder.exists()) {

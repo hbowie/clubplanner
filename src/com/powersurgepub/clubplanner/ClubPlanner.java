@@ -712,7 +712,7 @@ public class ClubPlanner
   */
   public boolean saveAs() {
     boolean modOK = modIfChanged();
-    boolean saved = false;
+    int saved = 0;
     if (modOK) {
       fileChooser.setDialogTitle ("Save As");
       fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -720,7 +720,7 @@ public class ClubPlanner
       if (selectedFile != null) {
         writer = new ClubEventWriter();
         saved = writer.save (selectedFile, clubEventList, true, false);
-        if (saved) {
+        if (saved >= 0) {
           setClubEventFolder (selectedFile);
           publishWindow.openSource(selectedFile);
           publishWindow.saveSource();
@@ -735,7 +735,7 @@ public class ClubPlanner
         FileSpec fileSpec = recentFiles.get(0);
       }
     }
-    return saved;
+    return (saved >= 0);
   }
   
   /**
@@ -1926,7 +1926,7 @@ public class ClubPlanner
    @return 
   */
   public boolean backup(File folderForBackups) {
-    boolean backedUp = false;
+    int backedUp = 0;
     StringBuilder backupPath = new StringBuilder();
     try {
       backupPath.append(folderForBackups.getCanonicalPath());
@@ -1944,7 +1944,7 @@ public class ClubPlanner
     backupFolder.mkdir();
     ClubEventWriter backupWriter = new ClubEventWriter();
     backedUp = backupWriter.save (backupFolder, clubEventList, false, false);
-    if (backedUp) {
+    if (backedUp >= 0) {
       fileSpec = recentFiles.get(0);
       filePrefs.saveLastBackupDate
           (fileSpec, recentFiles.getPrefsQualifier(), 0);
@@ -1956,7 +1956,7 @@ public class ClubPlanner
           "Problem backing up URLs to " + backupFolder.toString(),
             false);
     }
-    return backedUp;
+    return (backedUp >= 0);
   }
   
   /**
@@ -1994,6 +1994,7 @@ public class ClubPlanner
   */
   public boolean startNewYear() {
     boolean started = false;
+    int eventsTransferred = 0;
     File newEventsFolder = null;
     if (eventsFile != null) {
       File clubRecordsFolder = null;
@@ -2078,18 +2079,30 @@ public class ClubPlanner
 
         if (ok) {
           ClubEventWriter newEventsWriter = new ClubEventWriter();
-          started = newEventsWriter.save (newEventsFolder, clubEventList, 
-              false, true);
+          eventsTransferred = newEventsWriter.save (newEventsFolder, 
+              clubEventList, false, true);
+          started = (eventsTransferred >= 0);
           if (started) {
             logger.recordEvent (LogEvent.NORMAL,
                 "New year started at " + newEventsFolder.toString(),
                   false);
+            JOptionPane.showMessageDialog(this, 
+              String.valueOf(eventsTransferred)
+                + " events transferred to " + newEventsFolder.toString(),
+              "Start New Year",
+              JOptionPane.INFORMATION_MESSAGE,
+              Home.getShared().getIcon());
             FileSpec newEventsFileSpec = new FileSpec (newEventsFolder);
             recentFiles.addNotSoRecentFile(newEventsFileSpec);
           } else {
             logger.recordEvent (LogEvent.MEDIUM,
                 "Problem starting new year at " + newEventsFolder.toString(),
                   false);
+            JOptionPane.showMessageDialog(this, 
+              "Problem Starting New Year",
+              "Start New Year",
+              JOptionPane.ERROR_MESSAGE,
+              Home.getShared().getIcon());
           }
         } // end if we found a new events folder
       } // end if we found a club records folder
@@ -2376,6 +2389,10 @@ public class ClubPlanner
     if (modOK) {
       modified = true;
       position.getClubEvent().getTags().set("Future");
+      if (position.getClubEvent().getStateAsString().equals("8 - Canceled")
+          || position.getClubEvent().getStateAsString().equals("9 - Completed")) {
+        position.getClubEvent().setState("1 - Suggested");
+      }
       clubEventPanel1.display(position.getClubEvent());
       modOK = modIfChanged();
       if (modOK) {
@@ -2839,6 +2856,12 @@ public class ClubPlanner
     completedMenuItem = new javax.swing.JMenuItem();
     editMenu = new javax.swing.JMenu();
     windowMenu = new javax.swing.JMenu();
+    tabsMenu = new javax.swing.JMenu();
+    basicsTabMenuItem = new javax.swing.JMenuItem();
+    textTabMenuItem = new javax.swing.JMenuItem();
+    numbersTabMenuItem = new javax.swing.JMenuItem();
+    linksTabMenuItem = new javax.swing.JMenuItem();
+    notesTabMenuItem = new javax.swing.JMenuItem();
     helpMenu = new javax.swing.JMenu();
 
     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -3323,6 +3346,60 @@ completedMenuItem.addActionListener(new java.awt.event.ActionListener() {
   windowMenu.setText("Window");
   mainMenuBar.add(windowMenu);
 
+  tabsMenu.setText("Tabs");
+
+  basicsTabMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_1,
+    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+basicsTabMenuItem.setText("Basics");
+basicsTabMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  public void actionPerformed(java.awt.event.ActionEvent evt) {
+    basicsTabMenuItemActionPerformed(evt);
+  }
+  });
+  tabsMenu.add(basicsTabMenuItem);
+
+  textTabMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_2,
+    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+textTabMenuItem.setText("Text");
+textTabMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  public void actionPerformed(java.awt.event.ActionEvent evt) {
+    textTabMenuItemActionPerformed(evt);
+  }
+  });
+  tabsMenu.add(textTabMenuItem);
+
+  numbersTabMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_3,
+    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+numbersTabMenuItem.setText("Numbers");
+numbersTabMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  public void actionPerformed(java.awt.event.ActionEvent evt) {
+    numbersTabMenuItemActionPerformed(evt);
+  }
+  });
+  tabsMenu.add(numbersTabMenuItem);
+
+  linksTabMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_4,
+    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+linksTabMenuItem.setText("Links");
+linksTabMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  public void actionPerformed(java.awt.event.ActionEvent evt) {
+    linksTabMenuItemActionPerformed(evt);
+  }
+  });
+  tabsMenu.add(linksTabMenuItem);
+
+  notesTabMenuItem.setAccelerator(KeyStroke.getKeyStroke (KeyEvent.VK_5,
+    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+notesTabMenuItem.setText("Notes");
+notesTabMenuItem.addActionListener(new java.awt.event.ActionListener() {
+  public void actionPerformed(java.awt.event.ActionEvent evt) {
+    notesTabMenuItemActionPerformed(evt);
+  }
+  });
+  tabsMenu.add(notesTabMenuItem);
+
+  mainMenuBar.add(tabsMenu);
+
   helpMenu.setText("Help");
   mainMenuBar.add(helpMenu);
 
@@ -3506,6 +3583,26 @@ completedMenuItem.addActionListener(new java.awt.event.ActionListener() {
     setStateToCompleted();
   }//GEN-LAST:event_completedMenuItemActionPerformed
 
+  private void basicsTabMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_basicsTabMenuItemActionPerformed
+    itemTabs.setSelectedIndex(0);
+  }//GEN-LAST:event_basicsTabMenuItemActionPerformed
+
+  private void textTabMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textTabMenuItemActionPerformed
+    itemTabs.setSelectedIndex(1);
+  }//GEN-LAST:event_textTabMenuItemActionPerformed
+
+  private void numbersTabMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numbersTabMenuItemActionPerformed
+    itemTabs.setSelectedIndex(2);
+  }//GEN-LAST:event_numbersTabMenuItemActionPerformed
+
+  private void linksTabMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_linksTabMenuItemActionPerformed
+    itemTabs.setSelectedIndex(3);
+  }//GEN-LAST:event_linksTabMenuItemActionPerformed
+
+  private void notesTabMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_notesTabMenuItemActionPerformed
+    itemTabs.setSelectedIndex(4);
+  }//GEN-LAST:event_notesTabMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -3556,6 +3653,7 @@ completedMenuItem.addActionListener(new java.awt.event.ActionListener() {
     });
   }
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JMenuItem basicsTabMenuItem;
   private javax.swing.JMenuItem clearActualsMenuItem;
   private javax.swing.JTabbedPane collectionTabs;
   private javax.swing.JMenuItem completedMenuItem;
@@ -3604,17 +3702,22 @@ completedMenuItem.addActionListener(new java.awt.event.ActionListener() {
   private javax.swing.JPopupMenu.Separator jSeparator6;
   private javax.swing.JPopupMenu.Separator jSeparator9;
   private javax.swing.JButton lastButton;
+  private javax.swing.JMenuItem linksTabMenuItem;
   private javax.swing.JPanel listPanel;
   private javax.swing.JMenuBar mainMenuBar;
   private javax.swing.JSplitPane mainSplitPane;
   private javax.swing.JToolBar navToolBar;
   private javax.swing.JButton newButton;
   private javax.swing.JButton nextButton;
+  private javax.swing.JMenuItem notesTabMenuItem;
+  private javax.swing.JMenuItem numbersTabMenuItem;
   private javax.swing.JButton okButton;
   private javax.swing.JButton priorButton;
   private javax.swing.JMenuItem publishNowMenuItem;
   private javax.swing.JMenuItem publishWindowMenuItem;
+  private javax.swing.JMenu tabsMenu;
   private javax.swing.JTree tagsTree;
+  private javax.swing.JMenuItem textTabMenuItem;
   private javax.swing.JPanel treePanel;
   private javax.swing.JScrollPane treeScrollPane;
   private javax.swing.JMenu windowMenu;

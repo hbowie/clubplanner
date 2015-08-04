@@ -893,6 +893,11 @@ public class ClubPlanner
       File registerFile = new File (dataFolder, "register.tab");
       operationOK = exportFinancialRegister(registerFile);
     }
+    else
+    if (operand.equalsIgnoreCase("calendar")) {
+      File calendarFile = new File (dataFolder, "calendar.tab");
+      operationOK = exportPlanningCalendar(calendarFile);
+    }
     return operationOK;
   }
   
@@ -1700,6 +1705,94 @@ public class ClubPlanner
         } // end if I/O error
       } // end if user selected an output file
     } // end if were able to save the last modified record
+  }
+  
+  /**
+   Export events to be formatted into a planning calendar. 
+  
+   @param calendarFile
+  
+   @return True if everything a-ok, false if I/O error. 
+  */
+  private boolean exportPlanningCalendar (File calendarFile) {
+    boolean actionsOK = true;
+    exported = 0;
+    
+    TabDelimFile tabs = new TabDelimFile(calendarFile);
+    
+    RecordDefinition calendarDef = new RecordDefinition();
+    RecordDefinition recDef = ClubEvent.getRecDef();
+    calendarDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.ITEM_TYPE_COLUMN_NAME)));
+    calendarDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.STATE_COLUMN_NAME)));
+    calendarDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.FLAGS_COLUMN_NAME)));
+    calendarDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.FLAGS_COLUMN_NAME)));
+    calendarDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.YMD_COLUMN_NAME)));
+    calendarDef.addColumn (recDef.getDef(recDef.getColumnNumber
+        (ClubEvent.WHAT_COLUMN_NAME)));
+
+    String currentYearAndMonth = StringDate.getTodayYM();
+    
+    // Now write out the selected events
+    try {
+      tabs.openForOutput(calendarDef);
+
+      // Check all the events
+      for (int i = 0; i < clubEventList.size(); i++) {
+        ClubEvent nextClubEvent = clubEventList.get(i);
+        if (nextClubEvent != null) {
+
+          // Now let's see if this should be included on the planning calendar
+          boolean selected = nextClubEvent.hasYmd();
+          if (selected
+              && (nextClubEvent.getYmd().compareTo(currentYearAndMonth) < 0)) {
+            selected = false;
+          }
+          if (selected) {
+            String type = nextClubEvent.getItemType().toLowerCase();
+            selected= (type.contains("event") || type.contains("meeting")); 
+          }
+          
+          if (selected) {
+            DataRecord actionItemsRec = new DataRecord();
+            actionItemsRec.addField(calendarDef, nextClubEvent.getItemType());
+            actionItemsRec.addField(calendarDef, nextClubEvent.getState());
+            actionItemsRec.addField(calendarDef, nextClubEvent.getCategory());
+            actionItemsRec.addField(calendarDef, nextClubEvent.getFlagsAsString());
+            StringBuilder ymd = new StringBuilder(nextClubEvent.getYmd());
+            if (ymd.length() == 7) {
+              ymd.append(("-xx"));
+            }
+            actionItemsRec.addField(calendarDef, ymd.toString());
+            actionItemsRec.addField(calendarDef, nextClubEvent.getWhat());
+            tabs.nextRecordOut(actionItemsRec);
+            exported++;
+          } // End if event selected
+        } // End if event not null
+      } // End while more club events
+      tabs.close();
+      logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
+          + " Calendar exported in tab-delimited format to " 
+          + calendarFile.toString(),
+          false);
+      statusBar.setStatus(String.valueOf(exported) 
+        + " Events exported");
+    } catch (java.io.IOException e) {
+      actionsOK = false;
+      logger.recordEvent (LogEvent.MEDIUM,
+        "Problem exporting Events to " + calendarFile.toString(),
+          false);
+        trouble.report ("I/O error attempting to export events to " 
+            + calendarFile.toString(),
+          "I/O Error");
+        statusBar.setStatus("Trouble exporting Events to Planning Calendar");
+    } // end if I/O error // end if I/O error
+    
+    return actionsOK;
   }
   
   /**

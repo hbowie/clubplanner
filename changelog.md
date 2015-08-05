@@ -1,4 +1,11 @@
 
+## Version 1.40 (2015-08-04)
+
+1. **Added New Export Format for a Planning Calendar**
+
+    Created a new tab-delimited export file format to be used as a planning calendar of upcoming events.
+
+
 ## Version 1.31 (2015-03-18)
 
 1. **Fixed Bug Introduced with Where and Who Variants**

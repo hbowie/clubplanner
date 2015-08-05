@@ -158,7 +158,7 @@ Because Club Planner may be run on multiple platforms, it may look slightly diff
 <h3 id="rights">Rights</h3>
 
 
-Club Planner Copyright 2013 - 2014 by Herb Bowie
+Club Planner Copyright 2013 - 2015 by Herb Bowie
 
 Club Planner is [open source software](http://opensource.org/osd). Source code is available at [GitHub](http://github.com/hbowie/clubplanner).
 
@@ -428,7 +428,13 @@ The File menu contains a **Backup** command. When backing up, you will be prompt
 
 As one operating year closes, and a new one begins, you may wish to start a new year by transferring events from the current year into the next year (assuming that one year looks much like the last, from a planning perspective). This is the intent of the **Start New Year** command.
 
-After you specify the new Events folder within the new operating year folder, all events from the current year will be transferred to the new year, with the exception of those with a status of 'Discards'. Events formerly having a status of 'Archive' or 'Next Year' will appear in the new year with a status of 'Future'.
+After you specify the new Events folder within the new operating year folder, all events from the current year will be transferred to the new year, with the following exceptions.
+
+* Events with a status of 'Discards' will not be copied.
+* Events formerly having a status of 'Archive' or 'Next Year' will appear in the new year with a status of 'Current'.
+* Events formerly having a state of '9 - Completed' will appear in the new year with a state of '1 - Suggested'.
+* Income and Expense fields will be copied to the Prior Year fields, and the current year fields will be zeroed out.
+* Only one historical event containing 'Board Meeting' in its title will be retained.
 
 <h3 id="clear-actuals">Clear Actuals</h3>
 

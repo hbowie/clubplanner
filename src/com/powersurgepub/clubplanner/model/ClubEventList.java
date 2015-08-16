@@ -154,6 +154,7 @@ public class ClubEventList
       57,
       58,
       59,
+      60,
       -1 };
  
   /**

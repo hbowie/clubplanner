@@ -62,7 +62,7 @@
 <?if =$itemtype$= == "Master" ?>
 <?output "../../src/com/powersurgepub/clubplanner/io/=$itemclass$=Writer.java"?>
 /*
- * Copyright 1999 - 2013 Herb Bowie
+ * Copyright 1999 - 2015 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -195,34 +195,45 @@ public class =$itemclass$=Writer {
     return new File (completePath.toString());
   }
   
-  public boolean save (File folder, =$itemclass$=List =$itemclass&clul$=List, 
-      boolean primaryLocation, boolean adjustForNewYear) {
+  /**
+    Save an entire list of items to disk. 
+    
+    @param folder The destination folder.
+    @param =$itemclass&clul$=List The list of items to be saved. 
+    @param primaryLocation Is this the primary disk location for the items?
+    
+    @return Number of items saved, or -1 if a problem was encountered. 
+   */
+  public int save (File folder, =$itemclass$=List =$itemclass&clul$=List, 
+      boolean primaryLocation) {
   
     boolean outOK = true;
+    int itemsSaved = 0;
     for (int i = 0; i < =$itemclass&clul$=List.size() && outOK; i++) {
       =$itemclass$= next=$itemclass$= = =$itemclass&clul$=List.get(i);
-      
-      if ((! primaryLocation) 
-          && (adjustForNewYear)
-          && (next=$itemclass$=.getTags().tagFound("Discards"))) {
-            // Drop any discards when starting a new year
-      } else {
-        outOK = save (folder, next=$itemclass$=, primaryLocation, adjustForNewYear);
-      }
+      outOK = save (folder, next=$itemclass$=, primaryLocation);
+      itemsSaved++;
     }
-    return outOK;
+    if (! outOK) {
+      return -1;
+    } else {
+      return itemsSaved;
+    }
   }
   
+  /**
+    Save one item to disk. 
+    
+    @param folder The destination folder.
+    @param =$itemclass&clul$= The item to be saved. 
+    @param primaryLocation Is this the primary disk location for the items?
+    
+    @return True if everything went ok. 
+   */
   public boolean save (File folder, =$itemclass$= =$itemclass&clul$=, 
-      boolean primaryLocation, boolean adjustForNewYear) {
+      boolean primaryLocation) {
     
     boolean outOK = true;
-    
-    if ((! primaryLocation) && (adjustForNewYear)) {
-      =$itemclass&clul$=.getTags().replace("Archive", "Current");
-      =$itemclass&clul$=.getTags().replace("Next Year", "Current");
-    }
-    
     
     File categoryFolder = new File (folder, clubEvent.getCategoryAsString());
     if (! categoryFolder.exists()) {

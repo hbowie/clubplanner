@@ -1,4 +1,11 @@
 
+## Version 1.50 (2015-08-16)
+
+1. **Several Small Refinements**
+
+    Made several small corrections and refinements to the application.
+
+
 ## Version 1.40 (2015-08-04)
 
 1. **Added New Export Format for a Planning Calendar**

@@ -29,11 +29,6 @@ package com.powersurgepub.clubplanner.io;
  @author Herb Bowie
  */
 public class ClubEventWriter {
-  
-  public static final String BOARD_MEETING = "Board Meeting";
-  public static final String SUGGESTED = "1 - Suggested";
-  public static final String COMPLETED = "9 - Completed";
-  public static final String CANCELED  = "8 - Canceled";
  
   private     BufferedWriter      outBuffered;
  
@@ -138,46 +133,24 @@ public class ClubEventWriter {
   }
  
   /**
-   Save an entire list of events to disk. 
-  
-   @param folder           The destination folder. 
-   @param clubEventList    The list to be saved. 
-   @param primaryLocation  Is this the primary disk location for the events?
-   @param adjustForNewYear Are we rolling over to a new year? 
-  
-   @return Number of items saved, or -1 if a problem was encountered. 
-  */
+    Save an entire list of items to disk.
+ 
+    @param folder The destination folder.
+    @param clubEventList The list of items to be saved.
+    @param primaryLocation Is this the primary disk location for the items?
+ 
+    @return Number of items saved, or -1 if a problem was encountered.
+   */
   public int save (File folder, ClubEventList clubEventList,
-      boolean primaryLocation, boolean adjustForNewYear) {
+      boolean primaryLocation) {
  
     boolean outOK = true;
     int itemsSaved = 0;
-    int boardMeetings = 0;
     for (int i = 0; i < clubEventList.size() && outOK; i++) {
       ClubEvent nextClubEvent = clubEventList.get(i);
- 
-      if ((! primaryLocation)
-          && (adjustForNewYear)
-          && (nextClubEvent.getTags().tagFound("Discards"))) {
-            // Drop any discards when starting a new year
-      } 
-      else
-      if ((! primaryLocation)
-          && (adjustForNewYear)
-          && nextClubEvent.getWhat().contains(BOARD_MEETING)
-          && (nextClubEvent.getState().equalsIgnoreCase(COMPLETED)
-            || nextClubEvent.getState().equalsIgnoreCase(CANCELED))
-          && (boardMeetings >= 1)) {
-            // We only need to preserve one board meeting as a template
-      } else {
-        outOK = save (folder, nextClubEvent, primaryLocation, adjustForNewYear);
-        itemsSaved++;
-        if (nextClubEvent.getWhat().contains(BOARD_MEETING)) {
-          boardMeetings++;
-        }
-      }
+      outOK = save (folder, nextClubEvent, primaryLocation);
+      itemsSaved++;
     }
-    
     if (! outOK) {
       return -1;
     } else {
@@ -186,36 +159,18 @@ public class ClubEventWriter {
   }
  
   /**
-   Save one event to disk. 
-  
-   @param folder           The destination folder. 
-   @param clubEvent        The event to be saved. 
-   @param primaryLocation  Is this the primary disk location for the event? 
-   @param adjustForNewYear Are we rolling over to a new year?
-  
-   @return True if everything went OK. 
-  */
+    Save one item to disk.
+ 
+    @param folder The destination folder.
+    @param clubEvent The item to be saved.
+    @param primaryLocation Is this the primary disk location for the items?
+ 
+    @return True if everything went ok.
+   */
   public boolean save (File folder, ClubEvent clubEvent,
-      boolean primaryLocation, boolean adjustForNewYear) {
+      boolean primaryLocation) {
  
     boolean outOK = true;
- 
-    if ((! primaryLocation) && (adjustForNewYear)) {
-      clubEvent.getTags().replace("Archive", "Current");
-      clubEvent.getTags().replace("Next Year", "Current");
-      if (clubEvent.getStateAsString().equals("")
-          || clubEvent.getState().equalsIgnoreCase(COMPLETED)) {
-        clubEvent.setState(SUGGESTED);
-      }
-      clubEvent.setPriorYrActExp(clubEvent.getActualExpense());
-      clubEvent.setPriorYrActInc(clubEvent.getActualIncome());
-      clubEvent.setPriorYrPlnExp(clubEvent.getPlannedExpense());
-      clubEvent.setPriorYrPlnInc(clubEvent.getPlannedIncome());
-      clubEvent.setActualExpense("");
-      clubEvent.setActualIncome("");
-      clubEvent.setPlannedExpense("");
-      clubEvent.setPlannedIncome("");
-    }
  
     File categoryFolder = new File (folder, clubEvent.getCategoryAsString());
     if (! categoryFolder.exists()) {

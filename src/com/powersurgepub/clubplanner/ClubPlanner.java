@@ -70,7 +70,7 @@ public class ClubPlanner
     { 
   
   public static final String              PROGRAM_NAME    = "Club Planner";
-  public static final String              PROGRAM_VERSION = "1.40";
+  public static final String              PROGRAM_VERSION = "1.50";
   
   public  static final String             FIND = "Find";
   public  static final String             FIND_AGAIN = "Again";
@@ -80,6 +80,9 @@ public class ClubPlanner
   public  static final int                TEXT_MERGE_WINDOW_DEFAULT_WIDTH = 640;
   public  static final int                TEXT_MERGE_WINDOW_DEFAULT_HEIGHT = 480;
   
+  public  static final String             BOARD_MEETING = "Board Meeting";
+  public  static final String             SUGGESTED = "1 - Suggested";
+  public  static final String             CANCELED  = "8 - Canceled";
   public  static final String             COMPLETED = "9 - Completed";
   public  static final String             ARCHIVE   = "Archive";
   
@@ -614,7 +617,7 @@ public class ClubPlanner
       ClubEvent nextClubEvent = clubEventList.getUnfiltered(i);
       writer = new ClubEventWriter();
       String oldDiskLocation = nextClubEvent.getDiskLocation();
-      saveOK = writer.save(eventsFile, nextClubEvent, true, false);
+      saveOK = writer.save(eventsFile, nextClubEvent, true);
       if (saveOK) {
         numberSaved++;
         String newDiskLocation = nextClubEvent.getDiskLocation();
@@ -672,7 +675,7 @@ public class ClubPlanner
         clubEventCalc.calcAll(nextClubEvent);
         writer = new ClubEventWriter();
         String oldDiskLocation = nextClubEvent.getDiskLocation();
-        saveOK = writer.save(eventsFile, nextClubEvent, true, false);
+        saveOK = writer.save(eventsFile, nextClubEvent, true);
         if (saveOK) {
           numberSaved++;
           String newDiskLocation = nextClubEvent.getDiskLocation();
@@ -719,7 +722,7 @@ public class ClubPlanner
       File selectedFile = fileChooser.showSaveDialog (this);
       if (selectedFile != null) {
         writer = new ClubEventWriter();
-        saved = writer.save (selectedFile, clubEventList, true, false);
+        saved = writer.save (selectedFile, clubEventList, true);
         if (saved >= 0) {
           setClubEventFolder (selectedFile);
           publishWindow.openSource(selectedFile);
@@ -804,7 +807,7 @@ public class ClubPlanner
               clubEventList.modify(position);
               writer = new ClubEventWriter();
               String oldDiskLocation = listEvent.getDiskLocation();
-              boolean saved = writer.save(eventsFile, listEvent, true, false);
+              boolean saved = writer.save(eventsFile, listEvent, true);
               if (saved) {
                 String newDiskLocation = listEvent.getDiskLocation();
                 if (! newDiskLocation.equals(oldDiskLocation)) {
@@ -874,6 +877,11 @@ public class ClubPlanner
   public boolean pubOperation(File publishTo, String operand) {
     boolean operationOK = false;
     File dataFolder = new File (publishTo, "data");
+    if (operand.equalsIgnoreCase("alldata")) {
+      File allDataFile = new File (dataFolder, "alldata.tab");
+      operationOK = exportTabDelim(allDataFile);
+    }
+    else
     if (operand.equalsIgnoreCase("actions")) {
       File actionsFile = new File (dataFolder, "actions.tab");
       operationOK = exportActionItems(actionsFile);
@@ -922,17 +930,8 @@ public class ClubPlanner
       fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
       File selectedFile = fileChooser.showSaveDialog (this);
       if (selectedFile != null) {
-        TabDelimFile tabs = new TabDelimFile(selectedFile);
-        try {
-          tabs.openForOutput(ClubEvent.getRecDef());
-          for (int i = 0; i < clubEventList.size(); i++) {
-            ClubEvent nextClubEvent = clubEventList.get(i);
-            if (nextClubEvent != null) {
-              tabs.nextRecordOut(nextClubEvent.getDataRec());
-              exported++;
-            }
-          }
-          tabs.close();
+        boolean exportOK = exportTabDelim(selectedFile);
+        if (exportOK) {
           JOptionPane.showMessageDialog(this,
               String.valueOf(exported) + " Club Events exported successfully to"
                 + GlobalConstants.LINE_FEED
@@ -946,7 +945,7 @@ public class ClubPlanner
               false);
           statusBar.setStatus(String.valueOf(exported) 
             + " Club Events exported");
-        } catch (java.io.IOException e) {
+        } else {
           logger.recordEvent (LogEvent.MEDIUM,
             "Problem exporting Club Events to " + selectedFile.toString(),
               false);
@@ -957,6 +956,33 @@ public class ClubPlanner
         } // end if I/O error
       } // end if user selected an output file
     } // end if were able to save the last modified record
+  }
+  
+  /**
+   Export all data to a tab-delimited file. 
+  
+   @param  publishTo   The file to which the data should be written. 
+  
+   @return True if no errors; false otherwise 
+  */
+  private boolean exportTabDelim(File publishTo) {
+    boolean tabsOK = true;
+    exported = 0;
+    TabDelimFile tabs = new TabDelimFile(publishTo);
+    try {
+      tabs.openForOutput(ClubEvent.getRecDef());
+      for (int i = 0; i < clubEventList.size(); i++) {
+        ClubEvent nextClubEvent = clubEventList.get(i);
+        if (nextClubEvent != null) {
+          tabs.nextRecordOut(nextClubEvent.getDataRec());
+          exported++;
+        }
+      }
+      tabs.close();
+    } catch (java.io.IOException e) {
+      tabsOK = false;
+    } // end if I/O error
+    return tabsOK;
   }
   
   /**
@@ -1727,7 +1753,7 @@ public class ClubPlanner
     calendarDef.addColumn (recDef.getDef(recDef.getColumnNumber
         (ClubEvent.STATE_COLUMN_NAME)));
     calendarDef.addColumn (recDef.getDef(recDef.getColumnNumber
-        (ClubEvent.FLAGS_COLUMN_NAME)));
+        (ClubEvent.CATEGORY_COLUMN_NAME)));
     calendarDef.addColumn (recDef.getDef(recDef.getColumnNumber
         (ClubEvent.FLAGS_COLUMN_NAME)));
     calendarDef.addColumn (recDef.getDef(recDef.getColumnNumber
@@ -1754,7 +1780,11 @@ public class ClubPlanner
           }
           if (selected) {
             String type = nextClubEvent.getItemType().toLowerCase();
-            selected= (type.contains("event") || type.contains("meeting")); 
+            selected = (type.contains("event") || type.contains("meeting")); 
+          }
+          if (selected) {
+            String state = nextClubEvent.getState().toLowerCase();
+            selected = (! state.contains("suggested"));
           }
           
           if (selected) {
@@ -2036,7 +2066,7 @@ public class ClubPlanner
     File backupFolder = new File (backupPath.toString());
     backupFolder.mkdir();
     ClubEventWriter backupWriter = new ClubEventWriter();
-    backedUp = backupWriter.save (backupFolder, clubEventList, false, false);
+    backedUp = backupWriter.save (backupFolder, clubEventList, false);
     if (backedUp >= 0) {
       fileSpec = recentFiles.get(0);
       filePrefs.saveLastBackupDate
@@ -2172,8 +2202,43 @@ public class ClubPlanner
 
         if (ok) {
           ClubEventWriter newEventsWriter = new ClubEventWriter();
-          eventsTransferred = newEventsWriter.save (newEventsFolder, 
-              clubEventList, false, true);
+          boolean outOK = true;
+          int itemsSaved = 0;
+          int boardMeetings = 0;
+          for (int i = 0; i < clubEventList.size() && outOK; i++) {
+            ClubEvent nextClubEvent = clubEventList.get(i);
+            if (nextClubEvent.getTags().tagFound("Discards")) {
+              // Drop any discards when starting a new year
+            } 
+            else
+            if (nextClubEvent.getWhat().contains(BOARD_MEETING)
+                && (nextClubEvent.getState().equalsIgnoreCase(COMPLETED)
+                  || nextClubEvent.getState().equalsIgnoreCase(CANCELED))
+                && (boardMeetings >= 1)) {
+              // We only need to preserve one board meeting as a template
+            } else {
+              if (nextClubEvent.getStateAsString().equals("")
+                  || nextClubEvent.getState().equalsIgnoreCase(COMPLETED)) {
+                nextClubEvent.setState(SUGGESTED);
+              }
+              nextClubEvent.setPriorYrActExp(nextClubEvent.getActualExpense());
+              nextClubEvent.setPriorYrActInc(nextClubEvent.getActualIncome());
+              nextClubEvent.setPriorYrPlnExp(nextClubEvent.getPlannedExpense());
+              nextClubEvent.setPriorYrPlnInc(nextClubEvent.getPlannedIncome());
+              nextClubEvent.setActualExpense("");
+              nextClubEvent.setActualIncome("");
+              nextClubEvent.setPlannedExpense("");
+              nextClubEvent.setPlannedIncome("");
+              outOK = newEventsWriter.save (newEventsFolder, nextClubEvent, false);
+              itemsSaved++;
+              if (nextClubEvent.getWhat().contains(BOARD_MEETING)) {
+                boardMeetings++;
+              }
+            } // end if writing out the event for the new year
+          } // End of list traversal
+          if (! outOK) {
+            eventsTransferred = -1;
+          } 
           started = (eventsTransferred >= 0);
           if (started) {
             logger.recordEvent (LogEvent.NORMAL,
@@ -2503,7 +2568,7 @@ public class ClubPlanner
       clubEventCalc.calcAll(clubEvent);
       clubEventList.modify(position);
       writer = new ClubEventWriter();
-      boolean saved = writer.save(eventsFile, clubEvent, true, false);
+      boolean saved = writer.save(eventsFile, clubEvent, true);
       clubEventList.fireTableDataChanged();
       positionAndDisplay();
     }
@@ -2582,7 +2647,7 @@ public class ClubPlanner
         clubEventList.modify(position);
         writer = new ClubEventWriter();
         String oldDiskLocation = clubEvent.getDiskLocation();
-        boolean saved = writer.save(eventsFile, clubEvent, true, false);
+        boolean saved = writer.save(eventsFile, clubEvent, true);
         if (saved) {
           String newDiskLocation = clubEvent.getDiskLocation();
           if (! newDiskLocation.equals(oldDiskLocation)) {
@@ -2607,7 +2672,7 @@ public class ClubPlanner
   private void addClubEvent (ClubEvent clubEvent) {
     position = clubEventList.add (position.getClubEvent());
     if (position.hasValidIndex (clubEventList)) {
-      writer.save(eventsFile, clubEvent, true, false);
+      writer.save(eventsFile, clubEvent, true);
       positionAndDisplay();
     }
   }

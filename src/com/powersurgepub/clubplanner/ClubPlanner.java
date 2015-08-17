@@ -70,7 +70,7 @@ public class ClubPlanner
     { 
   
   public static final String              PROGRAM_NAME    = "Club Planner";
-  public static final String              PROGRAM_VERSION = "1.50";
+  public static final String              PROGRAM_VERSION = "1.60";
   
   public  static final String             FIND = "Find";
   public  static final String             FIND_AGAIN = "Again";
@@ -109,6 +109,9 @@ public class ClubPlanner
   private             AboutWindow         aboutWindow;
   
   private             FinanceWindow       financeWindow;
+  
+  private             MinutesTemplateExportWindow minutesWindow;
+  private             File                minutesTemplateFile = null;
   
   private             UserPrefs           userPrefs;
   private             PrefsWindow         prefsWindow;
@@ -210,6 +213,8 @@ public class ClubPlanner
     filePrefs = new FilePrefs(this);
     filePrefs.loadFromPrefs();
     prefsWindow.setFilePrefs(filePrefs);
+    
+    minutesWindow = new MinutesTemplateExportWindow(this);
     
     recentFiles = new RecentFiles();
     
@@ -1838,7 +1843,124 @@ public class ClubPlanner
     }
   }
   
-
+  /**
+   Export a text file that can be used as a template for meeting minutes.
+   This will be in a format suitable for use via an import command. 
+   */
+  private void exportMinutesTemplate() {
+    minutesTemplateFile = null;
+    boolean modOK = modIfChanged();
+    if (modOK) {
+      fileChooser.setDialogTitle ("Export Minutes Template");
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      File suggestion = new File (eventsFile.getParentFile(), "Minutes/Meeting Minutes Template.txt");
+      fileChooser.setFile(suggestion);
+      File selectedFile = fileChooser.showSaveDialog (this);
+      if (selectedFile != null) {
+        minutesTemplateFile = selectedFile;
+        displayAuxiliaryWindow(minutesWindow);
+      } // end if user selected an output file
+    } // end if were able to save the last modified record
+  }
+  
+  /**
+   Export a minutes template. 
+  
+   @param secretary The name of the secretary who will be taking minutes. 
+   @param date      The date of the meeting.
+  */
+  void exportMinutesTemplate (String club, String secretary, String date) {
+    
+    // Prepare for the export
+    boolean templateOK = (minutesTemplateFile != null);
+    exported = 0;
+    MarkupWriter writer = null;
+    if (templateOK) {
+      writer 
+        = new MarkupWriter(minutesTemplateFile, MarkupWriter.MARKDOWN_FORMAT);
+      templateOK = writer.openForOutput();
+    }
+    
+    // Perform the export
+    if (templateOK) {
+      textMergeScript.clearSortAndFilterSettings();
+      char lastSeq = ' ';
+      char seq = ' ';
+      writer.writeHeading(1, "Minutes for " + club + " Meeting on " + date, "");
+      for (int i = 0; i < clubEventList.size(); i++) {
+        ClubEvent nextClubEvent = clubEventList.get(i);
+        if (nextClubEvent != null
+            && nextClubEvent.getFlagsAsString().contains("Current")) {
+          String seqStr = nextClubEvent.getSeq();
+          if (seqStr != null && seqStr.length() > 0) {
+            seq = seqStr.charAt(0);
+          } else {
+            seq = ' ';
+          }
+          if (seq != lastSeq) {
+            writer.writeHeading(2, seqStr + " - " + ClubEventCalc.getSeqMeaning(seqStr), "");
+            lastSeq = seq;
+          }
+          writeField(writer, "Item Type", nextClubEvent.getItemType());
+          writeField(writer, "Flags", nextClubEvent.getFlagsAsString());
+          writeField(writer, "When", nextClubEvent.getWhen());
+          writeField(writer, "What", nextClubEvent.getWhat());
+          writeField(writer, "Where", nextClubEvent.getWhereAddress());
+          writeField(writer, "Who", nextClubEvent.getWhoAddress());
+          if (nextClubEvent.hasDiscuss()
+              && nextClubEvent.getDiscuss().trim().length() > 0) {
+            writeField(writer, "Discuss", "");
+            writer.writeLine(nextClubEvent.getDiscuss());
+            writer.writeLine("");
+          }
+          writeField(writer, "Notes", "");
+          writer.writeLine("-- " + secretary + " on " + date + " via Minutes");
+          writer.writeLine("");
+          writer.writeLine("");
+          writer.writeLine("...  ");
+          writer.writeLine("");
+          exported++;
+        } // end if we have a club event
+      }
+    }
+    
+    // Let's document the results
+    if (templateOK) {
+      writer.close();
+      JOptionPane.showMessageDialog(this,
+          String.valueOf(exported) + " Agenda Items exported successfully to"
+            + GlobalConstants.LINE_FEED
+            + minutesTemplateFile.toString(),
+          "Export Results",
+          JOptionPane.INFORMATION_MESSAGE,
+          Home.getShared().getIcon());
+      logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
+          + " Agenda Items exported to " 
+          + minutesTemplateFile.toString(),
+          false);
+      statusBar.setStatus(String.valueOf(exported) 
+        + " Agenda Items exported");
+    } else {
+      logger.recordEvent (LogEvent.MEDIUM,
+        "Problem exporting Agenda Items to " + minutesTemplateFile.toString(),
+          false);
+        trouble.report ("I/O error attempting to export Agenda Items to " 
+            + minutesTemplateFile.toString(),
+          "Export Error");
+        statusBar.setStatus("Trouble exporting Agenda Items");
+    } // end if I/O error 
+  }
+  
+  private void writeField (MarkupWriter writer, String name, String value) {
+    StringBuilder line = new StringBuilder(name);
+    line.append(": ");
+    while (line.length() < 11) {
+      line.append(' ');
+    }
+    line.append(value);
+    line.append("  ");
+    writer.writeLine(line.toString());
+  }
   
  /**
    Export the list of events in tab-delimited format.
@@ -2992,6 +3114,7 @@ public class ClubPlanner
     exportFinancialsMenuItem = new javax.swing.JMenuItem();
     fileRegisterMenuItem = new javax.swing.JMenuItem();
     exportMinutesMenuItem = new javax.swing.JMenuItem();
+    fileExportMinutesTemplateItem = new javax.swing.JMenuItem();
     fileExportTabDelimMenuItem = new javax.swing.JMenuItem();
     jSeparator2 = new javax.swing.JPopupMenu.Separator();
     fileTextMergeMenuItem = new javax.swing.JMenuItem();
@@ -3353,6 +3476,14 @@ public class ClubPlanner
     }
   });
   fileExportMenu.add(exportMinutesMenuItem);
+
+  fileExportMinutesTemplateItem.setText("Minutes Template");
+  fileExportMinutesTemplateItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      fileExportMinutesTemplateItemActionPerformed(evt);
+    }
+  });
+  fileExportMenu.add(fileExportMinutesTemplateItem);
 
   fileExportTabDelimMenuItem.setText("Tab-Delimited");
   fileExportTabDelimMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -3761,6 +3892,10 @@ notesTabMenuItem.addActionListener(new java.awt.event.ActionListener() {
     itemTabs.setSelectedIndex(4);
   }//GEN-LAST:event_notesTabMenuItemActionPerformed
 
+  private void fileExportMinutesTemplateItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileExportMinutesTemplateItemActionPerformed
+    exportMinutesTemplate();
+  }//GEN-LAST:event_fileExportMinutesTemplateItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -3830,6 +3965,7 @@ notesTabMenuItem.addActionListener(new java.awt.event.ActionListener() {
   private javax.swing.JMenuItem exportOutlineMenuItem;
   private javax.swing.JMenuItem fileBackupMenuItem;
   private javax.swing.JMenu fileExportMenu;
+  private javax.swing.JMenuItem fileExportMinutesTemplateItem;
   private javax.swing.JMenuItem fileExportTabDelimMenuItem;
   private javax.swing.JMenu fileImportMenu;
   private javax.swing.JMenu fileMenu;

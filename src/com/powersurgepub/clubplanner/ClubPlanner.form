@@ -128,6 +128,14 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportMinutesMenuItemActionPerformed"/>
                   </Events>
                 </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="fileExportMinutesTemplateItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Minutes Template"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fileExportMinutesTemplateItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="fileExportTabDelimMenuItem">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Tab-Delimited"/>

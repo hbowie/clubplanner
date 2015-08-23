@@ -81,9 +81,6 @@ public class ClubPlanner
   public  static final int                TEXT_MERGE_WINDOW_DEFAULT_HEIGHT = 480;
   
   public  static final String             BOARD_MEETING = "Board Meeting";
-  public  static final String             SUGGESTED = "1 - Suggested";
-  public  static final String             CANCELED  = "8 - Canceled";
-  public  static final String             COMPLETED = "9 - Completed";
   public  static final String             ARCHIVE   = "Archive";
   
   private NumberFormat currencyFormat 
@@ -1788,14 +1785,14 @@ public class ClubPlanner
             selected = (type.contains("event") || type.contains("meeting")); 
           }
           if (selected) {
-            String state = nextClubEvent.getState().toLowerCase();
+            String state = nextClubEvent.getStateAsString().toLowerCase();
             selected = (! state.contains("suggested"));
           }
           
           if (selected) {
             DataRecord actionItemsRec = new DataRecord();
             actionItemsRec.addField(calendarDef, nextClubEvent.getItemType());
-            actionItemsRec.addField(calendarDef, nextClubEvent.getState());
+            actionItemsRec.addField(calendarDef, nextClubEvent.getStateAsString());
             actionItemsRec.addField(calendarDef, nextClubEvent.getCategory());
             actionItemsRec.addField(calendarDef, nextClubEvent.getFlagsAsString());
             StringBuilder ymd = new StringBuilder(nextClubEvent.getYmd());
@@ -1949,6 +1946,113 @@ public class ClubPlanner
           "Export Error");
         statusBar.setStatus("Trouble exporting Agenda Items");
     } // end if I/O error 
+  }
+  
+ /**
+   Export a text file that can be used as a meeting agenda, in Markdown format.
+   */
+  private void exportAgendaMarkdown() {
+    boolean modOK = modIfChanged();
+    if (modOK) {
+      fileChooser.setDialogTitle ("Export Agenda in Markdown Format");
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      File suggestion = new File (eventsFile.getParentFile(), "Agendas/Agenda.md");
+      fileChooser.setFile(suggestion);
+      File selectedFile = fileChooser.showSaveDialog (this);
+      if (selectedFile != null) {
+        exportAgendaMarkdown(selectedFile);
+      } // end if user selected an output file
+    } // end if were able to save the last modified record
+  }
+  
+  private void exportAgendaMarkdown (File agendaMarkdownFile) {
+    
+    // Prepare for the export
+    boolean agendaOK = (agendaMarkdownFile != null);
+    exported = 0;
+    MarkupWriter writer = null;
+    if (agendaOK) {
+      writer 
+        = new MarkupWriter(agendaMarkdownFile, MarkupWriter.MARKDOWN_FORMAT);
+      agendaOK = writer.openForOutput();
+    }
+    
+    // Perform the export
+    if (agendaOK) {
+      textMergeScript.clearSortAndFilterSettings();
+      char lastSeq = ' ';
+      char seq = ' ';
+      writer.writeHeading(1, "Meeting Agenda", "");
+      for (int i = 0; i < clubEventList.size(); i++) {
+        ClubEvent nextClubEvent = clubEventList.get(i);
+        if (nextClubEvent != null
+            && nextClubEvent.getFlagsAsString().contains("Current")) {
+          String seqStr = nextClubEvent.getSeq();
+          if (seqStr != null && seqStr.length() > 0) {
+            seq = seqStr.charAt(0);
+          } else {
+            seq = ' ';
+          }
+          if (seq != lastSeq) {
+            writer.writeHeading(2, seqStr + " - " + ClubEventCalc.getSeqMeaning(seqStr), "");
+            lastSeq = seq;
+          }
+          // writeFieldWithData(writer, "Item Type", nextClubEvent.getItemType());
+          // writeFieldWithData(writer, "Flags", nextClubEvent.getFlagsAsString());
+          writeFieldWithData(writer, "What", nextClubEvent.getWhat());
+          writeFieldWithData(writer, "When", nextClubEvent.getWhen());
+          writeFieldWithData(writer, "Where", nextClubEvent.getWhereAddress());
+          writeFieldWithData(writer, "Who", nextClubEvent.getWhoAddress());
+          if (nextClubEvent.hasDiscuss()
+              && nextClubEvent.getDiscuss().trim().length() > 0) {
+            writeField(writer, "Discuss", "");
+            writer.writeLine(nextClubEvent.getDiscuss());
+            writer.writeLine("");
+          }
+          writer.writeLine("");
+          exported++;
+        } // end if we have a club event
+      }
+    }
+    
+    // Let's document the results
+    if (agendaOK) {
+      writer.close();
+      JOptionPane.showMessageDialog(this,
+          String.valueOf(exported) + " Agenda Items exported successfully to"
+            + GlobalConstants.LINE_FEED
+            + agendaMarkdownFile.toString(),
+          "Export Results",
+          JOptionPane.INFORMATION_MESSAGE,
+          Home.getShared().getIcon());
+      logger.recordEvent (LogEvent.NORMAL, String.valueOf(exported) 
+          + " Agenda Items exported to " 
+          + agendaMarkdownFile.toString(),
+          false);
+      statusBar.setStatus(String.valueOf(exported) 
+        + " Agenda Items exported");
+    } else {
+      logger.recordEvent (LogEvent.MEDIUM,
+        "Problem exporting Agenda Items to " + agendaMarkdownFile.toString(),
+          false);
+        trouble.report ("I/O error attempting to export Agenda Items to " 
+            + agendaMarkdownFile.toString(),
+          "Export Error");
+        statusBar.setStatus("Trouble exporting Agenda Items");
+    } // end if I/O error 
+  }
+  
+  private void writeFieldWithData (MarkupWriter writer, String name, String value) {
+    if (value != null && value.trim().length() > 0) {
+      StringBuilder line = new StringBuilder(name);
+      line.append(": ");
+      while (line.length() < 11) {
+        line.append(' ');
+      }
+      line.append(value);
+      line.append("  ");
+      writer.writeLine(line.toString());
+    }
   }
   
   private void writeField (MarkupWriter writer, String name, String value) {
@@ -2334,14 +2438,14 @@ public class ClubPlanner
             } 
             else
             if (nextClubEvent.getWhat().contains(BOARD_MEETING)
-                && (nextClubEvent.getState().equalsIgnoreCase(COMPLETED)
-                  || nextClubEvent.getState().equalsIgnoreCase(CANCELED))
+                && (nextClubEvent.getState().isDone())
                 && (boardMeetings >= 1)) {
               // We only need to preserve one board meeting as a template
             } else {
               if (nextClubEvent.getStateAsString().equals("")
-                  || nextClubEvent.getState().equalsIgnoreCase(COMPLETED)) {
-                nextClubEvent.setState(SUGGESTED);
+                  || nextClubEvent.getState().getValueAsInt() == ItemStatusConfig.COMPLETED
+                  || nextClubEvent.getState().getValueAsInt() == ItemStatusConfig.CLOSED) {
+                nextClubEvent.getState().setValue(ItemStatusConfig.SUGGESTED);
               }
               nextClubEvent.setPriorYrActExp(nextClubEvent.getActualExpense());
               nextClubEvent.setPriorYrActInc(nextClubEvent.getActualIncome());
@@ -2685,7 +2789,7 @@ public class ClubPlanner
     boolean ok = modIfChanged();
     if (ok) {
       ClubEvent clubEvent = position.getClubEvent();
-      clubEvent.setState(COMPLETED);
+      clubEvent.getState().set(ItemStatusConfig.COMPLETED);
       clubEvent.setFlags(ARCHIVE);
       clubEventCalc.calcAll(clubEvent);
       clubEventList.modify(position);
@@ -3110,6 +3214,7 @@ public class ClubPlanner
     importMinutesMenuItem = new javax.swing.JMenuItem();
     fileExportMenu = new javax.swing.JMenu();
     exportActionItemsMenuItem = new javax.swing.JMenuItem();
+    exportAgendaMarkdownMenuItem = new javax.swing.JMenuItem();
     exportOutlineMenuItem = new javax.swing.JMenuItem();
     exportFinancialsMenuItem = new javax.swing.JMenuItem();
     fileRegisterMenuItem = new javax.swing.JMenuItem();
@@ -3443,6 +3548,14 @@ public class ClubPlanner
     }
   });
   fileExportMenu.add(exportActionItemsMenuItem);
+
+  exportAgendaMarkdownMenuItem.setText("Agenda Markdown");
+  exportAgendaMarkdownMenuItem.addActionListener(new java.awt.event.ActionListener() {
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+      exportAgendaMarkdownMenuItemActionPerformed(evt);
+    }
+  });
+  fileExportMenu.add(exportAgendaMarkdownMenuItem);
 
   exportOutlineMenuItem.setText("Agenda Outline");
   exportOutlineMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -3896,6 +4009,10 @@ notesTabMenuItem.addActionListener(new java.awt.event.ActionListener() {
     exportMinutesTemplate();
   }//GEN-LAST:event_fileExportMinutesTemplateItemActionPerformed
 
+  private void exportAgendaMarkdownMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportAgendaMarkdownMenuItemActionPerformed
+    exportAgendaMarkdown();
+  }//GEN-LAST:event_exportAgendaMarkdownMenuItemActionPerformed
+
   /**
    @param args the command line arguments
    */
@@ -3960,6 +4077,7 @@ notesTabMenuItem.addActionListener(new java.awt.event.ActionListener() {
   private javax.swing.JMenuItem eventNextMenuItem;
   private javax.swing.JMenuItem eventPriorMenuItem;
   private javax.swing.JMenuItem exportActionItemsMenuItem;
+  private javax.swing.JMenuItem exportAgendaMarkdownMenuItem;
   private javax.swing.JMenuItem exportFinancialsMenuItem;
   private javax.swing.JMenuItem exportMinutesMenuItem;
   private javax.swing.JMenuItem exportOutlineMenuItem;

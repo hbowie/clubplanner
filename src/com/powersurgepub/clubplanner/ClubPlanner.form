@@ -95,6 +95,14 @@
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportActionItemsMenuItemActionPerformed"/>
                   </Events>
                 </MenuItem>
+                <MenuItem class="javax.swing.JMenuItem" name="exportAgendaMarkdownMenuItem">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Agenda Markdown"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportAgendaMarkdownMenuItemActionPerformed"/>
+                  </Events>
+                </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="exportOutlineMenuItem">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Agenda Outline"/>

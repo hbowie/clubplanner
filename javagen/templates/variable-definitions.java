@@ -23,6 +23,14 @@
   private =$fieldclass$= =$field&clul$= = new =$fieldclass$=();
   
 <?else?>
+<?if "=$fieldclass$=" = "ItemStatus" ?>
+  private =$fieldclass$= =$field&clul$= = new =$fieldclass$=();
+  
+<?else?>
+<?if "=$fieldclass$=" = "ContactInfo" ?>
+  private =$fieldclass$= =$field&clul$= = new =$fieldclass$=();
+  
+<?else?>
   private =$fieldclass$= =$field&clul$= = null;
   
 <?endif?>

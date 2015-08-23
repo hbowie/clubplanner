@@ -227,6 +227,14 @@ public class ClubEventWriter {
     }
     if (outOK) {
       outOK = writeFieldName
+          (ClubEvent.STATE_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getStateAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
           (ClubEvent.FLAGS_FIELD_NAME);
     }
     if (outOK) {
@@ -387,6 +395,38 @@ public class ClubEventWriter {
     }
     if (outOK) {
       outOK = writeFieldName
+          (ClubEvent.PRIOR_YR_PLN_INC_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getPriorYrPlnIncAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
+          (ClubEvent.PRIOR_YR_ACT_INC_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getPriorYrActIncAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
+          (ClubEvent.PRIOR_YR_PLN_EXP_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getPriorYrPlnExpAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
+          (ClubEvent.PRIOR_YR_ACT_EXP_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getPriorYrActExpAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
           (ClubEvent.RECAP_FIELD_NAME);
     }
     if (outOK) {
@@ -440,46 +480,6 @@ public class ClubEventWriter {
     if (outOK) {
       outOK = writeFieldValue
           (clubEvent.getNotesAsString());
-    }
-    if (outOK) {
-      outOK = writeFieldName
-          (ClubEvent.PRIOR_YR_PLN_INC_FIELD_NAME);
-    }
-    if (outOK) {
-      outOK = writeFieldValue
-          (clubEvent.getPriorYrPlnIncAsString());
-    }
-    if (outOK) {
-      outOK = writeFieldName
-          (ClubEvent.PRIOR_YR_ACT_INC_FIELD_NAME);
-    }
-    if (outOK) {
-      outOK = writeFieldValue
-          (clubEvent.getPriorYrActIncAsString());
-    }
-    if (outOK) {
-      outOK = writeFieldName
-          (ClubEvent.PRIOR_YR_PLN_EXP_FIELD_NAME);
-    }
-    if (outOK) {
-      outOK = writeFieldValue
-          (clubEvent.getPriorYrPlnExpAsString());
-    }
-    if (outOK) {
-      outOK = writeFieldName
-          (ClubEvent.PRIOR_YR_ACT_EXP_FIELD_NAME);
-    }
-    if (outOK) {
-      outOK = writeFieldValue
-          (clubEvent.getPriorYrActExpAsString());
-    }
-    if (outOK) {
-      outOK = writeFieldName
-          (ClubEvent.STATE_FIELD_NAME);
-    }
-    if (outOK) {
-      outOK = writeFieldValue
-          (clubEvent.getStateAsString());
     }
     return outOK;
   }

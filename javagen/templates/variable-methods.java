@@ -29,6 +29,18 @@
     this.=$field&clul$= = =$field&clul$=;
     setModified (true);
   }
+<?if =$fieldclass$= = "ItemStatus" ?>
+
+  /**
+     Sets the =$field&c lll$= for this =$itemclass&c lll$=.
+ 
+     @param  =$field&clul$= The =$field&c lll$= for this =$itemclass&c lll$=.
+   */
+  public void set=$field&cuul$= (String =$field&clul$=) {
+    this.=$field&clul$=.set(=$field&clul$=);
+    setModified (true);
+  }
+<?endif?>
 <?if =$fieldclass$= = "Tags" ?>
 
   /**

@@ -1,4 +1,23 @@
 
+## Version 1.60 (2015-08-24)
+
+1. **Straightened Out Sequence of Fields in Event Files**
+
+    Adjusted internals to make sure notes are written to disk last, and to move other fields into a more natural sequence.
+
+2. **Small Adjustments to State Field Values**
+
+    Made a few small adjustments to values used within the State field.
+
+3. **Added Agenda Markdown Export**
+
+    A new export format was added to create a text file containing all current item, suitable for use as a meeting agenda, formatted in Markdown syntax.
+
+4. **Added Minutes Template Export**
+
+    Added a new File Export format, for a plain text template that can be used to record meeting minutes, and then fed back into Club Planner via the File Import function.
+
+
 ## Version 1.50 (2015-08-16)
 
 1. **Several Small Refinements**

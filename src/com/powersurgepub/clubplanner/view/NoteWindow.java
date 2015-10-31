@@ -48,7 +48,7 @@ public class NoteWindow
   private JComboBox noteViaComboBox    = new JComboBox();
   private JLabel    noteLabel    = new JLabel("Note:", JLabel.LEFT);
   private JScrollPane noteScrollPane = new javax.swing.JScrollPane();
-  private JTextArea noteJTextArea = new JTextArea();
+  private JTextArea noteTextArea = new JTextArea();
   private JButton   addButton     = new JButton("Add Now");
 
   private     JLabel              bottomFiller   = new JLabel("");
@@ -126,17 +126,17 @@ public class NoteWindow
     gb.add(noteViaComboBox);
 
 		// Panel Layout for Note
-    noteLabel.setLabelFor(noteJTextArea);
+    noteLabel.setLabelFor(noteTextArea);
     gb.setColumnWeight(0.0);
     gb.setWidth(1);
     gb.setTopInset(8);
     gb.add(noteLabel);
-    noteJTextArea.setColumns(20);
-    noteJTextArea.setLineWrap(true);
-    noteJTextArea.setRows(10);
-    noteJTextArea.setWrapStyleWord(true);
-    noteJTextArea.setToolTipText("Note itself.");
-    noteScrollPane.setViewportView(noteJTextArea);
+    noteTextArea.setColumns(20);
+    noteTextArea.setLineWrap(true);
+    noteTextArea.setRows(10);
+    noteTextArea.setWrapStyleWord(true);
+    noteTextArea.setToolTipText("Note itself.");
+    noteScrollPane.setViewportView(noteTextArea);
     gb.setWidth(3);
     gb.setTopInset(4);
     gb.add(noteScrollPane);
@@ -166,6 +166,7 @@ public class NoteWindow
       modIfChanged(newNote);
       notesPanel.addNote(newNote);
       WindowMenuManager.getShared().hide(this);
+      noteTextArea.setText("");
     }
   }
   
@@ -193,11 +194,11 @@ public class NoteWindow
       noteViaComboBox.setSelectedItem("");
     }
     if (eventNote.hasNote()) {
-      noteJTextArea.setText (eventNote.getNote().toString());
+      noteTextArea.setText (eventNote.getNote().toString());
     } else {
-      noteJTextArea.setText ("");
+      noteTextArea.setText ("");
     }
-    noteJTextArea.setCaretPosition(0);
+    noteTextArea.setCaretPosition(0);
  
   }
   
@@ -218,8 +219,8 @@ public class NoteWindow
       modified = true;
     }
 
-    if (! eventNote.getNoteAsString().equals (noteJTextArea.getText())) {
-      eventNote.setNote(noteJTextArea.getText());
+    if (! eventNote.getNoteAsString().equals (noteTextArea.getText())) {
+      eventNote.setNote(noteTextArea.getText());
       modified = true;
     }
 
@@ -260,7 +261,7 @@ public class NoteWindow
     @return The note for this event note.
    */
   public JTextArea getNoteJTextArea () {
-    return noteJTextArea;
+    return noteTextArea;
   }
 
 
@@ -321,16 +322,18 @@ public class NoteWindow
   private void initComponents() {
 
     setTitle("Add Note");
+    setMinimumSize(new java.awt.Dimension(360, 360));
+    setPreferredSize(new java.awt.Dimension(600, 480));
 
     org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
       layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(0, 400, Short.MAX_VALUE)
+      .add(0, 573, Short.MAX_VALUE)
     );
     layout.setVerticalGroup(
       layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-      .add(0, 300, Short.MAX_VALUE)
+      .add(0, 423, Short.MAX_VALUE)
     );
 
     pack();

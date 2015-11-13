@@ -96,7 +96,7 @@ public class ClubEventPanel5
     gb.add(notesLabel);
     notesJTextArea.setColumns(20);
     notesJTextArea.setLineWrap(true);
-    notesJTextArea.setRows(25);
+    notesJTextArea.setRows(50);
     notesJTextArea.setWrapStyleWord(true);
     notesJTextArea.setToolTipText("One or more blocks of text with information about the event. Each note should be preceded by a line like the following: -- AAUM on Feb 21 via email.");
     notesScrollPane.setViewportView(notesJTextArea);

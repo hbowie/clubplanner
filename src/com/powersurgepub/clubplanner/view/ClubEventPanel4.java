@@ -63,6 +63,13 @@ public class ClubEventPanel4
   private LinkLabel newsImageLabel    = new LinkLabel("News Image:");
   private JScrollPane newsImageScrollPane = new javax.swing.JScrollPane();
   private JTextArea newsImageJTextArea = new JTextArea();
+  private JLabel    callToActionLabel    = new JLabel("Call to Action:", JLabel.LEFT);
+  private JTextField callToActionJTextField = new JTextField();
+  private LinkLabel ctaLinkLabel    = new LinkLabel("CTA Link:");
+  private JScrollPane ctaLinkScrollPane = new javax.swing.JScrollPane();
+  private JTextArea ctaLinkJTextArea = new JTextArea();
+  private JLabel    layoutLabel    = new JLabel("Layout:", JLabel.LEFT);
+  private PSComboBox layoutPSComboBox = new PSComboBox();
 
   private     JLabel              bottomFiller   = new JLabel("");
 
@@ -205,6 +212,53 @@ public class ClubEventPanel4
     gb.add(newsImageScrollPane);
     gb.setFill(GridBagConstraints.HORIZONTAL);
 
+		// Panel Layout for Call to Action
+    callToActionLabel.setLabelFor(callToActionJTextField);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(callToActionLabel);
+    callToActionJTextField.setToolTipText("Brief request to the reader to take some sort of action");
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(callToActionJTextField);
+
+		// Panel Layout for CTA Link
+		ctaLinkLabel.setLinkTweaker(linkTweaker);
+    ctaLinkLabel.setLinkTextArea(ctaLinkJTextArea);
+    ctaLinkLabel.setFrame(frame);
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(4);
+    gb.setRowWeight(0.1);
+    gb.setFill(GridBagConstraints.BOTH);
+    gb.add(ctaLinkLabel);
+    ctaLinkJTextArea.setColumns(20);
+    ctaLinkJTextArea.setLineWrap(true);
+    ctaLinkJTextArea.setRows(3);
+    ctaLinkJTextArea.setWrapStyleWord(false);
+    ctaLinkJTextArea.setToolTipText("The actionable link");
+    ctaLinkScrollPane.setViewportView(ctaLinkJTextArea);
+    gb.setWidth(3);
+    gb.setHeight(1);
+    gb.setTopInset(4);
+    gb.setRowWeight(0.1);
+    gb.setFill(GridBagConstraints.BOTH);
+    gb.add(ctaLinkScrollPane);
+    gb.setFill(GridBagConstraints.HORIZONTAL);
+
+		// Panel Layout for Layout
+    layoutLabel.setLabelFor(layoutPSComboBox);
+    layoutPSComboBox.load (ClubEvent.class, "layout.txt");
+    gb.setColumnWeight(0.0);
+    gb.setWidth(1);
+    gb.setTopInset(8);
+    gb.add(layoutLabel);
+    layoutPSComboBox.setToolTipText("The type of layout to use for this item in our newsletter");
+    gb.setWidth(3);
+    gb.setTopInset(4);
+    gb.add(layoutPSComboBox);
+
     gb.setWidth(4);
     gb.setFill(GridBagConstraints.BOTH);
     gb.setColumnWeight(1.0);
@@ -249,6 +303,21 @@ public class ClubEventPanel4
     } else {
       newsImageJTextArea.setText ("");
     }
+    if (clubEvent.hasCallToAction()) {
+      callToActionJTextField.setText (clubEvent.getCallToAction().toString());
+    } else {
+      callToActionJTextField.setText ("");
+    }
+    if (clubEvent.hasCtaLink()) {
+      ctaLinkJTextArea.setText (clubEvent.getCtaLink().toString());
+    } else {
+      ctaLinkJTextArea.setText ("");
+    }
+    if (clubEvent.hasLayout()) {
+      layoutPSComboBox.setText (clubEvent.getLayout().toString());
+    } else {
+      layoutPSComboBox.setText ("");
+    }
  
   }
 
@@ -285,6 +354,21 @@ public class ClubEventPanel4
 
     if (! clubEvent.getNewsImageAsString().equals (newsImageJTextArea.getText())) {
       clubEvent.setNewsImage(newsImageJTextArea.getText());
+      modified = true;
+    }
+
+    if (! clubEvent.getCallToActionAsString().equals (callToActionJTextField.getText())) {
+      clubEvent.setCallToAction(callToActionJTextField.getText());
+      modified = true;
+    }
+
+    if (! clubEvent.getCtaLinkAsString().equals (ctaLinkJTextArea.getText())) {
+      clubEvent.setCtaLink(ctaLinkJTextArea.getText());
+      modified = true;
+    }
+
+    if (! clubEvent.getLayoutAsString().equals (layoutPSComboBox.getText())) {
+      clubEvent.setLayout(layoutPSComboBox.getText());
       modified = true;
     }
 
@@ -346,6 +430,33 @@ public class ClubEventPanel4
     return newsImageJTextArea;
   }
 
+  /**
+    Returns the call to action for this club event.
+ 
+    @return The call to action for this club event.
+   */
+  public JTextField getCallToActionJTextField () {
+    return callToActionJTextField;
+  }
+
+  /**
+    Returns the cta link for this club event.
+ 
+    @return The cta link for this club event.
+   */
+  public JTextArea getCtaLinkJTextArea () {
+    return ctaLinkJTextArea;
+  }
+
+  /**
+    Returns the layout for this club event.
+ 
+    @return The layout for this club event.
+   */
+  public PSComboBox getLayoutPSComboBox () {
+    return layoutPSComboBox;
+  }
+
 
   /**
    Set a link field to a new value after it has been tweaked.
@@ -372,6 +483,9 @@ public class ClubEventPanel4
     }
     if (linkID.equals(newsImageLabel.getLabelText())) {
       newsImageJTextArea.setText (tweakedLink);
+    }
+    if (linkID.equals(ctaLinkLabel.getLabelText())) {
+      ctaLinkJTextArea.setText (tweakedLink);
     }
   }
 

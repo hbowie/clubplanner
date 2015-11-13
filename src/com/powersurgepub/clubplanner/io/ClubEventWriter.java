@@ -475,6 +475,30 @@ public class ClubEventWriter {
     }
     if (outOK) {
       outOK = writeFieldName
+          (ClubEvent.CALL_TO_ACTION_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getCallToActionAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
+          (ClubEvent.CTA_LINK_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getCtaLinkAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
+          (ClubEvent.LAYOUT_FIELD_NAME);
+    }
+    if (outOK) {
+      outOK = writeFieldValue
+          (clubEvent.getLayoutAsString());
+    }
+    if (outOK) {
+      outOK = writeFieldName
           (ClubEvent.NOTES_FIELD_NAME);
     }
     if (outOK) {

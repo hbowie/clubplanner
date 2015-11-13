@@ -314,6 +314,15 @@ Image
 News Image
 :    A URL pointing to an image suitable for use in our newsletter.
 
+Call to Action
+:    Brief request to the reader to take some sort of action.
+
+CTA Link
+:    The actionable link.
+
+Layout
+:    The type of layout to use for this item in a newsletter.
+
 <h4 id="clubevent--panel-5">ClubEvent - Panel 5</h4>
 
 
@@ -854,6 +863,11 @@ The letter "X" will cause selected special characters to be translated to their 
 
 
 The letter "H" will cause selected special characters to be translated to their equivalent HTML entities.
+
+<h5 id="email-apostrophes-modifier-">E-mail Apostrophes Modifier '</h5>
+
+
+Placing a single apostrophe as part of the variable modifiers string will cause any HTML entities representing an apostrophe to be converted back to a normal ASCII/UTF apostrophe character: '. This can be useful for generating HTML to use as e-mail content, since e-mail parsers seem to sometimes drop the HTML entities commonly used for apostrophes.
 
 <h5 id="link-modifier-j">Link Modifier "J"</h5>
 

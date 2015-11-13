@@ -128,6 +128,7 @@ public class ClubEventList
       31,
       32,
       33,
+      33,
       34,
       35,
       36,
@@ -155,6 +156,9 @@ public class ClubEventList
       58,
       59,
       60,
+      61,
+      62,
+      63,
       -1 };
  
   /**

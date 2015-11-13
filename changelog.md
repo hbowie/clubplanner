@@ -1,4 +1,11 @@
 
+## Version 1.70 (2015-11-12)
+
+1. **Added Several New Fields**
+
+    Added a Call to Action field, a Call to Action (CTA) Link field, and a layout field, to allow the user to select various layout options. All of these new fields are intended to be used when generating club e-mails.
+
+
 ## Version 1.60 (2015-08-24)
 
 1. **Straightened Out Sequence of Fields in Event Files**

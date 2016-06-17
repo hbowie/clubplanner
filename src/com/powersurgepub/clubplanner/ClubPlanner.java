@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 - 2015 Herb Bowie
+ * Copyright 2012 - 2016 Herb Bowie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -148,14 +148,7 @@ public class ClubPlanner
   private             NotesPanel          notesPanel;
   
   // List Manipulation
-  private             TextMergeScript     textMergeScript;
-  private             TextMergeFilter     textMergeFilter;
-  private             TextMergeSort       textMergeSort;
-  private             TextMergeTemplate   textMergeTemplate;
-  private             TextMergeWindow     textMergeWindow = null;
-  private             int                 filterTabIndex = 0;
-  private             int                 sortTabIndex = 1;
-  private             int                 templateTabIndex = 2;
+  private             TextMergeHarness    textMerge = null;
   
   private             StringLineReader    markdownReader = null;
   
@@ -254,27 +247,15 @@ public class ClubPlanner
       "2012"); // copyRightYearFrom));
     
     // Set up TextMerge Window
-    textMergeScript = new TextMergeScript(clubEventList);
-    textMergeScript.allowAutoplay(false);
-    textMergeFilter = new TextMergeFilter(clubEventList, textMergeScript);
-    textMergeSort   = new TextMergeSort  (clubEventList, textMergeScript);
-    textMergeTemplate = new TextMergeTemplate (clubEventList, textMergeScript);
-    textMergeScript.setFilterModule(textMergeFilter);
-    textMergeScript.setSortModule(textMergeSort);
-    textMergeScript.setTemplateModule(textMergeTemplate);
+    textMerge = TextMergeHarness.getShared();
+    textMerge.setList(clubEventList);
+    textMerge.allowAutoplay(false);
+    textMerge.enableInputModule(false);
+    textMerge.enableOutputModule(false);
+    textMerge.initTextMergeModules();
     
-    textMergeWindow = new TextMergeWindow (this, "TextMerge");
-    textMergeScript.setTabs(textMergeWindow.getTabs());
-    filterTabIndex = 0;
-    textMergeFilter.setTabs(textMergeWindow.getTabs());
-    sortTabIndex = 1;
-    textMergeSort.setTabs(textMergeWindow.getTabs(), false);
-    templateTabIndex = 2;
-    textMergeTemplate.setTabs(textMergeWindow.getTabs());
-    textMergeScript.selectEasyTab();
-    textMergeScript.setMenus(mainMenuBar, "Scripts");
-    
-    windowMenuManager.add(textMergeWindow);
+    textMerge.setMenus(mainMenuBar, "Scripts");
+    textMerge.addToWindowMenuManager();
     
     financeWindow = new FinanceWindow();
     WindowMenuManager.locateCenter(this, financeWindow);
@@ -332,13 +313,13 @@ public class ClubPlanner
    Position the Text Merge Window relative to the main window. 
   */
   public void positionTextMergeWindow() {
-    if (textMergeWindow != null) {
-      textMergeWindow.setBounds (
+    if (textMerge != null) {
+      textMerge.setBounds (
           this.getX() + TEXT_MERGE_WINDOW_DEFAULT_X,
           this.getY() + TEXT_MERGE_WINDOW_DEFAULT_Y,
           TEXT_MERGE_WINDOW_DEFAULT_WIDTH,
           TEXT_MERGE_WINDOW_DEFAULT_HEIGHT);
-      WindowMenuManager.locateCenter(this, textMergeWindow);
+      WindowMenuManager.locateCenter(this, textMerge);
     }
   }
   
@@ -751,7 +732,7 @@ public class ClubPlanner
     boolean modOK = modIfChanged();
     int imported = 0;
     if (modOK) {
-      textMergeScript.clearSortAndFilterSettings();
+      textMerge.clearSortAndFilterSettings();
       fileChooser.setDialogTitle ("Import Meeting Minutes");
       fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
       File selectedFile = fileChooser.showOpenDialog (this);
@@ -1491,7 +1472,7 @@ public class ClubPlanner
             = new MarkupWriter(selectedFile, MarkupWriter.OPML_FORMAT);
         boolean ok = writer.openForOutput();
         if (ok) {
-          textMergeScript.clearSortAndFilterSettings();
+          textMerge.clearSortAndFilterSettings();
           int lastSeq = -1;
           for (int i = 0; i < clubEventList.size(); i++) {
             ClubEvent nextClubEvent = clubEventList.get(i);
@@ -1880,7 +1861,7 @@ public class ClubPlanner
     
     // Perform the export
     if (templateOK) {
-      textMergeScript.clearSortAndFilterSettings();
+      textMerge.clearSortAndFilterSettings();
       char lastSeq = ' ';
       char seq = ' ';
       writer.writeHeading(1, "Minutes for " + club + " Meeting on " + date, "");
@@ -1979,7 +1960,7 @@ public class ClubPlanner
     
     // Perform the export
     if (agendaOK) {
-      textMergeScript.clearSortAndFilterSettings();
+      textMerge.clearSortAndFilterSettings();
       char lastSeq = ' ';
       char seq = ' ';
       writer.writeHeading(1, "Meeting Agenda", "");
@@ -2539,11 +2520,8 @@ public class ClubPlanner
   }
   
   private void setPSList() {
-    textMergeFilter.setPSList(clubEventList);
-    textMergeSort.setPSList(clubEventList);
-    textMergeTemplate.setPSList(clubEventList);
-    textMergeScript.setPSList(clubEventList);
-    textMergeScript.selectEasyTab();
+    textMerge.setList(clubEventList);
+    textMerge.selectEasyTab();
   }
   
   /**
@@ -3920,7 +3898,7 @@ notesTabMenuItem.addActionListener(new java.awt.event.ActionListener() {
   }//GEN-LAST:event_fileReloadMenuItemActionPerformed
 
   private void fileTextMergeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileTextMergeMenuItemActionPerformed
-    windowMenuManager.makeVisible(textMergeWindow);
+    windowMenuManager.makeVisible(textMerge);
   }//GEN-LAST:event_fileTextMergeMenuItemActionPerformed
 
   private void fileStartNewYearMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileStartNewYearMenuItemActionPerformed

@@ -2258,6 +2258,7 @@ public class ClubPlanner
   public boolean backup(File folderForBackups) {
     int backedUp = 0;
     StringBuilder backupPath = new StringBuilder();
+    StringBuilder folderNameWithoutDate = new StringBuilder();
     try {
       backupPath.append(folderForBackups.getCanonicalPath());
     } catch (IOException e) {
@@ -2266,9 +2267,12 @@ public class ClubPlanner
     backupPath.append(File.separator);
     if (clubEventCalc.ifOpYearFromFolder()) {
       backupPath.append(clubEventCalc.getOpYearFolder());
+      folderNameWithoutDate.append(clubEventCalc.getOpYearFolder());
       backupPath.append(" ");
+      folderNameWithoutDate.append(" ");
     }
     backupPath.append("backup ");
+    folderNameWithoutDate.append("backup ");
     backupPath.append(filePrefs.getBackupDate());
     File backupFolder = new File (backupPath.toString());
     backupFolder.mkdir();
@@ -2281,6 +2285,7 @@ public class ClubPlanner
       logger.recordEvent (LogEvent.NORMAL,
           "URLs backed up to " + backupFolder.toString(),
             false);
+      filePrefs.pruneBackups(folderForBackups, folderNameWithoutDate.toString());
     } else {
       logger.recordEvent (LogEvent.MEDIUM,
           "Problem backing up URLs to " + backupFolder.toString(),
@@ -2438,6 +2443,7 @@ public class ClubPlanner
               nextClubEvent.setPlannedIncome("");
               outOK = newEventsWriter.save (newEventsFolder, nextClubEvent, false);
               itemsSaved++;
+              eventsTransferred++;
               if (nextClubEvent.getWhat().contains(BOARD_MEETING)) {
                 boardMeetings++;
               }
@@ -2794,7 +2800,7 @@ public class ClubPlanner
 
     if (clubEventPanel1.modIfChanged(clubEvent)) {
       modified = true;
-      itemLabel.setText(clubEvent.getWhat());
+      displayTitle(clubEvent);
     } 
     if (clubEventPanel2.modIfChanged(clubEvent)) {
       modified = true;
@@ -3094,7 +3100,7 @@ public class ClubPlanner
       reload (clubEvent);
     }
     localPath = clubEvent.getLocalPath();
-    itemLabel.setText(clubEvent.getWhat());
+    displayTitle(clubEvent);
     clubEventPanel1.display(clubEvent);
     clubEventPanel2.display(clubEvent);
     clubEventPanel3.display(clubEvent);
@@ -3105,6 +3111,15 @@ public class ClubPlanner
     modified = false;
     if (fileSpec != null) {
       fileSpec.setLastTitle(clubEvent.getWhat());
+    }
+  }
+  
+  private void displayTitle(ClubEvent eventToDisplay) {
+    if (eventToDisplay.hasWhenWithData()) {
+      itemLabel.setText(eventToDisplay.getWhat() 
+          + " on " + eventToDisplay.getWhen());
+    } else {
+      itemLabel.setText(eventToDisplay.getWhat());
     }
   }
   

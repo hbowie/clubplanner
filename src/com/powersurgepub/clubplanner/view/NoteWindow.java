@@ -165,13 +165,13 @@ public class NoteWindow
       EventNote newNote = new EventNote();
       modIfChanged(newNote);
       notesPanel.addNote(newNote);
-      WindowMenuManager.getShared().hide(this);
+      WindowMenuManager.getShared().hideAndRemove(this);
       noteTextArea.setText("");
     }
   }
   
 	private void formComponentHidden(java.awt.event.ComponentEvent evt) {                                     
-		WindowMenuManager.getShared().hide(this);
+		WindowMenuManager.getShared().hideAndRemove(this);
 	}
   
   public void display (EventNote eventNote) {

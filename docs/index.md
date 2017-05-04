@@ -174,7 +174,7 @@ Club Planner also incorporates or adapts the following open source software libr
 
 * parboiled — Copyright 2009-2011 Mathias Doenitz, used under the terms of the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
-* pegdown — Copyright 2009-2011 Mathias Doenitz, used under the terms of the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+* flexmark-java — Copyright 2016 Vladimir Schneider, used under the terms of the [2-Clause BSD License](2-Clause BSD License).
 
 
 <h3 id="installation">Installation</h3>
@@ -1188,7 +1188,7 @@ This command allows you to include text from another file into the output stream
 
 An optional operand of "copy" will ensure that the include file is included without conversion; otherwise, if the input and output file extensions are different, and are capable of conversion, the input file will be converted to the output file's format (for example, [Markdown][] or Textile can be converted to html).
 
-Markdown conversion will be done using the [Pegdown][] processor, using the options for typographic conversions (as with SmartyPants) and table generation.
+Markdown conversion will be done using the [Flexmark][] processor, using the options for typographic conversions (as with SmartyPants) and table generation.
 
 If converting from Markdown, then an optional operand of "nometa" will cause metadata lines to be skipped when generating the HTML output; otherwise, they will be included.
 
